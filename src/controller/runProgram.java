@@ -13,6 +13,7 @@ import view.*;
  */
 public class runProgram {
     private static LoginGUI loginFrame;
+    private static PropertyViewGUI propertyViewFrame;
     ArrayList<Renter> renters = new ArrayList<Renter>();
     ArrayList<Property> properties = new ArrayList<Property>();
     ArrayList<Landlord> landlords = new ArrayList<Landlord>();
@@ -25,9 +26,14 @@ public class runProgram {
      */
     public static void main(String[] args) {
         /* start with a LoginGui frame */
-        loginFrame = new LoginGUI();
+        /*loginFrame = new LoginGUI();
         EventQueue.invokeLater(() -> {
             loginFrame.setVisible(true);
+        });*/
+        // Test PropertyViewGUI
+        propertyViewFrame = new PropertyViewGUI(new Property(500, "Detached", 4,5,true,"20 Bow Ridge Crescent", "SW","Listed"));
+        EventQueue.invokeLater(() -> {
+            propertyViewFrame.setVisible(true);
         });
     }
 }
