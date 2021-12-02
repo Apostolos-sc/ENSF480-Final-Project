@@ -9,8 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class PropertyViewGUI extends JFrame implements ActionListener, MouseListener {
-    private JLabel generalMessage1;
-    private JLabel generalMessage2;
+    private JLabel generalMessage;
     private JLabel propertyTypeLabel;
     private JLabel propertyNoBathroomsLabel;
     private JLabel propertyNoBedroomsLabel;
@@ -24,25 +23,46 @@ public class PropertyViewGUI extends JFrame implements ActionListener, MouseList
     int propertyID, String propertyType, int noBathrooms, int noBedrooms,
     boolean isFurnished, String address, String quadrant,String status
  */
-    public PropertyViewGUI(Property prop) {
+    public PropertyViewGUI(Property prop, User user) {
         super("View Property with ID : " + prop.getPropertyID() + ".");
-        setupGUI(prop);
+        setupGUI(prop, user);
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void setupGUI(Property prop) {
-        generalMessage1 = new JLabel("Welcome to the View Property System.");
-        generalMessage2 = new JLabel("You are now viewing Property : "+ prop.getPropertyID() +".");
+    public void setupGUI(Property prop, User user) {
+        generalMessage = new JLabel("<html><div style='text-align: center;'>Welcome to the View Property System.<br />You are now viewing Property : "+ prop.getPropertyID() +".</div></html");
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.getAllFonts();
 
-        propertyTypeLabel = new JLabel("Type               : " + prop.getPropertyDetails().getPropertyType());
-        propertyNoBedroomsLabel = new JLabel("Number of Bedrooms  : " + prop.getPropertyDetails().getNoBedrooms());
-        propertyNoBathroomsLabel = new JLabel("Number of Bathrooms :" + prop.getPropertyDetails().getNoBathrooms());
-        propertyIsFurnishedLabel = new JLabel("Furnished         :" + (prop.getPropertyDetails().isFurnished() ? "Yes" : "No"));
-        propertyAddressLabel = new JLabel("Address           : " + prop.getPropertyLocation().getAddress());
-        propertyQuadrantLabel = new JLabel("Quadrant          : "+ prop.getPropertyLocation().getQuadrant());
-        propertyStatusLabel = new JLabel("Status          " + prop.getStatus());
-        emailLandlordButton = new JButton("Email Landlord.");
+        Font font = new Font("Arial", Font.PLAIN, 12);
+        propertyTypeLabel = new JLabel(String.format("%-60s","Type                             : " + prop.getPropertyDetails().getPropertyType()));
+        propertyNoBedroomsLabel = new JLabel(String.format("%-60s","Number of Bedrooms  : " + prop.getPropertyDetails().getNoBedrooms()));
+        propertyNoBathroomsLabel = new JLabel(String.format("%-60s","Number of Bathrooms : " + prop.getPropertyDetails().getNoBathrooms()));
+        propertyIsFurnishedLabel = new JLabel(String.format("%-60s","Furnished                     : " + (prop.getPropertyDetails().isFurnished() ? "Yes" : "No")));
+        propertyAddressLabel = new JLabel(String.format("%-60s","Address                        : " + prop.getPropertyLocation().getAddress()));
+        propertyQuadrantLabel = new JLabel(String.format("%-60s","Quadrant                      : "+ prop.getPropertyLocation().getQuadrant()));
+        propertyStatusLabel = new JLabel(String.format("%-60s","Status                           : " + prop.getStatus()));
+        emailLandlordButton = new JButton("Email Landlord."+ user.getClass().getSimpleName());
+
+        propertyTypeLabel.setFont(font);
+        propertyNoBedroomsLabel.setFont(font);
+        propertyNoBathroomsLabel.setFont(font);
+        propertyIsFurnishedLabel.setFont(font);
+        propertyAddressLabel.setFont(font);
+        propertyQuadrantLabel.setFont(font);
+        propertyStatusLabel.setFont(font);
+        emailLandlordButton.setFont(font);
+        generalMessage.setPreferredSize(new Dimension(300, 50));
+        propertyTypeLabel.setPreferredSize(new Dimension(300, 25));
+        propertyNoBedroomsLabel.setPreferredSize(new Dimension(300, 25));
+        propertyNoBathroomsLabel.setPreferredSize(new Dimension(300, 25));
+        propertyIsFurnishedLabel.setPreferredSize(new Dimension(300, 25));
+        propertyAddressLabel.setPreferredSize(new Dimension(300, 25));
+        propertyQuadrantLabel.setPreferredSize(new Dimension(300, 25));
+        propertyStatusLabel.setPreferredSize(new Dimension(300, 25));
+        emailLandlordButton.setPreferredSize(new Dimension(300, 25));
+
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
         //Create the JPanels.
         JPanel mainContainer = new JPanel();
@@ -70,8 +90,7 @@ public class PropertyViewGUI extends JFrame implements ActionListener, MouseList
 
         //Add Components to the JPanels.
 
-        headerPanel.add(generalMessage1);
-        headerPanel.add(generalMessage2);
+        headerPanel.add(generalMessage);
         propertyTypePanel.add(propertyTypeLabel);
         propertyNoOfBedroomsPanel.add(propertyNoBedroomsLabel);
         propertyNoOfBathroomsPanel.add(propertyNoBathroomsLabel);

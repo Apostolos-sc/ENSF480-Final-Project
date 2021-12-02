@@ -4,7 +4,8 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
-
+import model.*;
+import controller.*;
 public class LoginGUI extends JFrame implements ActionListener, MouseListener {
     private String username;
     private String password;
@@ -12,31 +13,37 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
     private JLabel generalMessage2;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
+    private JLabel selectUserLabel;
 
     private JTextField usernameTextField;
     private JTextField passwordTextField;
 
+    private JComboBox<String> selectUserComboBox;
+
     private JButton connectButton;
     private JButton guestButton;
 
-    public LoginGUI() {
+    public LoginGUI(ArrayList<Renter> renters, ArrayList<Landlord> landlords, ArrayList<Manager> managers, ArrayList<Property> properties) {
         super("Connect to Server.");
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
     /**
      * Sets gui.
      */
     public void setupGUI() {
+        String[] typeOfUsers = { "Renter","Landlord", "Manager"};
+        selectUserComboBox = new JComboBox<String>(typeOfUsers);
         //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
         generalMessage1 = new JLabel("Welcome to the University of Calgary");
         generalMessage2 = new JLabel("Property Management Software.");
         usernameLabel = new JLabel("Username      :");
         passwordLabel = new JLabel("Password      :");
-
-        usernameTextField = new JTextField("User's username", 18);
-        passwordTextField = new JTextField("User's password", 18);
+        selectUserLabel = new JLabel("User Type      :");
+        usernameTextField = new JTextField("User's username");
+        passwordTextField = new JTextField("User's password");
         guestButton = new JButton("Continue as a Guest");
         connectButton = new JButton("Login.");
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
@@ -49,6 +56,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         JPanel headerPanel = new JPanel();
         JPanel usernamePanel = new JPanel();
         JPanel passwordPanel = new JPanel();
+        JPanel selectUserPanel = new JPanel();
         JPanel guestPanel = new JPanel();
         JPanel connectPanel = new JPanel();
 
@@ -57,9 +65,12 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         headerPanel.setLayout(new FlowLayout());
         usernamePanel.setLayout(new FlowLayout());
         passwordPanel.setLayout(new FlowLayout());
+        selectUserPanel.setLayout(new FlowLayout());
         guestPanel.setLayout(new FlowLayout());
         connectPanel.setLayout(new FlowLayout());
-
+        selectUserComboBox.setPreferredSize(new Dimension(175, 25));
+        usernameTextField.setPreferredSize(new Dimension(175, 25));
+        passwordTextField.setPreferredSize(new Dimension(175, 25));
         //Add Components to the JPanels.
 
         headerPanel.add(generalMessage1);
@@ -68,6 +79,8 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         usernamePanel.add(usernameTextField);
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordTextField);
+        selectUserPanel.add(selectUserLabel);
+        selectUserPanel.add(selectUserComboBox);
         guestPanel.add(guestButton);
         connectPanel.add(connectButton);
 
@@ -75,6 +88,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         mainContainer.add(headerPanel);
         mainContainer.add(usernamePanel);
         mainContainer.add(passwordPanel);
+        mainContainer.add(selectUserPanel);
         mainContainer.add(guestPanel);
         mainContainer.add(connectPanel);
 
@@ -119,5 +133,12 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
 
     public void mouseEntered(MouseEvent event) {
 
+    }
+    /*
+        Will check accordingly our users to see if the user inputted appropriate information
+        The boolean return value indicates if the user was found or not.
+     */
+    public boolean checkUser(String email, String password, String userType) {
+        return true;
     }
 }
