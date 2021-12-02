@@ -3,50 +3,57 @@ package controller;
 import model.*;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Data {
-    private static ArrayList<Renter> renters;
-    private static ArrayList<Property> properties;
-    private static ArrayList<Landlord> landlords;
-    private static ArrayList<Manager> managers;
+    private ArrayList<Renter> renters;
+    private ArrayList<Property> properties;
+    private ArrayList<Landlord> landlords;
+    private ArrayList<Manager> managers;
 
-    public Data(ArrayList<Renter> renters, ArrayList<Property> properties, ArrayList<Landlord> landlords, ArrayList<Manager> managers) {
-        setRenters(renters);
-        setProperties(properties);
-        setLandlords(landlords);
-        setManagers(managers);
+
+    public Data() {
+        renters = new ArrayList<Renter>();
+        properties = new ArrayList<Property>();
+        landlords = new ArrayList<Landlord>();
+        managers = new ArrayList<Manager>();
     }
 
-    public static ArrayList<Renter> getRenters() {
+    public Data(ArrayList<Renter> renters, ArrayList<Property> properties, ArrayList<Landlord> landlords, ArrayList<Manager> managers) {
+        this.renters = renters;
+        this.properties = properties;
+        this.landlords = landlords;
+        this.managers = managers;
+    }
+
+    public ArrayList<Renter> getRenters() {
         return renters;
     }
 
-    public static ArrayList<Property> getProperties() {
+    public ArrayList<Property> getProperties() {
         return properties;
     }
 
-    public static ArrayList<Landlord> getLandlords() {
+    public ArrayList<Landlord> getLandlords() {
         return landlords;
     }
 
-    public static ArrayList<Manager> getManagers() {
+    public ArrayList<Manager> getManagers() {
         return managers;
     }
 
-    public static void setRenters(ArrayList<Renter> renters) {
-        Data.renters = renters;
+    public void setRenters(ArrayList<Renter> renters) {
+        this.renters = renters;
     }
 
-    public static void setProperties(ArrayList<Property> properties) {
-        Data.properties = properties;
+    public void setProperties(ArrayList<Property> properties) {
+        this.properties = properties;
     }
 
-    public static void setLandlords(ArrayList<Landlord> landlords) {
-        Data.landlords = landlords;
+    public void setLandlords(ArrayList<Landlord> landlords) {
+        this.landlords = landlords;
     }
 
-    public static void setManagers(ArrayList<Manager> managers) {
-        Data.managers = managers;
+    public void setManagers(ArrayList<Manager> managers) {
+        this.managers = managers;
     }
 }

@@ -7,8 +7,10 @@ import java.awt.*;
 import model.*;
 import controller.*;
 public class LoginGUI extends JFrame implements ActionListener, MouseListener {
+    private Data data;
     private String username;
     private String password;
+    private String userType;
     private JLabel generalMessage1;
     private JLabel generalMessage2;
     private JLabel usernameLabel;
@@ -18,13 +20,14 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
     private JTextField usernameTextField;
     private JTextField passwordTextField;
 
-    private JComboBox<String> selectUserComboBox;
+    private JComboBox<String> selectUserTypeComboBox;
 
     private JButton connectButton;
     private JButton guestButton;
 
-    public LoginGUI(ArrayList<Renter> renters, ArrayList<Landlord> landlords, ArrayList<Manager> managers, ArrayList<Property> properties) {
+    public LoginGUI(Data data) {
         super("Connect to Server.");
+        this.data = data;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,15 +38,16 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
      */
     public void setupGUI() {
         String[] typeOfUsers = { "Renter","Landlord", "Manager"};
-        selectUserComboBox = new JComboBox<String>(typeOfUsers);
-        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+
+        //Let's set up the J Components for the LoginGUI.
         generalMessage1 = new JLabel("Welcome to the University of Calgary");
         generalMessage2 = new JLabel("Property Management Software.");
         usernameLabel = new JLabel("Username      :");
         passwordLabel = new JLabel("Password      :");
         selectUserLabel = new JLabel("User Type      :");
-        usernameTextField = new JTextField("User's username");
+        usernameTextField = new JTextField("User's email");
         passwordTextField = new JTextField("User's password");
+        selectUserTypeComboBox = new JComboBox<String>(typeOfUsers);
         guestButton = new JButton("Continue as a Guest");
         connectButton = new JButton("Login.");
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
@@ -56,7 +60,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         JPanel headerPanel = new JPanel();
         JPanel usernamePanel = new JPanel();
         JPanel passwordPanel = new JPanel();
-        JPanel selectUserPanel = new JPanel();
+        JPanel selectUserTypePanel = new JPanel();
         JPanel guestPanel = new JPanel();
         JPanel connectPanel = new JPanel();
 
@@ -65,10 +69,10 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         headerPanel.setLayout(new FlowLayout());
         usernamePanel.setLayout(new FlowLayout());
         passwordPanel.setLayout(new FlowLayout());
-        selectUserPanel.setLayout(new FlowLayout());
+        selectUserTypePanel.setLayout(new FlowLayout());
         guestPanel.setLayout(new FlowLayout());
         connectPanel.setLayout(new FlowLayout());
-        selectUserComboBox.setPreferredSize(new Dimension(175, 25));
+        selectUserTypeComboBox.setPreferredSize(new Dimension(175, 25));
         usernameTextField.setPreferredSize(new Dimension(175, 25));
         passwordTextField.setPreferredSize(new Dimension(175, 25));
         //Add Components to the JPanels.
@@ -79,8 +83,8 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         usernamePanel.add(usernameTextField);
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordTextField);
-        selectUserPanel.add(selectUserLabel);
-        selectUserPanel.add(selectUserComboBox);
+        selectUserTypePanel.add(selectUserLabel);
+        selectUserTypePanel.add(selectUserTypeComboBox);
         guestPanel.add(guestButton);
         connectPanel.add(connectButton);
 
@@ -88,7 +92,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         mainContainer.add(headerPanel);
         mainContainer.add(usernamePanel);
         mainContainer.add(passwordPanel);
-        mainContainer.add(selectUserPanel);
+        mainContainer.add(selectUserTypePanel);
         mainContainer.add(guestPanel);
         mainContainer.add(connectPanel);
 
@@ -102,10 +106,20 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
      * @param e ActionEvent passed on the function actionPerformed
      */
     public void actionPerformed(ActionEvent e) {
-        //Pull the data from the JTextFields username, password and url
-        username = usernameTextField.getText();
-        password = passwordTextField.getText();
-        //Attempt to create a databaseAccess object called database using the inputs provided by the user.
+        if(e.getSource().equals(connectButton)) {
+            //Pull the data from the JTextFields username, password and url
+            username = usernameTextField.getText();
+            password = passwordTextField.getText();
+            userType = selectUserTypeComboBox.getSelectedItem().toString();
+            //Attempt to login using the information given :
+            if(checkUser(username, password, userType)) {
+                JOptionPane.showMessageDialog(null, "You successfully connected to the database with username : "
+                        + username + " and password : "+ password+" and userType : " + userType);
+            } else {
+                JOptionPane.showMessageDialog(null, "There was an error while connecting to the database with username : "
+                        + username + " and password : "+ password+" and userType : " + userType);
+            }
+        }
     }
 
     public void mouseClicked(MouseEvent event) {
@@ -117,6 +131,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         if(event.getSource().equals(passwordTextField)) {
             passwordTextField.setText("");
         }
+
     }
 
     public void mouseExited(MouseEvent event) {
@@ -139,6 +154,39 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         The boolean return value indicates if the user was found or not.
      */
     public boolean checkUser(String email, String password, String userType) {
-        return true;
+        if(userType.equals("Renter")) {
+            for(int i = 0; i < data.getRenters().size(); i++) {
+                if(data.getRenters().get(i).getEmail().equals(email)) {
+                    if(data.getRenters().get(i).getPassword().equals(password)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }else if(userType.equals("Landlord")) {
+            for(int i = 0; i < data.getLandlords().size(); i++) {
+                if(data.getLandlords().get(i).getEmail().equals(email)) {
+                    if(data.getLandlords().get(i).getPassword().equals(password)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        } else  {
+            for(int i = 0; i < data.getManagers().size(); i++) {
+                if(data.getManagers().get(i).getEmail().equals(email)) {
+                    if(data.getManagers().get(i).getPassword().equals(password)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }

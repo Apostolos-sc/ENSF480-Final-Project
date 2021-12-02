@@ -12,12 +12,7 @@ import view.*;
    the GUI Stuff, initializes database connection.
  */
 public class runProgram {
-    private static LoginGUI loginFrame;
-    private static PropertyViewGUI propertyViewFrame;
-    private static ArrayList<Renter> renters = new ArrayList<Renter>();
-    private static ArrayList<Property> properties = new ArrayList<Property>();
-    private static ArrayList<Landlord> landlords = new ArrayList<Landlord>();
-    private static ArrayList<Manager> managers = new ArrayList<Manager>();
+
 
     /**
      * The entry point of application.
@@ -25,9 +20,14 @@ public class runProgram {
      * @param args the input arguments
      */
     public static void main(String[] args) {
+        LoginGUI loginFrame;
+        PropertyViewGUI propertyViewFrame;
+        Data data = new Data();
+
         User user = new Manager(5,"John", "Smith", "j.smith@gmail.com", "tester", "15-06-2015");
+        data.getManagers().add((Manager) user);
         /* start with a LoginGui frame */
-        loginFrame = new LoginGUI(renters, landlords, managers, properties);
+        loginFrame = new LoginGUI(data);
         EventQueue.invokeLater(() -> {
             loginFrame.setVisible(true);
         });
