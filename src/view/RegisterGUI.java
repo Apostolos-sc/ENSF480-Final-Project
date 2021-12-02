@@ -5,7 +5,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
-public class RenterGUI extends JFrame implements ActionListener, MouseListener {
+public class RegisterGUI extends JFrame implements ActionListener, MouseListener {
     private String username;
     private String password;
     private JLabel generalMessage1;
@@ -19,7 +19,7 @@ public class RenterGUI extends JFrame implements ActionListener, MouseListener {
     private JButton connectButton;
     private JButton guestButton;
 
-    public RenterGUI() {
+    public RegisterGUI() {
         super("Connect to Server.");
         setupGUI();
         setSize(600,400);

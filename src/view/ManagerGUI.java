@@ -1,3 +1,4 @@
+package view;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -30,9 +31,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         String options[]= {"Edit","View"};
         //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
         generalMessage1 = new JLabel("Manager System");
-
-        usernameTextField = new JTextField("User's username", 18);
-        passwordTextField = new JTextField("User's password", 18);
 
         editPropertyButton = new JButton("Edit Property");
         editLandlordButton = new JButton("Edit Landlord");
@@ -91,20 +89,11 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
      */
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
-        username = usernameTextField.getText();
-        password = passwordTextField.getText();
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
     }
 
     public void mouseClicked(MouseEvent event) {
 
-        if(event.getSource().equals(usernameTextField)) {
-            usernameTextField.setText("");
-        }
-
-        if(event.getSource().equals(passwordTextField)) {
-            passwordTextField.setText("");
-        }
     }
 
     public void mouseExited(MouseEvent event) {
