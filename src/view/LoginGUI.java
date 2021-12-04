@@ -112,27 +112,32 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
             password = passwordTextField.getText();
             userType = selectUserTypeComboBox.getSelectedItem().toString();
             //Attempt to login using the information given :
-            if(checkUser(username, password, userType)) {
+            User checkedUser = checkUser(username, password, userType);
+            if(checkedUser != null) {
                 JOptionPane.showMessageDialog(null, "You successfully connected to the database with username : "
                         + username + " and password : "+ password+" and userType : " + userType);
                 
                 if(userType.equals("Renter")) {
-                	RegisteredRenterGUI frame = new RegisteredRenterGUI();
+                    this.setVisible(false);
+                	RegisteredRenterGUI frame = new RegisteredRenterGUI((Renter)checkedUser, this);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);
                     });
                 }
                 else if(userType.equals("Landlord")) {
-                	LandlordGUI frame = new LandlordGUI();
+                    this.setVisible(false);
+                	LandlordGUI frame = new LandlordGUI((Landlord)checkedUser, this);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);
                     });
                 }
                 else{
-                	ManagerGUI frame = new ManagerGUI();
+                    this.setVisible(false);
+                	ManagerGUI frame = new ManagerGUI((Manager)checkedUser, this);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);
                     });
+
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "There was an error while connecting to the database with username : "
@@ -172,40 +177,40 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         Will check accordingly our users to see if the user inputted appropriate information
         The boolean return value indicates if the user was found or not.
      */
-    public boolean checkUser(String email, String password, String userType) {
+    public User checkUser(String email, String password, String userType) {
         if(userType.equals("Renter")) {
             for(int i = 0; i < data.getRenters().size(); i++) {
                 if(data.getRenters().get(i).getEmail().equals(email)) {
                     if(data.getRenters().get(i).getPassword().equals(password)) {
-                        return true;
+                        return data.getRenters().get(i);
                     } else {
-                        return false;
+                        return null;
                     }
                 }
             }
-            return false;
+            return null;
         }else if(userType.equals("Landlord")) {
             for(int i = 0; i < data.getLandlords().size(); i++) {
                 if(data.getLandlords().get(i).getEmail().equals(email)) {
                     if(data.getLandlords().get(i).getPassword().equals(password)) {
-                        return true;
+                        return data.getLandlords().get(i);
                     } else {
-                        return false;
+                        return null;
                     }
                 }
             }
-            return false;
+            return null;
         } else  {
             for(int i = 0; i < data.getManagers().size(); i++) {
                 if(data.getManagers().get(i).getEmail().equals(email)) {
                     if(data.getManagers().get(i).getPassword().equals(password)) {
-                        return true;
+                        return data.getManagers().get(i);
                     } else {
-                        return false;
+                        return null;
                     }
                 }
             }
-            return false;
+            return null;
         }
     }
 }

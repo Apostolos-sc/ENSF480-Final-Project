@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
+import model.*;
 
 public class ManagerGUI extends JFrame implements ActionListener, MouseListener {
 
@@ -17,10 +18,14 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private JButton viewLandlordButton;
     private JButton viewRenterButton;
     private JButton logoutButton;
+    private JFrame parentFrame;
+    private Manager mgr;
 
 
-    public ManagerGUI() {
-        super("Connect to Server.");
+    public ManagerGUI(Manager mgr, JFrame parentFrame) {
+        super("Manager System. Logged in as " + mgr.getFirstName() + " "+ mgr.getLastName() + ".");
+        this.mgr= mgr;
+        this.parentFrame = parentFrame;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +37,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         
     	String options[]= {"Edit","View"};
     	//Let's set up the JLabels and the JTextFields and the JButton for our GUI.
-        generalMessage1 = new JLabel("Manager System");
+        generalMessage1 = new JLabel("Choose one of the Options : ");
 
 //        usernameTextField = new JTextField("User's username", 18);
 //        passwordTextField = new JTextField("User's password", 18);
@@ -58,7 +63,9 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         viewRenterButton.addActionListener(this);
         
         logoutButton.addActionListener(e -> {
-            super.dispose();
+            this.setVisible(false);
+            parentFrame.setVisible(true);
+            this.dispose();
         });
         //Create the JPanels.
         JPanel mainContainer = new JPanel();

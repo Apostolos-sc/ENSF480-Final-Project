@@ -22,9 +22,13 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     private JButton payButton;
     private JButton messageButton;
     private JButton inboxButton;
+    private Renter renter;
+    private Frame parentFrame;
 
-    public RegisteredRenterGUI() {
-        super("Connect to Server.");
+    public RegisteredRenterGUI(Renter renter, Frame parentFrame) {
+        super("Registered Renter System. Logged in as "+ renter.getFirstName() + " " + renter.getLastName() + ".");
+        this.renter = renter;
+        this.parentFrame = parentFrame;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,8 +38,8 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
      */
     public void setupGUI() {
         //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
-        generalMessage1 = new JLabel("Registered Renter University of Calgary");
-        generalMessage2 = new JLabel("Property Management Software.");
+        generalMessage1 = new JLabel("Property Management Software.");
+        generalMessage2 = new JLabel("Please select one of the options.");
         //usernameLabel = new JLabel("Username      :");
         //passwordLabel = new JLabel("Password      :");
         

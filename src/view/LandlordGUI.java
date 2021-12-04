@@ -18,9 +18,13 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
     private JButton editProfile;
     private JButton registerProperty;
     private JButton logout;
+    private Landlord landlord;
+    private Frame parentFrame;
 
-    public LandlordGUI() {
-        super("Connect to Server.");
+    public LandlordGUI(Landlord landlord, JFrame parentFrame) {
+        super("Landlord System. Logged in as " + landlord.getFirstName() + " " + landlord.getLastName() + ".");
+        this.landlord = landlord;
+        this.parentFrame = parentFrame;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -104,11 +108,9 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         	
         }
         if(e.getSource().equals(logout)) {
-        	super.dispose();
-//        	LoginGUI loginFrame = new LoginGUI();
-//            EventQueue.invokeLater(() -> {
-//                loginFrame.setVisible(true);
-//            });
+            this.setVisible(false);
+            parentFrame.setVisible(true);
+            this.dispose();
         }
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
     }
