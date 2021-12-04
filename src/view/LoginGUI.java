@@ -115,6 +115,25 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
             if(checkUser(username, password, userType)) {
                 JOptionPane.showMessageDialog(null, "You successfully connected to the database with username : "
                         + username + " and password : "+ password+" and userType : " + userType);
+                
+                if(userType.equals("Renter")) {
+                	RegisteredRenterGUI frame = new RegisteredRenterGUI();
+                    EventQueue.invokeLater(() -> {
+                        frame.setVisible(true);
+                    });
+                }
+                else if(userType.equals("Landlord")) {
+                	LandlordGUI frame = new LandlordGUI();
+                    EventQueue.invokeLater(() -> {
+                        frame.setVisible(true);
+                    });
+                }
+                else{
+                	ManagerGUI frame = new ManagerGUI();
+                    EventQueue.invokeLater(() -> {
+                        frame.setVisible(true);
+                    });
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "There was an error while connecting to the database with username : "
                         + username + " and password : "+ password+" and userType : " + userType);
@@ -190,3 +209,4 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         }
     }
 }
+
