@@ -16,7 +16,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private JButton viewPropertyButton;
     private JButton viewLandlordButton;
     private JButton viewRenterButton;
-    private JButton backButton;
+    private JButton logoutButton;
 
 
     public ManagerGUI() {
@@ -45,7 +45,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         viewLandlordButton = new JButton("View Landlord");
         viewRenterButton = new JButton("View Renter");
         
-        backButton = new JButton("Back");
+        logoutButton = new JButton("Logout");
 
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
 
@@ -57,7 +57,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         viewLandlordButton.addActionListener(this);
         viewRenterButton.addActionListener(this);
         
-        backButton.addActionListener(e -> {
+        logoutButton.addActionListener(e -> {
             super.dispose();
         });
         //Create the JPanels.
@@ -86,7 +86,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         viewPanel.add(viewLandlordButton);
         viewPanel.add(viewPropertyButton);
         
-        backPanel.add(backButton);
+        backPanel.add(logoutButton);
         //Add the JPanels to the main JPanel
         mainContainer.add(headerPanel);
         mainContainer.add(editPanel);
