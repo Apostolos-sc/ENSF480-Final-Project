@@ -1,5 +1,4 @@
 package view;
-
 import model.*;
 import java.awt.event.*;
 import java.io.*;
@@ -85,23 +84,31 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
         if(e.getSource().equals(editProperty)) {
-        	
+        	LandlordEditPropertyGUI loginFrame = new LandlordEditPropertyGUI();
+          EventQueue.invokeLater(() -> {
+              loginFrame.setVisible(true);
+          });
         	
         }
         if(e.getSource().equals(editProfile)) {
-        	 
-        	
+        	LandlordEditProfileGUI loginFrame = new LandlordEditProfileGUI();
+            EventQueue.invokeLater(() -> {
+                loginFrame.setVisible(true);
+            });
         }
         if(e.getSource().equals(registerProperty)) {
-        	
+        	RegisterProperty loginFrame = new RegisterProperty();
+            EventQueue.invokeLater(() -> {
+                loginFrame.setVisible(true);
+            });
         	
         }
         if(e.getSource().equals(logout)) {
         	super.dispose();
-        	LoginGUI loginFrame = new LoginGUI();
-            EventQueue.invokeLater(() -> {
-                loginFrame.setVisible(true);
-            });
+//        	LoginGUI loginFrame = new LoginGUI();
+//            EventQueue.invokeLater(() -> {
+//                loginFrame.setVisible(true);
+//            });
         }
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
     }
