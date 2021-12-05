@@ -1,11 +1,6 @@
 package controller;
 
 /**
- @author Harsh Sharma <a href="mailto:harshit.sharma@ucalgary.ca">harshit.sharma@ucalgary.ca </a>
- Nuha Shaikh <a href="mailto:nuha.shaikh1@ucalgary.ca">nuha.shaikh1@ucalgary.ca</a>
- Apostolos Scondrianis <a href="mailto:"> </a>
- Dave Sharma <a href= "mailto:"> </a>
-
  @version 1.0
  @since  1.0
   * DatabaseAccess.java accesses and updates the SQL inventory database. It has data members DBURL to specify
@@ -15,10 +10,11 @@ package controller;
 
 import java.sql.*;
 
-public class SingletonDatabaseAccess {
+public class SingletonDatabaseAccess{
+    private static SingletonDatabaseAccess onlyInstance;
     private String DBURL; //store the database url information, no setters
-    private String USERNAME; //store the user's account username
-    private String PASSWORD; //store the user's account password
+    private String USERNAME; //store the user's account username -> have to initialize it to one of ours
+    private String PASSWORD; //store the user's account password -> have to initialize it to one of ours
     private static Connection dbConnect; //connection data member to establish connection to interact with database
 
     public SingletonDatabaseAccess() {
@@ -32,6 +28,8 @@ public class SingletonDatabaseAccess {
      *
      */
     public void SingletonDatabaseAccess (String DBURL, String USERNAME, String PASSWORD) {
+        //dont have to take user input once set to default value for password, username,
+        // and DBURL
         this.DBURL = DBURL;
         this.USERNAME = USERNAME;
         this.PASSWORD = PASSWORD;
@@ -63,6 +61,14 @@ public class SingletonDatabaseAccess {
     public String getPassword() {
         return this.PASSWORD;
     }
+    
+    //design pattern Singleton requirement
+    public static SingletonDatabaseAccess getOnlyInstance(){
+		if(onlyInstance == null){
+			onlyInstance = new SingletonDatabaseAccess();
+		}
+		return onlyInstance;
+	}
 
     /**
      * Getter method for database connection
