@@ -17,6 +17,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
     private JButton editProperty;
     private JButton editProfile;
     private JButton registerProperty;
+    private JButton inboxButton;
     private JButton logout;
     private Landlord landlord;
     private Frame parentFrame;
@@ -41,10 +42,12 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         editProfile = new JButton("Edit Profile");
         registerProperty = new JButton("Register Property");
         logout = new JButton("Logout");
+        inboxButton = new JButton("Inbox");
         
         editProperty.addActionListener(this);
         editProfile.addActionListener(this);
         registerProperty.addActionListener(this);
+        inboxButton.addActionListener(this);
         logout.addActionListener(this);
         //Create the JPanels.
         JPanel mainContainer = new JPanel();
@@ -52,6 +55,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         JPanel editPropertyPanel = new JPanel();
         JPanel editProfilePanel = new JPanel();
         JPanel registerPropertyPanel = new JPanel();
+        JPanel inboxPanel = new JPanel();
         JPanel logoutPanel = new JPanel();
         
         //Set the Layouts for the JPanels
@@ -60,6 +64,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         editPropertyPanel.setLayout(new FlowLayout());
         editProfilePanel.setLayout(new FlowLayout());
         registerPropertyPanel.setLayout(new FlowLayout());
+        inboxPanel.setLayout(new FlowLayout());
         logoutPanel.setLayout(new FlowLayout());
         //Add Components to the JPanels.
 
@@ -68,6 +73,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         editPropertyPanel.add(editProperty);
         editProfilePanel.add(editProfile);
         registerPropertyPanel.add(registerProperty);
+        inboxPanel.add(inboxButton);
         logoutPanel.add(logout);
         
         //Add the JPanels to the main JPanel
@@ -75,6 +81,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         mainContainer.add(editPropertyPanel);
         mainContainer.add(editProfilePanel);
         mainContainer.add(registerPropertyPanel);
+        mainContainer.add(inboxPanel);
         mainContainer.add(logoutPanel);
         //Add the main panel to the JFrame.
         this.add(mainContainer);
@@ -106,6 +113,12 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
                 loginFrame.setVisible(true);
             });
         	
+        }
+        if(e.getSource().equals(inboxButton)) {
+        	Inbox loginFrame = new Inbox();
+            EventQueue.invokeLater(() -> {
+                loginFrame.setVisible(true);
+            });
         }
         if(e.getSource().equals(logout)) {
             this.setVisible(false);

@@ -18,11 +18,13 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
     private JLabel furnishedMessage;
     private JLabel addressMessage;
     private JLabel quadrantMessage;
+    private JLabel priceMessage;
 
     private JTextField propertyIDTextField;
     private JTextField propertyTypeTextField;
     private JTextField bathroomsTextField;
     private JTextField bedroomsTextField;
+    private JTextField priceTextField;
     
     private JComboBox<String> furnishedComboField;
     
@@ -54,7 +56,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         furnishedMessage = new JLabel("Furnished: ");
         addressMessage = new JLabel("Address: ");
         quadrantMessage = new JLabel("Quadrant: ");
-
+        priceMessage = new JLabel("Price:  ");
         //usernameLabel = new JLabel("Username      :");
         //passwordLabel = new JLabel("Password      :");
         
@@ -62,6 +64,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         propertyTypeTextField = new JTextField("Property Type", 18);
         bathroomsTextField = new JTextField("Bathrooms", 18);
         bedroomsTextField = new JTextField("Bedrooms", 18);
+        priceTextField = new JTextField("Price", 18);
         
         String options[] = {"Furnished","Not Furnished"};
         furnishedComboField = new JComboBox<String>(options);
@@ -85,7 +88,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         propertyTypeTextField.addMouseListener(this);
         bathroomsTextField.addMouseListener(this);
         bedroomsTextField.addMouseListener(this);
-        
+        priceTextField.addMouseListener(this);
         
         addressTextField.addMouseListener(this);
         quadrantTextField.addMouseListener(this);
@@ -98,6 +101,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         JPanel BBPanel = new JPanel();
         JPanel furnishing = new JPanel();
         JPanel AQPanel = new JPanel();
+        JPanel pricePanel = new JPanel();
         JPanel logoutPanel = new JPanel();
         //Set the Layouts for the JPanels
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
@@ -106,6 +110,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         BBPanel.setLayout(new FlowLayout());
         furnishing.setLayout(new FlowLayout());
         AQPanel.setLayout(new FlowLayout());
+        pricePanel.setLayout(new FlowLayout());
         logoutPanel.setLayout(new FlowLayout());
        
         //Add Components to the JPanels.
@@ -127,6 +132,9 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         AQPanel.add(quadrantTextField);
         furnishing.add(furnishedMessage);
         furnishing.add(furnishedComboField);
+        
+        pricePanel.add(priceMessage);
+        pricePanel.add(priceTextField);
         logoutPanel.add(backButton);
         logoutPanel.add(registerButton);
         //Add the JPanels to the main JPanel
@@ -135,6 +143,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         mainContainer.add(BBPanel);
         mainContainer.add(AQPanel);
         mainContainer.add(furnishing);
+        mainContainer.add(pricePanel);
         mainContainer.add(logoutPanel);
         //Add the main panel to the JFrame.
         this.add(mainContainer);
@@ -203,6 +212,9 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
 
         if(event.getSource().equals(quadrantTextField)) {
         	quadrantTextField.setText("");
+        }
+        if(event.getSource().equals(priceTextField)) {
+        	priceTextField.setText("");
         }
     }
 

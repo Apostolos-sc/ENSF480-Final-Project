@@ -144,6 +144,13 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
                         + username + " and password : "+ password+" and userType : " + userType);
             }
         }
+        if(e.getSource().equals(guestButton)) {
+        	this.setVisible(false);
+        	UnregisteredRenterGUI frame = new UnregisteredRenterGUI(this);
+            EventQueue.invokeLater(() -> {
+                frame.setVisible(true);
+            });
+        }
     }
 
     public void mouseClicked(MouseEvent event) {

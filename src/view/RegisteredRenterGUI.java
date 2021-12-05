@@ -6,6 +6,10 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Desktop;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class RegisteredRenterGUI extends JFrame implements ActionListener, MouseListener {
     private String subDescription;
@@ -22,6 +26,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     private JButton payButton;
     private JButton messageButton;
     private JButton inboxButton;
+    private JButton logoutButton;
     private Renter renter;
     private Frame parentFrame;
 
@@ -57,12 +62,18 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         payButton = new JButton("Pay");
         messageButton = new JButton("Email Message");
         inboxButton = new JButton("Inbox");
+        logoutButton = new JButton("Logout");
         
         subscribeMenuButton.addActionListener(this);
         viewPropertyButton.addActionListener(this);
         payButton.addActionListener(this);
         messageButton.addActionListener(this);
         inboxButton.addActionListener(this);
+        logoutButton.addActionListener(e -> {
+            this.setVisible(false);
+            parentFrame.setVisible(true);
+            this.dispose();
+        });
         //Create the JPanels.
         JPanel mainContainer = new JPanel();
         JPanel headerPanel = new JPanel();
@@ -71,6 +82,8 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         JPanel payPanel = new JPanel();
         JPanel messagePanel = new JPanel();
         JPanel inboxPanel = new JPanel();
+        JPanel logoutPanel = new JPanel();
+        
         //Set the Layouts for the JPanels
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
         headerPanel.setLayout(new FlowLayout());
@@ -79,6 +92,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         payPanel.setLayout(new FlowLayout());
         messagePanel.setLayout(new FlowLayout());
         inboxPanel.setLayout(new FlowLayout());
+        logoutPanel.setLayout(new FlowLayout());
         //Add Components to the JPanels.
 
         headerPanel.add(generalMessage1);
@@ -88,7 +102,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         payPanel.add(payButton);
         messagePanel.add(messageButton);
         inboxPanel.add(inboxButton);
-        
+        logoutPanel.add(logoutButton);
         //Add the JPanels to the main JPanel
         mainContainer.add(headerPanel);
         mainContainer.add(subscribePanel);
@@ -96,6 +110,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         mainContainer.add(payPanel);
         mainContainer.add(messagePanel);
         mainContainer.add(inboxPanel);
+        mainContainer.add(logoutPanel);
         //Add the main panel to the JFrame.
         this.add(mainContainer);
     }
@@ -128,7 +143,16 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
 
         }
         if(e.getSource().equals(payButton)) {
-        	
+        	Desktop desk = Desktop.getDesktop();
+            
+            // now we enter our URL that we want to open in our
+            // default browser
+            try {
+				desk.browse(new URI("https://www.paypal.com/ca/home"));
+			} catch (IOException | URISyntaxException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
         if(e.getSource().equals(viewPropertyButton)) {
         	/*
@@ -136,7 +160,6 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         	 
         	Property p1= new Property(1, "Apartment", 3, 2, true, "123 University Rd", "NW","Available");
         	User u1= new User("John","Bob", "JohnBob123@gmail.com","password", "June 5,1990");
-
         	PropertyViewGUI loginFrame = new PropertyViewGUI(p1,u1);
             EventQueue.invokeLater(() -> {
                 loginFrame.setVisible(true);
