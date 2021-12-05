@@ -133,7 +133,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
                 }
                 else{
                     this.setVisible(false);
-                	ManagerGUI frame = new ManagerGUI((Manager)checkedUser, this);
+                	ManagerGUI frame = new ManagerGUI((Manager)checkedUser, this, data);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);
                     });

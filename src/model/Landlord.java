@@ -11,6 +11,14 @@ public class Landlord extends User {
         this.landlordID = landlordID;
     }
 
+    public int getLandlordID() {
+        return landlordID;
+    }
+
+    public void setLandlordID(int landlordID) {
+        this.landlordID = landlordID;
+    }
+
     public void addProperty(Property property) {
         this.properties.add(property);
     }
