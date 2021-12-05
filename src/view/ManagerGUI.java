@@ -113,6 +113,29 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
 //        username = usernameTextField.getText();
 //        password = passwordTextField.getText();
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
+	    
+    	if(e.getSource().equals(editRenterButton)) {
+	    	
+	    }
+	    if(e.getSource().equals(editLandlordButton)) {
+	    	
+	    }
+	    if(e.getSource().equals(editPropertyButton)) {
+	    	
+	    }
+	    if(e.getSource().equals(viewRenterButton)) {
+	    	
+	    }
+	    if(e.getSource().equals(viewLandlordButton)) {
+	    	
+	    }
+	    if(e.getSource().equals(viewPropertyButton)) {
+	    	
+//	    	PropertyViewGUI loginFrame = new PropertyViewGUI(Property prop, User user);
+//            EventQueue.invokeLater(() -> {
+//                loginFrame.setVisible(true);
+//            });
+	    }
     }
 
     public void mouseClicked(MouseEvent event) {
