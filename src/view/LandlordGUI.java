@@ -95,14 +95,14 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
         if(e.getSource().equals(editProperty)) {
-        	LandlordEditPropertyGUI loginFrame = new LandlordEditPropertyGUI();
+        	LandlordEditPropertyGUI loginFrame = new LandlordEditPropertyGUI(landlord);
           EventQueue.invokeLater(() -> {
               loginFrame.setVisible(true);
           });
         	
         }
         if(e.getSource().equals(editProfile)) {
-        	LandlordEditProfileGUI loginFrame = new LandlordEditProfileGUI();
+        	LandlordEditProfileGUI loginFrame = new LandlordEditProfileGUI(landlord);
             EventQueue.invokeLater(() -> {
                 loginFrame.setVisible(true);
             });
