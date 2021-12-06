@@ -11,7 +11,8 @@ import java.awt.*;
 
 
 public class SearchPropertyGUI extends JFrame implements ActionListener, MouseListener {
-    private JTable table;
+	
+	private JTable table;
 	
     private String data[][];
 	private JLabel generalMessage1;
@@ -25,6 +26,7 @@ public class SearchPropertyGUI extends JFrame implements ActionListener, MouseLi
     private JTextField passwordTextField;
 
     private JButton exitButton;
+    private JButton messageButton;
     
     private Renter renter;
 
@@ -56,8 +58,8 @@ public class SearchPropertyGUI extends JFrame implements ActionListener, MouseLi
         //passwordTextField.addMouseListener(this);
         //connectButton.addActionListener(this);
         exitButton = new JButton("Exit");
-       
-        String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing"};
+        messageButton = new JButton("Message");
+        String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing","Property Type","Property ID"};
            
         
         table =new JTable(data,columns);
@@ -67,6 +69,8 @@ public class SearchPropertyGUI extends JFrame implements ActionListener, MouseLi
             this.setVisible(false);
             this.dispose();
         });
+        messageButton.addActionListener(this);
+        
         //Create the JPanels.
         JPanel mainContainer = new JPanel();
         JPanel headerPanel = new JPanel();
@@ -82,6 +86,7 @@ public class SearchPropertyGUI extends JFrame implements ActionListener, MouseLi
         headerPanel.add(generalMessage1);
         headerPanel.add(generalMessage2);
         bottomPanel.add(exitButton);
+        bottomPanel.add(messageButton);
         //tablePanel.add(exitButton);
         //Add the JPanels to the main JPanel
         mainContainer.add(headerPanel);
@@ -98,7 +103,12 @@ public class SearchPropertyGUI extends JFrame implements ActionListener, MouseLi
      */
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
-
+    	if(e.getSource().equals(messageButton)) {
+    		Reply frame = new Reply();
+            EventQueue.invokeLater(() -> {
+                frame.setVisible(true);
+            });
+    	}
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
     }
 
@@ -111,6 +121,7 @@ public class SearchPropertyGUI extends JFrame implements ActionListener, MouseLi
         if(event.getSource().equals(passwordTextField)) {
             passwordTextField.setText("");
         }
+   
     }
 
     public void mouseExited(MouseEvent event) {
