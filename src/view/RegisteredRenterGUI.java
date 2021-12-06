@@ -1,6 +1,7 @@
 package view;
 
 import model.*;
+import controller.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -56,7 +57,12 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         //usernameTextField.addMouseListener(this);
         //passwordTextField.addMouseListener(this);
         //connectButton.addActionListener(this);
-        subDescription="Unsubscribed";
+        if(renter.isSubscribed()) {
+           subDescription="Subscribed";
+        }
+        else {
+            subDescription="Unsubscribed";
+        }
         subscribeMenuButton = new JToggleButton(subDescription);
         viewPropertyButton = new JButton("View Property");
         payButton = new JButton("Pay");
@@ -126,12 +132,15 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         	if(subDescription=="Unsubscribed") {
         		subDescription="Subscribed";
         		subscribeMenuButton.setText(subDescription);
+        		renter.setSubscribed(true);
         	}
         	else {
         		System.out.println("Test");
 
         		subDescription="Unsubscribed";
         		subscribeMenuButton.setText(subDescription);
+        		renter.setSubscribed(false);
+
         	}
         	
         }
