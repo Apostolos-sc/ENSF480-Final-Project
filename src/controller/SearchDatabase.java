@@ -7,7 +7,7 @@ import model.Property;
 public class SearchDatabase {
     private Connection dbConnect;
 
-    SearchDatabase(Connection dbConnection){
+    public SearchDatabase(Connection dbConnection){
         this.dbConnect= dbConnection;
     }
 
