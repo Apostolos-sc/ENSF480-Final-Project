@@ -44,8 +44,8 @@ public class SearchDatabase {
 
     }
 
-    //method returns all properties in property table
-    public ArrayList<Property> searchItem(String table){
+    //method returns all rows from property table
+    public ArrayList<Property> getAllProperties(String table){
         ArrayList<Property> properties = new ArrayList<>();
 
         try (Statement stmt = dbConnect.createStatement()) {
