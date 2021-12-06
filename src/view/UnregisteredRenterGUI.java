@@ -1,6 +1,7 @@
 package view;
 
 import model.*;
+import controller.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -20,7 +21,8 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
     private JLabel bathroomLabel;
     private JLabel quadrantLabel;
     private JLabel furnishingLabel;
-
+    private JLabel propertyTypeLabel;
+    
     private JTextField usernameTextField;
     private JTextField passwordTextField;
 
@@ -29,6 +31,7 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
     private JComboBox<String> quadrant;
     private JComboBox<String> price;
     private JComboBox<String> furnishing;
+    private JComboBox<String> propertyType;
     
     private JButton searchButton;
     private JButton exitButton;
@@ -55,6 +58,7 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         bathroomLabel = new JLabel("Bathroom:");
         quadrantLabel = new JLabel("Quadrant:");
         furnishingLabel = new JLabel("Furnishing:");
+        propertyTypeLabel = new JLabel("Property Type");
         //usernameLabel = new JLabel("Username      :");
         //passwordLabel = new JLabel("Password      :");
         
@@ -74,7 +78,8 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         String bathroomOptions[]= {"1","2","3","4","5"};
         String quadrantOptions[]= {"NW","NE","SW","SE"};
         String furnishingOptions[]= {"Furnished","Unfurnished"};
-
+        String propertyOptions[]= {"Apartment","Attatched","Detatched","Townhouse"};
+        
         String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing"};
         
         bedrooms = new JComboBox<String>(bedroomOptions);
@@ -82,6 +87,7 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         quadrant = new JComboBox<String>(quadrantOptions);
         //price = new JComboBox<String>(priceOptions);
         furnishing = new JComboBox<String>(furnishingOptions);
+        propertyType = new JComboBox<String>(propertyOptions);
         
         String tmp[][]={{"$1000","101 Uni","1","5","NW","Furnished"},{"$1500","101 Mall","2","1","SW","Unfurnished"}};
         data=tmp;
@@ -119,6 +125,8 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         topPanel.add(quadrant);
         topPanel.add(furnishingLabel);
         topPanel.add(furnishing);
+        topPanel.add(propertyTypeLabel);
+        topPanel.add(propertyType);
         topPanel.add(searchButton);
         topPanel.add(exitButton);
         bottomPanel.add(searchAllButton);
@@ -138,18 +146,96 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
      */
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
-        String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing"};
+        String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing","Property Type"};
 
         if(e.getSource().equals(searchButton)) {
-	    		
         	
-        }
-        if(e.getSource().equals(searchAllButton)) {
-            String tmp[][]={{"$1000","101 Uni","1","5","NW","Furnished"},{"$1500","101 Mall","2","1","SW","Unfurnished"}};
-            SearchPropertyGUI loginFrame = new SearchPropertyGUI(tmp);
+        	int noOfBed = Integer.valueOf(bedrooms.getSelectedItem().toString());
+        	int noOfBath = Integer.valueOf(bathrooms.getSelectedItem().toString());
+        	String furnish=furnishing.getSelectedItem().toString();
+        	boolean furnishingValue;
+        	if(furnish=="Furnished") {
+        		furnishingValue=true;
+        	}
+        	else {
+        		furnishingValue=false;
+        	}
+        	String quadrantValue=quadrant.getSelectedItem().toString();
+        	String typeOfProperty= propertyType.getSelectedItem().toString();
+        	
+        	System.out.println(noOfBed+" "+noOfBath+" "+furnish+" "+quadrantValue+" "+typeOfProperty);
+        	
+        	ArrayList<Property> array= searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue);
+        	
+        	String properties [][]=new String[array.size()][7];
+        	
+        	for(int i=0;i<array.size();i++) {
+        		properties[i][0]="";  //???? Price ??????
+        		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
+        		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
+        		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
+        		properties[i][4]=array.get(i).getPropertyLocation().getQuadrant();
+        		boolean furnishedCheck=array.get(i).getPropertyDetails().isFurnished();
+        		String furnishToString = new String();
+        		if(furnishedCheck==true) {
+        			furnishToString="Furnished";
+        		}
+        		else {
+        			furnishToString="Unfurnished";
+        		}
+        		properties[i][5]=furnishToString;
+        		properties[i][6]=array.get(i).getPropertyDetails().getPropertyType();
+        	}
+        	
+        	if(array.size()==0) {
+            	JOptionPane.showMessageDialog(null, "Could not find any such property. Try Again!");
+        	}
+        	else {
+        	 SearchPropertyGUI loginFrame = new SearchPropertyGUI(properties);
 	          EventQueue.invokeLater(() -> {
 	              loginFrame.setVisible(true);
 	          });
+        	}
+        }
+        if(e.getSource().equals(searchAllButton)) {
+            //String tmp[][]={{"$1000","101 Uni","1","5","NW","Furnished"},{"$1500","101 Mall","2","1","SW","Unfurnished"}};
+//            SearchPropertyGUI loginFrame = new SearchPropertyGUI(tmp);
+//	          EventQueue.invokeLater(() -> {
+//	              loginFrame.setVisible(true);
+//	          });
+        	
+        	
+//			ArrayList<Property> array= searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue);
+//        	
+//        	String properties [][]=new String[array.size()][7];
+//        	
+//        	for(int i=0;i<array.size();i++) {
+//        		properties[i][0]="";  //???? Price ??????
+//        		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
+//        		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
+//        		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
+//        		properties[i][4]=array.get(i).getPropertyLocation().getQuadrant();
+//        		boolean furnishedCheck=array.get(i).getPropertyDetails().isFurnished();
+//        		String furnishToString = new String();
+//        		if(furnishedCheck==true) {
+//        			furnishToString="Furnished";
+//        		}
+//        		else {
+//        			furnishToString="Unfurnished";
+//        		}
+//        		properties[i][5]=furnishToString;
+//        		properties[i][6]=array.get(i).getPropertyDetails().getPropertyType();
+//        	}
+//        	
+//        	if(array.size()==0) {
+//            	JOptionPane.showMessageDialog(null, "Could not find any such property. Try Again!");
+//        	}
+//        	else {
+//        	 SearchPropertyGUI loginFrame = new SearchPropertyGUI(properties);
+//	          EventQueue.invokeLater(() -> {
+//	              loginFrame.setVisible(true);
+//	          });
+//        	}
         }
 
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.

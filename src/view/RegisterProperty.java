@@ -12,21 +12,22 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
     private JLabel generalMessage1;
     private JLabel generalMessage2;
     private JLabel propertyIDMessage;
-    private JLabel propertyTypeMessage;
     private JLabel bathroomsMessage;
     private JLabel bedroomsMessage;
     private JLabel furnishedMessage;
     private JLabel addressMessage;
     private JLabel quadrantMessage;
     private JLabel priceMessage;
+    private JLabel propertyTypeLabel;
 
     private JTextField propertyIDTextField;
-    private JTextField propertyTypeTextField;
     private JTextField bathroomsTextField;
     private JTextField bedroomsTextField;
     private JTextField priceTextField;
     
     private JComboBox<String> furnishedComboField;
+    private JComboBox<String> propertyType;
+
     
     private JTextField addressTextField;
     private JTextField quadrantTextField;
@@ -50,24 +51,26 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         generalMessage1 = new JLabel("Edit Property University of Calgary");
         generalMessage2 = new JLabel("Property Management Software.");
         propertyIDMessage = new JLabel("Property ID: ");
-        propertyTypeMessage = new JLabel("Property Type :");
         bathroomsMessage = new JLabel("Number Bathrooms: ");
         bedroomsMessage = new JLabel("Number Bedrooms: ");
         furnishedMessage = new JLabel("Furnished: ");
         addressMessage = new JLabel("Address: ");
         quadrantMessage = new JLabel("Quadrant: ");
         priceMessage = new JLabel("Price:  ");
+        propertyTypeLabel = new JLabel("Property Type:  ");
         //usernameLabel = new JLabel("Username      :");
         //passwordLabel = new JLabel("Password      :");
         
         propertyIDTextField = new JTextField("Property ID", 18);
-        propertyTypeTextField = new JTextField("Property Type", 18);
         bathroomsTextField = new JTextField("Bathrooms", 18);
         bedroomsTextField = new JTextField("Bedrooms", 18);
         priceTextField = new JTextField("Price", 18);
         
         String options[] = {"Furnished","Not Furnished"};
         furnishedComboField = new JComboBox<String>(options);
+        
+        String propertyOptions[]= {"Apartment","Attatched","Detatched","Townhouse"};
+        propertyType =new JComboBox<String>(propertyOptions);
         
         addressTextField = new JTextField("Address", 18);
         quadrantTextField = new JTextField("Quadrant", 18);
@@ -85,7 +88,6 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         backButton.addActionListener(this);
         registerButton.addActionListener(this);
         propertyIDTextField.addMouseListener(this);
-        propertyTypeTextField.addMouseListener(this);
         bathroomsTextField.addMouseListener(this);
         bedroomsTextField.addMouseListener(this);
         priceTextField.addMouseListener(this);
@@ -119,8 +121,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         headerPanel.add(generalMessage2);
         propertyPanel.add(propertyIDMessage);
         propertyPanel.add(propertyIDTextField);
-        propertyPanel.add(propertyTypeMessage);
-        propertyPanel.add(propertyTypeTextField);
+
         BBPanel.add(bedroomsMessage);
         BBPanel.add(bedroomsTextField);
         BBPanel.add(bathroomsMessage);
@@ -135,6 +136,9 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         
         pricePanel.add(priceMessage);
         pricePanel.add(priceTextField);
+        pricePanel.add(propertyTypeLabel);
+        pricePanel.add(propertyType);
+        
         logoutPanel.add(backButton);
         logoutPanel.add(registerButton);
         //Add the JPanels to the main JPanel
@@ -162,11 +166,10 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         }
         if(e.getSource().equals(registerButton)) {
         	
-            if(isInteger(propertyIDTextField.getText())&&propertyTypeTextField.getText()!=""&&isInteger(bathroomsTextField.getText())
+            if(isInteger(propertyIDTextField.getText())&&isInteger(bathroomsTextField.getText())
             		&&isInteger(bedroomsTextField.getText())&&addressTextField.getText()!=""&&quadrantTextField.getText()!="") {
             	
             	int propertyID = Integer.valueOf(propertyIDTextField.getText());
-            	String propertyType = propertyTypeTextField.getText();
             	int bathrooms = Integer.valueOf(bathroomsTextField.getText());
             	int bedrooms = Integer.valueOf(bedroomsTextField.getText());
             	String address = addressTextField.getText();
@@ -180,6 +183,8 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
                 		furnished=false;
                 	} 
                 	
+               String propertyTypeValue=propertyType.getSelectedItem().toString();
+               
                 	JOptionPane.showMessageDialog(null, "Property was registered");
             }
             else {
@@ -196,9 +201,6 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         	propertyIDTextField.setText("");
         }
 
-        if(event.getSource().equals(propertyTypeTextField)) {
-        	propertyTypeTextField.setText("");
-        }
         if(event.getSource().equals(bathroomsTextField)) {
         	bathroomsTextField.setText("");
         }
