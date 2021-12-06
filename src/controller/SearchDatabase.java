@@ -17,9 +17,6 @@ public class SearchDatabase {
         ArrayList<Property> properties= new ArrayList<>();
         
         try(Statement stmt = dbConnect.createStatement()) {
-            // Gets all the information of all the furniture before it will be removed from
-            // inventory
-    
                 ResultSet results = stmt.executeQuery("SELECT *FROM " + table + " WHERE typeofProperty= '" + typeofProperty + "'"
                         + " WHERE noOfBed= '" + noOfBed + "'" + " WHERE noOfBath= '" + noOfBath + "'"
                         + " WHERE isFurnished= '" + isFurnished + "'" + " WHERE quadrant= '" + quadrant+ "'");
@@ -38,6 +35,38 @@ public class SearchDatabase {
 
             if (i==0) {
                 throw new IllegalArgumentException("No such property exists");
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+        return properties;
+
+    }
+
+    //method returns all properties in property table
+    public ArrayList<Property> searchItem(String table){
+        ArrayList<Property> properties = new ArrayList<>();
+
+        try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt
+                    .executeQuery("SELECT *FROM " + table);
+            int i = 0;
+            while (results.next()) {// takes into account number of rows that were returned by the query
+                ResultSetMetaData rsmd = results.getMetaData();
+                // propertyID , propertyType, noBathrooms, noBedrooms, isFurnished, address,
+                // quadrant, status
+                Property prop = new Property(results.getInt(1), results.getString(2), results.getInt(2),
+                        results.getInt(3), results.getBoolean(4), results.getString(5),
+                        results.getString(6), results.getString(7));
+                properties.add(prop);
+                i++;
+            }
+            stmt.close();
+            results.close();
+
+            if (i == 0) {
+                throw new IllegalArgumentException("There are currently no properties in the system");
             }
 
         } catch (SQLException e) {
