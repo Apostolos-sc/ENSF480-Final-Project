@@ -1,7 +1,8 @@
 package view;
 
-import model.*;
 import java.awt.event.*;
+import controller.*;
+import model.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
@@ -15,9 +16,11 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
     private JLabel usernameLabel;
     private JLabel senderLabel;
     private JLabel messageLabel;
+    private JLabel propertyIDLabel;
 
     private JTextField usernameTextField;
     private JTextField senderTextField;
+    private JTextField propertyIDTextField;
 
     private JButton send;
     private JButton cancel;
@@ -38,13 +41,14 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
         generalMessage2 = new JLabel("Property Management Software.");
         usernameLabel = new JLabel("Email to     :");
         senderLabel = new JLabel("Email from     :");
-
+        propertyIDLabel = new JLabel("OR Property ID:   ");
+        
         messageLabel = new JLabel("Message    :");
         //passwordLabel = new JLabel("Password      :");
         
         usernameTextField = new JTextField("Email to...", 18);
         senderTextField = new JTextField("Email from", 18);
-
+        propertyIDTextField = new JTextField("Property ID",18);
         //passwordTextField = new JTextField("User's password", 18);
 
         send = new JButton("Send");
@@ -52,6 +56,7 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
         usernameTextField.addMouseListener(this);
         senderTextField.addMouseListener(this);
+        propertyIDTextField.addMouseListener(this);
        // connectButton.addActionListener(this);
         //Create the JPanels.
         message=new JTextArea(5,50);
@@ -81,6 +86,8 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
         headerPanel.add(generalMessage2);
         usernamePanel.add(usernameLabel);
         usernamePanel.add(usernameTextField);
+        usernamePanel.add(propertyIDLabel);
+        usernamePanel.add(propertyIDTextField);
         usernamePanel.add(senderLabel);
         usernamePanel.add(senderTextField);
         //connectPanel.add(connectButton);
@@ -103,7 +110,14 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
     	if(e.getSource().equals(send)) {
-    		String sender = usernameTextField.getText();
+    		String sender;
+    		if(this.isInteger(propertyIDTextField.getText())) {
+    			sender=propertyIDTextField.getText();
+    		}
+    		else {
+       		 sender = usernameTextField.getText();
+    		}
+    		System.out.println(sender);
     		String reciever = senderTextField.getText();
     		String messageToSend = message.getText();
     		/*Send to database to add to inbox*/
@@ -119,6 +133,9 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
 
         if(event.getSource().equals(senderTextField)) {
             senderTextField.setText("");
+        }
+        if(event.getSource().equals(propertyIDTextField)) {
+        	propertyIDTextField.setText("");
         }
     }
 
@@ -136,5 +153,13 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
 
     public void mouseEntered(MouseEvent event) {
 
+    }
+    public boolean isInteger(String tmp) {
+    	for(int i=0;i<tmp.length();i++) {
+    		if(tmp.charAt(i)>57 || tmp.charAt(i)<48) {
+    			return false;
+    		}
+    	}
+    	return true;
     }
 }
