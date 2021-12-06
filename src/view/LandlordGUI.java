@@ -1,5 +1,6 @@
 package view;
 import model.*;
+import controller.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
