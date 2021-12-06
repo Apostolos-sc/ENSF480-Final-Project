@@ -1,6 +1,7 @@
 package view;
 
 import model.*;
+import controller.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -206,8 +207,10 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
 //	          EventQueue.invokeLater(() -> {
 //	              loginFrame.setVisible(true);
 //	          });
-
-			ArrayList<Property> array= getAllProperties("Property");
+        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+        	SearchDatabase searchingDatabase=new SearchDatabase(access.getDBConnect());
+			
+        	ArrayList<Property> array= searchingDatabase.getAllProperties("Property");
         	
 			String properties [][]=new String[array.size()][8];
         	
