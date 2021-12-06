@@ -1,7 +1,6 @@
 package view;
 
 import model.*;
-import controller.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -164,8 +163,10 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         	String typeOfProperty= propertyType.getSelectedItem().toString();
         	
 //        	System.out.println(noOfBed+" "+noOfBath+" "+furnish+" "+quadrantValue+" "+typeOfProperty);
+        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+        	SearchDatabase searchingDatabase=new SearchDatabase(access.getDBConnect());
         	
-        	ArrayList<Property> array= searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue);
+        	ArrayList<Property> array= searchingDatabase.searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue);
         	
         	String properties [][]=new String[array.size()][8];
         	
