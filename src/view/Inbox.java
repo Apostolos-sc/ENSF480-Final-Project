@@ -1,10 +1,14 @@
 package view;
 
 import model.*;
+import controller.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+
+import controller.SingletonDatabaseAccess;
+
 import java.awt.*;
 
 public class Inbox extends JFrame implements ActionListener, MouseListener {
@@ -14,10 +18,13 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
     
     private JButton back;
     private JButton reply;
-
-
-    public Inbox() {
+    private User myInfo;
+    
+    private ArrayList<InboxMessages> arr;
+    
+    public Inbox(User u1) {
         super("Connect to Server.");
+        myInfo=u1;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -30,11 +37,17 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
     	//Let's set up the JLabels and the JTextFields and the JButton for our GUI.
         generalMessage1 = new JLabel("Inbox");
         
+        SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+        SearchDatabase search=new SearchDatabase(access.getDBConnect());
+        
+        arr=search.getAllInboxMessages("Inbox",myInfo);//Gets all the messages belonging to specific reciever email
  
-        String data[][]= {{"John","jonh1@gmail.com","House1"},{"Bob","Bob2@gmail.com","House2"}};
+        
+        String data[][]=this.getMyMessages(arr);
+       // String data[][]= {{"John","jonh1@gmail.com","House1"},{"Bob","Bob2@gmail.com","House2"}};
         
         
-        String[] columnNames = { "Name", "Email", "Message" };
+        String[] columnNames = { "Sender", "Reciever", "Message" };
         inbox = new JTable(data,columnNames);
         
         back = new JButton("Back");
@@ -70,6 +83,7 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
     	if(e.getSource().equals(back)) {
     		//Go back to calling GUI
+    		super.dispose();
          }
          if(e.getSource().equals(reply)) {
         	 
@@ -101,4 +115,14 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
     public void mouseEntered(MouseEvent event) {
 
     }
+   String[][] getMyMessages(ArrayList<InboxMessages> array){
+	   String holder[][]=new String[array.size()][3];
+	   for(int i=0;i<array.size();i++) {
+		   holder[0][i]=array.get(i).getSenderEmail();
+		   holder[1][i]=array.get(i).getRecieverEmail();
+		   holder[2][i]=array.get(i).getMessage();
+		   
+	   }
+	   return holder;
+   }
 }

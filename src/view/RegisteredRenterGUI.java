@@ -1,7 +1,6 @@
 package view;
 
 import model.*;
-import controller.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -174,9 +173,14 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
                 loginFrame.setVisible(true);
             });
             */
+        	
+        	UnregisteredRenterGUI loginFrame = new UnregisteredRenterGUI(this);
+            EventQueue.invokeLater(() -> {
+                loginFrame.setVisible(true);
+            });
         }
         if(e.getSource().equals(inboxButton)) {
-        	Inbox loginFrame = new Inbox();
+        	Inbox loginFrame = new Inbox(renter);
             EventQueue.invokeLater(() -> {
                 loginFrame.setVisible(true);
             });
