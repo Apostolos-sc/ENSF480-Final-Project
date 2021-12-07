@@ -11,6 +11,8 @@ import java.awt.*;
 import model.*;
 import controller.*;
 
+
+
 public class ManagerGUI extends JFrame implements ActionListener, MouseListener {
 
     private JLabel headerLabel;
@@ -26,6 +28,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private JMenuItem viewLandlord;
     private JMenuItem viewProperty;
     private JMenuItem viewRenter;
+    private JMenuItem showReport;
     private JMenuItem logoutOption;
     private JButton editPropertyButton;
     private JButton editLandlordButton;
@@ -34,10 +37,14 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private JButton viewLandlordButton;
     private JButton viewRenterButton;
     private JButton logoutButton;
+    private JButton showReportButton;
     private JFrame parentFrame;
     private Manager mgr;
     private Data data;
 
+    private double[] value;
+    private String[] information;
+    private String title;
 
     public ManagerGUI(Manager mgr, JFrame parentFrame, Data data) {
         super("Manager System. Logged in as " + mgr.getFirstName() + " "+ mgr.getLastName() + ".");
@@ -69,7 +76,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         viewRenterButton = new JButton("View Renter");
         
         logoutButton = new JButton("Logout");
-
         editPropertyButton.addActionListener(this);
         editLandlordButton.addActionListener(this);
         editRenterButton.addActionListener(this);
@@ -109,7 +115,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         viewPanel.add(viewPropertyButton);
         
         backPanel.add(logoutButton);
-
         //Add the JPanels to the main JPanel
         mainContainer.add(headerPanel);
         mainContainer.add(editPanel);
@@ -135,11 +140,18 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         editProperty = new JMenuItem("Property");
         editRenter = new JMenuItem("Renter");
 
+        showReport = new JMenuItem("Show Report");
+        
         logoutOption = new JMenuItem("Logout");
         logoutOption.addActionListener(this);
         viewProperty.addActionListener(this);
         viewLandlord.addActionListener(this);
         viewRenter.addActionListener(this);
+        editProperty.addActionListener(this);
+        editRenter.addActionListener(this);
+        editLandlord.addActionListener(this);
+        showReport.addActionListener(this);
+        
         view.add(viewLandlord);
         view.add(viewProperty);
         view.add(viewRenter);
@@ -148,6 +160,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         edit.add(editProperty);
         edit.add(editRenter);
 
+        report.add(showReport);
+        
         settings.add(logoutOption);
 
         menuBar.add(view);
@@ -178,11 +192,17 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
 	    if(e.getSource().equals(viewRenter)) {
 	    	showRenters();
 	    }
-	    if(e.getSource().equals(editPropertyButton)) {
-	    	
+	    if(e.getSource().equals(editProperty)) {
+	    	showEditProperty();
 	    }
-	    if(e.getSource().equals(viewRenterButton)) {
-	    	
+	    if(e.getSource().equals(editLandlord)) {
+	    	showEditProfile();
+	    }
+	    if(e.getSource().equals(editRenter)) {
+	    	showEditRenter();
+	    }
+	    if(e.getSource().equals(showReport)) {
+	    	showReport();
 	    }
 	    if(e.getSource().equals(viewLandlordButton)) {
 	    	
@@ -291,5 +311,620 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         mainContainer.add(tablePanel);
         this.revalidate();
         this.repaint();
+    }
+    
+    public void showEditProperty() {
+        mainContainer.removeAll();
+        mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+        String propertyList[] = new String[data.getProperties().size()];
+        for(int i = 0; i < data.getProperties().size(); i++) {
+            propertyList[i] = data.getProperties().get(i).getPropertyID() + " - " + data.getProperties().get(i).getPropertyLocation().getAddress();
+        }
+        JPanel headerPanel = new JPanel();
+        JPanel selectPropertyPanel = new JPanel();
+        JPanel editPropertyPanel = new JPanel();
+
+        JLabel generalMessage = new JLabel("Edit Property :");
+        JLabel selectPropertyLabel = new JLabel("Select Property :");
+
+        JComboBox selectPropertyComboBox = new JComboBox(propertyList);
+
+        generalMessage.setPreferredSize(new Dimension(175,25));
+        selectPropertyLabel.setPreferredSize(new Dimension(175, 25));
+        selectPropertyComboBox.setPreferredSize(new Dimension(175, 25));
+
+        headerPanel.setLayout(new FlowLayout());
+        selectPropertyPanel.setLayout(new FlowLayout());
+        //editPropertyPanel.setLayout(new FlowLayout());
+        editPropertyPanel.setLayout(new BoxLayout(editPropertyPanel, BoxLayout.PAGE_AXIS));
+        String options[] = {"Furnished","Not Furnished"};
+        String propertyOptions[]= {"Apartment","Attached","Detached","Townhouse"};
+        String quadrantOptions[] = {"SW", "NW", "NE", "SE"};
+
+        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+        JLabel bathroomsMessage = new JLabel("Number Bathrooms: ");
+        JLabel bedroomsMessage = new JLabel("Number Bedrooms: ");
+        JLabel furnishedMessage = new JLabel("Furnished: ");
+        JLabel addressMessage = new JLabel("Address: ");
+        JLabel quadrantMessage = new JLabel("Quadrant: ");
+        JLabel priceMessage = new JLabel("Price:  ");
+        JLabel propertyTypeLabel = new JLabel("Property Type:  ");
+
+        bathroomsMessage.setPreferredSize(new Dimension(175, 25));
+        bedroomsMessage.setPreferredSize(new Dimension(175, 25));
+        furnishedMessage.setPreferredSize(new Dimension(175, 25));
+        addressMessage.setPreferredSize(new Dimension(175, 25));
+        quadrantMessage.setPreferredSize(new Dimension(175, 25));
+        priceMessage.setPreferredSize(new Dimension(175, 25));
+        propertyTypeLabel.setPreferredSize(new Dimension(175, 25));
+
+        JTextField bathroomsTextField = new JTextField("Bathrooms");
+        JTextField bedroomsTextField = new JTextField("Bedrooms");
+        JTextField priceTextField = new JTextField("Price");
+        JTextField addressTextField = new JTextField("Address");
+
+
+        JComboBox furnishedComboField = new JComboBox<String>(options);
+        JComboBox propertyTypeComboField =new JComboBox<String>(propertyOptions);
+        JComboBox quadrantComboField = new JComboBox<String>(quadrantOptions);
+
+        bedroomsTextField.setToolTipText("Set bedrooms Number to ..");
+        bathroomsTextField.setToolTipText("Set bathrooms Number to ..");
+        addressTextField.setToolTipText("Set address to...");
+        furnishedComboField.setToolTipText("Select Furnished Option..");
+        priceTextField.setToolTipText("Set Price to...");
+        propertyTypeComboField.setToolTipText("Select Property Type..");
+        quadrantComboField.setToolTipText("Select Quadrant..");
+
+        bathroomsTextField.setPreferredSize(new Dimension(175, 25));
+        bedroomsTextField.setPreferredSize(new Dimension(175, 25));
+        priceTextField.setPreferredSize(new Dimension(175, 25));
+        addressTextField.setPreferredSize(new Dimension(175, 25));
+
+
+        furnishedComboField.setPreferredSize(new Dimension(175, 25));
+        propertyTypeComboField.setPreferredSize(new Dimension(175, 25));
+        quadrantComboField.setPreferredSize(new Dimension(175, 25));
+
+        JButton updateButton = new JButton("Update");
+
+        updateButton.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(updateButton)) {
+
+                    if (isInteger(bathroomsTextField.getText())
+                            && isInteger(bedroomsTextField.getText()) && addressTextField.getText() != "") {
+
+                        int bathrooms = Integer.valueOf(bathroomsTextField.getText());
+                        int bedrooms = Integer.valueOf(bedroomsTextField.getText());
+                        String address = addressTextField.getText();
+                        String quadrant = quadrantComboField.getSelectedItem().toString();
+                        boolean furnished = false;
+                        double price = Double.valueOf(priceTextField.getText());
+                        if (furnishedComboField.getSelectedItem().toString() == "Furnished") {
+                            furnished = true;
+                        } else {
+                            furnished = false;
+                        }
+                        String propertyTypeValue = propertyTypeComboField.getSelectedItem().toString();
+
+                        
+                        //implement DB Action here.
+                        JOptionPane.showMessageDialog(null, "Property was updated.");
+                        mainContainer.removeAll();
+                        revalidate();
+                        repaint();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "There was an error with your input. Please re-enter info.");
+                    }
+                }
+            }
+        }));
+
+        //Create the JPanels.
+        JPanel bedroomPanel = new JPanel();
+        JPanel bathroomPanel = new JPanel();
+        JPanel furnishedPanel = new JPanel();
+        JPanel addressPanel = new JPanel();
+        JPanel quadrantPanel = new JPanel();
+        JPanel pricePanel = new JPanel();
+        JPanel propertyTypePanel = new JPanel();
+        JPanel registerPanel = new JPanel();
+
+        //Set the Layouts for the JPanels
+        bedroomPanel.setLayout(new FlowLayout());
+        bathroomPanel.setLayout(new FlowLayout());
+        furnishedPanel.setLayout(new FlowLayout());
+        addressPanel.setLayout(new FlowLayout());
+        pricePanel.setLayout(new FlowLayout());
+        quadrantPanel.setLayout(new FlowLayout());
+        pricePanel.setLayout(new FlowLayout());
+        propertyTypePanel.setLayout(new FlowLayout());
+        registerPanel.setLayout(new FlowLayout());
+
+        //Add Components to the JPanels.
+
+        bedroomPanel.add(bedroomsMessage);
+        bedroomPanel.add(bedroomsTextField);
+        bathroomPanel.add(bathroomsMessage);
+        bathroomPanel.add(bathroomsTextField);
+        addressPanel.add(addressMessage);
+        addressPanel.add(addressTextField);
+        quadrantPanel.add(quadrantMessage);
+        quadrantPanel.add(quadrantComboField);
+        furnishedPanel.add(furnishedMessage);
+        furnishedPanel.add(furnishedComboField);
+        pricePanel.add(priceMessage);
+        pricePanel.add(priceTextField);
+        propertyTypePanel.add(propertyTypeLabel);
+        propertyTypePanel.add(propertyTypeComboField);
+        registerPanel.add(updateButton);
+
+        //Add the JPanels to the main JPanel
+        editPropertyPanel.add(bedroomPanel);
+        editPropertyPanel.add(bathroomPanel);
+        editPropertyPanel.add(addressPanel);
+        editPropertyPanel.add(quadrantPanel);
+        editPropertyPanel.add(furnishedPanel);
+        editPropertyPanel.add(pricePanel);
+        editPropertyPanel.add(propertyTypePanel);
+        editPropertyPanel.add(registerPanel);
+
+
+        selectPropertyComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String selection = selectPropertyComboBox.getSelectedItem().toString();
+                int propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
+                for(int i = 0; i < data.getProperties().size(); i++) {
+                    if(propertyID == data.getProperties().get(i).getPropertyID()) {
+                        bathroomsTextField.setText(""+data.getProperties().get(i).getPropertyDetails().getNoBathrooms());
+                        bedroomsTextField.setText(""+data.getProperties().get(i).getPropertyDetails().getNoBedrooms());
+                        priceTextField.setText("" + data.getProperties().get(i).getPropertyDetails().getPrice());
+                        addressTextField.setText(data.getProperties().get(i).getPropertyLocation().getAddress());
+                        quadrantComboField.setSelectedItem(data.getProperties().get(i).getPropertyLocation().getQuadrant());
+                        propertyTypeComboField.setSelectedItem(data.getProperties().get(i).getPropertyDetails().getPropertyType());
+                        if(data.getProperties().get(i).getPropertyDetails().isFurnished()) {
+                            furnishedComboField.setSelectedItem("Furnished");
+                        } else {
+                            furnishedComboField.setSelectedItem("Not Furnished");
+                        }
+                        mainContainer.add(editPropertyPanel);
+                        revalidate();
+                        repaint();
+                        break;
+                    }
+                }
+            }
+        });
+
+        headerPanel.add(generalMessage);
+        selectPropertyPanel.add(selectPropertyLabel);
+        selectPropertyPanel.add(selectPropertyComboBox);
+
+        mainContainer.add(headerPanel);
+        mainContainer.add(selectPropertyPanel);
+
+        revalidate();
+        repaint();
+
+    }
+    
+    public void showEditProfile() {
+    	mainContainer.removeAll();
+        mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+        String landlordList[] = new String[data.getLandlords().size()];
+        for(int i = 0; i < data.getProperties().size(); i++) {
+            landlordList[i] = data.getLandlords().get(i).getLandlordID() + " - " + data.getLandlords().get(i).getFirstName()+" "+data.getLandlords().get(i).getLastName();
+        }
+    	
+    	
+        JPanel headerPanel = new JPanel();
+        JPanel selectLandlordPanel = new JPanel();
+        JPanel editLandlordPanel = new JPanel();
+
+        JLabel generalMessage = new JLabel("Edit Landlords :");
+        JLabel selectLandlordLabel = new JLabel("Select Landlord :");
+
+        JComboBox selectLandlordComboBox = new JComboBox(landlordList);
+
+        generalMessage.setPreferredSize(new Dimension(175,25));
+        selectLandlordLabel.setPreferredSize(new Dimension(175, 25));
+        selectLandlordComboBox.setPreferredSize(new Dimension(175, 25));
+
+        headerPanel.setLayout(new FlowLayout());
+        selectLandlordPanel.setLayout(new FlowLayout());
+        //editPropertyPanel.setLayout(new FlowLayout());
+        editLandlordPanel.setLayout(new BoxLayout(editLandlordPanel, BoxLayout.PAGE_AXIS));
+//        String options[] = {"Furnished","Not Furnished"};
+//        String propertyOptions[]= {"Apartment","Attached","Detached","Townhouse"};
+//        String quadrantOptions[] = {"SW", "NW", "NE", "SE"};
+
+        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+        JLabel fNameMessage = new JLabel("First Name: ");
+        JLabel lNameMessage = new JLabel("Last Name: ");
+        JLabel emailMessage = new JLabel("Email: ");
+        JLabel dobMessage = new JLabel("Date of Birth: ");
+      
+
+        fNameMessage.setPreferredSize(new Dimension(175, 25));
+        lNameMessage.setPreferredSize(new Dimension(175, 25));
+        emailMessage.setPreferredSize(new Dimension(175, 25));
+        dobMessage.setPreferredSize(new Dimension(175, 25));
+        
+
+        JTextField fNameTextField = new JTextField("First Name: ");
+        JTextField lNameTextField = new JTextField("Last Name: ");
+        JTextField emailTextField = new JTextField("Email:");
+        JTextField dobTextField = new JTextField("Date of Birth: ");
+
+
+//        JComboBox furnishedComboField = new JComboBox<String>(options);
+//        JComboBox propertyTypeComboField =new JComboBox<String>(propertyOptions);
+//        JComboBox quadrantComboField = new JComboBox<String>(quadrantOptions);
+
+        fNameTextField.setToolTipText("Set First Name to ..");
+        lNameTextField.setToolTipText("Set Last Name to ..");
+        emailTextField.setToolTipText("Set Email to...");
+        dobTextField.setToolTipText("Set Date of Birth to..");
+        
+
+        fNameTextField.setPreferredSize(new Dimension(175, 25));
+        lNameTextField.setPreferredSize(new Dimension(175, 25));
+        emailTextField.setPreferredSize(new Dimension(175, 25));
+        dobTextField.setPreferredSize(new Dimension(175, 25));
+
+
+//        furnishedComboField.setPreferredSize(new Dimension(175, 25));
+//        propertyTypeComboField.setPreferredSize(new Dimension(175, 25));
+//        quadrantComboField.setPreferredSize(new Dimension(175, 25));
+
+        JButton updateButton = new JButton("Update");
+
+        updateButton.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(updateButton)) {
+
+                    if (lNameTextField.getText() != "" && dobTextField.getText() != ""
+                            && emailTextField.getText() != "" && fNameTextField.getText() != "") {
+
+                        String fName = fNameTextField.getText();
+                        String lName = lNameTextField.getText();
+                        String email = emailTextField.getText();
+                        String dob = dobTextField.getText();
+ 
+                        
+                        //implement DB Action here.
+                        JOptionPane.showMessageDialog(null, "Landlord was updated.");
+                        mainContainer.removeAll();
+                        revalidate();
+                        repaint();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "There was an error with your input. Please re-enter info.");
+                    }
+                }
+            }
+        }));
+
+        //Create the JPanels.
+        JPanel fNamePanel = new JPanel();
+        JPanel lNamePanel = new JPanel();
+        JPanel emailPanel = new JPanel();
+        JPanel dobPanel = new JPanel();
+//        JPanel quadrantPanel = new JPanel();
+//        JPanel pricePanel = new JPanel();
+//        JPanel propertyTypePanel = new JPanel();
+        JPanel registerPanel = new JPanel();
+
+        //Set the Layouts for the JPanels
+        fNamePanel.setLayout(new FlowLayout());
+        lNamePanel.setLayout(new FlowLayout());
+        emailPanel.setLayout(new FlowLayout());
+        dobPanel.setLayout(new FlowLayout());
+//        pricePanel.setLayout(new FlowLayout());
+//        quadrantPanel.setLayout(new FlowLayout());
+//        pricePanel.setLayout(new FlowLayout());
+//        propertyTypePanel.setLayout(new FlowLayout());
+        registerPanel.setLayout(new FlowLayout());
+
+        //Add Components to the JPanels.
+
+        fNamePanel.add(fNameMessage);
+        fNamePanel.add(fNameTextField);
+        lNamePanel.add(lNameMessage);
+        lNamePanel.add(lNameTextField);
+        emailPanel.add(emailMessage);
+        emailPanel.add(emailTextField);
+        dobPanel.add(dobMessage);
+        dobPanel.add(dobTextField);
+//        furnishedPanel.add(furnishedMessage);
+//        furnishedPanel.add(furnishedComboField);
+//        pricePanel.add(priceMessage);
+//        pricePanel.add(priceTextField);
+//        propertyTypePanel.add(propertyTypeLabel);
+//        propertyTypePanel.add(propertyTypeComboField);
+        registerPanel.add(updateButton);
+
+        //Add the JPanels to the main JPanel
+        editLandlordPanel.add(fNamePanel);
+        editLandlordPanel.add(lNamePanel);
+        editLandlordPanel.add(emailPanel);
+        editLandlordPanel.add(dobPanel);
+//        editLandlordPanel.add(furnishedPanel);
+//        editPropertyPanel.add(pricePanel);
+//        editPropertyPanel.add(propertyTypePanel);
+        editLandlordPanel.add(registerPanel);
+
+
+        selectLandlordComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String selection = selectLandlordComboBox.getSelectedItem().toString();
+                int propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
+                for(int i = 0; i < data.getLandlords().size(); i++) {
+                    if(propertyID == data.getLandlords().get(i).getLandlordID()) {
+                        fNameTextField.setText(""+data.getLandlords().get(i).getFirstName());
+                        lNameTextField.setText(""+data.getLandlords().get(i).getLastName());
+                        emailTextField.setText("" + data.getLandlords().get(i).getEmail());
+                        dobTextField.setText(data.getLandlords().get(i).getDob());
+                        
+                        
+                        mainContainer.add(editLandlordPanel);
+                        revalidate();
+                        repaint();
+                        break;
+                    }
+                }
+            }
+        });
+
+        headerPanel.add(generalMessage);
+        selectLandlordPanel.add(selectLandlordLabel);
+        selectLandlordPanel.add(selectLandlordComboBox);
+
+        mainContainer.add(headerPanel);
+        mainContainer.add(selectLandlordPanel);
+
+        revalidate();
+        repaint();
+
+    }
+    public void showEditRenter() {
+    	mainContainer.removeAll();
+        mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+        String renterList[] = new String[data.getRenters().size()];
+        for(int i = 0; i < data.getRenters().size(); i++) {
+            renterList[i] = data.getRenters().get(i).getRenterID() + " - " + data.getRenters().get(i).getFirstName()+" "+data.getRenters().get(i).getLastName();
+        }
+    	
+    	
+        JPanel headerPanel = new JPanel();
+        JPanel selectRenterPanel = new JPanel();
+        JPanel editRenterPanel = new JPanel();
+
+        JLabel generalMessage = new JLabel("Edit Renters :");
+        JLabel selectRenterLabel = new JLabel("Select Renter :");
+
+        JComboBox selectRenterComboBox = new JComboBox(renterList);
+
+        generalMessage.setPreferredSize(new Dimension(175,25));
+        selectRenterLabel.setPreferredSize(new Dimension(175, 25));
+        selectRenterComboBox.setPreferredSize(new Dimension(175, 25));
+
+        headerPanel.setLayout(new FlowLayout());
+        selectRenterPanel.setLayout(new FlowLayout());
+        //editPropertyPanel.setLayout(new FlowLayout());
+        editRenterPanel.setLayout(new BoxLayout(editRenterPanel, BoxLayout.PAGE_AXIS));
+//        String options[] = {"Furnished","Not Furnished"};
+//        String propertyOptions[]= {"Apartment","Attached","Detached","Townhouse"};
+//        String quadrantOptions[] = {"SW", "NW", "NE", "SE"};
+
+        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+        JLabel fNameMessage = new JLabel("First Name: ");
+        JLabel lNameMessage = new JLabel("Last Name: ");
+        JLabel emailMessage = new JLabel("Email: ");
+        JLabel dobMessage = new JLabel("Date of Birth: ");
+      
+
+        fNameMessage.setPreferredSize(new Dimension(175, 25));
+        lNameMessage.setPreferredSize(new Dimension(175, 25));
+        emailMessage.setPreferredSize(new Dimension(175, 25));
+        dobMessage.setPreferredSize(new Dimension(175, 25));
+        
+
+        JTextField fNameTextField = new JTextField("First Name: ");
+        JTextField lNameTextField = new JTextField("Last Name: ");
+        JTextField emailTextField = new JTextField("Email:");
+        JTextField dobTextField = new JTextField("Date of Birth: ");
+
+
+//        JComboBox furnishedComboField = new JComboBox<String>(options);
+//        JComboBox propertyTypeComboField =new JComboBox<String>(propertyOptions);
+//        JComboBox quadrantComboField = new JComboBox<String>(quadrantOptions);
+
+        fNameTextField.setToolTipText("Set First Name to ..");
+        lNameTextField.setToolTipText("Set Last Name to ..");
+        emailTextField.setToolTipText("Set Email to...");
+        dobTextField.setToolTipText("Set Date of Birth to..");
+        
+
+        fNameTextField.setPreferredSize(new Dimension(175, 25));
+        lNameTextField.setPreferredSize(new Dimension(175, 25));
+        emailTextField.setPreferredSize(new Dimension(175, 25));
+        dobTextField.setPreferredSize(new Dimension(175, 25));
+
+
+//        furnishedComboField.setPreferredSize(new Dimension(175, 25));
+//        propertyTypeComboField.setPreferredSize(new Dimension(175, 25));
+//        quadrantComboField.setPreferredSize(new Dimension(175, 25));
+
+        JButton updateButton = new JButton("Update");
+
+        updateButton.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(updateButton)) {
+
+                    if (lNameTextField.getText() != "" && dobTextField.getText() != ""
+                            && emailTextField.getText() != "" && fNameTextField.getText() != "") {
+
+                        String fName = fNameTextField.getText();
+                        String lName = lNameTextField.getText();
+                        String email = emailTextField.getText();
+                        String dob = dobTextField.getText();
+ 
+                        
+                        //implement DB Action here.
+                        JOptionPane.showMessageDialog(null, "Renter was updated.");
+                        mainContainer.removeAll();
+                        revalidate();
+                        repaint();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "There was an error with your input. Please re-enter info.");
+                    }
+                }
+            }
+        }));
+
+        //Create the JPanels.
+        JPanel fNamePanel = new JPanel();
+        JPanel lNamePanel = new JPanel();
+        JPanel emailPanel = new JPanel();
+        JPanel dobPanel = new JPanel();
+//        JPanel quadrantPanel = new JPanel();
+//        JPanel pricePanel = new JPanel();
+//        JPanel propertyTypePanel = new JPanel();
+        JPanel registerPanel = new JPanel();
+
+        //Set the Layouts for the JPanels
+        fNamePanel.setLayout(new FlowLayout());
+        lNamePanel.setLayout(new FlowLayout());
+        emailPanel.setLayout(new FlowLayout());
+        dobPanel.setLayout(new FlowLayout());
+//        pricePanel.setLayout(new FlowLayout());
+//        quadrantPanel.setLayout(new FlowLayout());
+//        pricePanel.setLayout(new FlowLayout());
+//        propertyTypePanel.setLayout(new FlowLayout());
+        registerPanel.setLayout(new FlowLayout());
+
+        //Add Components to the JPanels.
+
+        fNamePanel.add(fNameMessage);
+        fNamePanel.add(fNameTextField);
+        lNamePanel.add(lNameMessage);
+        lNamePanel.add(lNameTextField);
+        emailPanel.add(emailMessage);
+        emailPanel.add(emailTextField);
+        dobPanel.add(dobMessage);
+        dobPanel.add(dobTextField);
+//        furnishedPanel.add(furnishedMessage);
+//        furnishedPanel.add(furnishedComboField);
+//        pricePanel.add(priceMessage);
+//        pricePanel.add(priceTextField);
+//        propertyTypePanel.add(propertyTypeLabel);
+//        propertyTypePanel.add(propertyTypeComboField);
+        registerPanel.add(updateButton);
+
+        //Add the JPanels to the main JPanel
+        editRenterPanel.add(fNamePanel);
+        editRenterPanel.add(lNamePanel);
+        editRenterPanel.add(emailPanel);
+        editRenterPanel.add(dobPanel);
+//        editLandlordPanel.add(furnishedPanel);
+//        editPropertyPanel.add(pricePanel);
+//        editPropertyPanel.add(propertyTypePanel);
+        editRenterPanel.add(registerPanel);
+
+
+        selectRenterComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String selection = selectRenterComboBox.getSelectedItem().toString();
+                int propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
+                for(int i = 0; i < data.getRenters().size(); i++) {
+                    if(propertyID == data.getRenters().get(i).getRenterID()) {
+                        fNameTextField.setText(""+data.getRenters().get(i).getFirstName());
+                        lNameTextField.setText(""+data.getRenters().get(i).getLastName());
+                        emailTextField.setText("" + data.getRenters().get(i).getEmail());
+                        dobTextField.setText(data.getRenters().get(i).getDob());
+                        
+                        
+                        mainContainer.add(editRenterPanel);
+                        revalidate();
+                        repaint();
+                        break;
+                    }
+                }
+            }
+        });
+
+        headerPanel.add(generalMessage);
+        selectRenterPanel.add(selectRenterLabel);
+        selectRenterPanel.add(selectRenterComboBox);
+
+        mainContainer.add(headerPanel);
+        mainContainer.add(selectRenterPanel);
+
+        revalidate();
+        repaint();
+    }  
+    
+    void showReport() {
+    	System.out.println("Test");
+    	mainContainer.removeAll();
+        mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+    	 
+        double[] value= new double[3];
+    	  String[] information = new String[3];
+    	  value[0] = data.getRenters().size();
+    	  information[0] = "Renters";
+
+    	  value[1] = data.getLandlords().size();
+    	  information[1] = "Landlords";
+
+    	  value[2] = data.getProperties().size();
+    	  information[2] = "Properties";
+
+    	  JLabel renters=new JLabel("Number of Renters: ");
+    	  JLabel renterCount =new JLabel(String.valueOf(data.getRenters().size())); 
+    	  
+    	  JLabel landlord=new JLabel("Number of Landlord: ");
+    	  JLabel landlordCount =new JLabel(String.valueOf(data.getLandlords().size())); 
+    	  
+    	  JLabel property=new JLabel("Number of Properties: ");
+    	  JLabel propertyCount =new JLabel(String.valueOf(data.getProperties().size())); 
+    	  
+    	  JPanel renterPanel=new JPanel();
+    	  JPanel landlordPanel=new JPanel();
+    	  JPanel propertyPanel = new JPanel();
+    	  
+    	  renterPanel.add(renters);
+    	  renterPanel.add(renterCount);
+    	  landlordPanel.add(landlord);
+    	  landlordPanel.add(landlordCount);
+    	  propertyPanel.add(property);
+    	  propertyPanel.add(propertyCount);
+    	  
+    	  mainContainer.add(renterPanel);
+    	  mainContainer.add(landlordPanel);
+    	  mainContainer.add(propertyPanel);
+    	  revalidate();
+          repaint();
+    	  }
+    
+   
+    	  
+    public boolean isInteger(String tmp) {
+        for(int i=0;i<tmp.length();i++) {
+            if(tmp.charAt(i)>57 || tmp.charAt(i)<48) {
+                return false;
+            }
+        }
+        return true;
     }
 }
