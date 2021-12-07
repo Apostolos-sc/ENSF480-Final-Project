@@ -20,11 +20,14 @@ public class runProgram {
      * @param args the input arguments
      */
     public static void main(String[] args) {
-        LoginGUI loginFrame;
-        PropertyViewGUI propertyViewFrame;
         Data data = new Data();
 
-        test_initialization(data);
+        //test_initialization(data);
+        SingletonDatabaseAccess dbConnection = new SingletonDatabaseAccess();
+        data = dbConnection.retrieveData();
+        LoginGUI loginFrame;
+        PropertyViewGUI propertyViewFrame;
+
 
         /* start with a LoginGui frame */
         loginFrame = new LoginGUI(data);
@@ -100,5 +103,7 @@ public class runProgram {
         data.getProperties().add(prop7);
 
         data.getManagers().add((Manager) user2);
+
+
     }
 }

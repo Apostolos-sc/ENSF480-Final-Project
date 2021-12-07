@@ -8,7 +8,10 @@ package controller;
   * to establish a connection to the database.
  */
 
+import model.*;
+
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SingletonDatabaseAccess{
     private static SingletonDatabaseAccess onlyInstance;
@@ -16,7 +19,7 @@ public class SingletonDatabaseAccess{
     private String USERNAME; //store the user's account username -> have to initialize it to one of ours
     private String PASSWORD; //store the user's account password -> have to initialize it to one of ours
     private static Connection dbConnect; //connection data member to establish connection to interact with database
-
+    private boolean isSuccessful;
     public SingletonDatabaseAccess() {
     }
 
@@ -33,6 +36,7 @@ public class SingletonDatabaseAccess{
         this.DBURL = DBURL;
         this.USERNAME = USERNAME;
         this.PASSWORD = PASSWORD;
+        initializeConnection();
     }
 
     /**
@@ -84,13 +88,14 @@ public class SingletonDatabaseAccess{
      * @params nothing
      * @return true if connection succesful, false if database connection fails
      */
-    public boolean initializeConnection() {
-        try { //need to have try and catch in the case the program fails to make connection with database
-            dbConnect = DriverManager.getConnection(this.DBURL, this.USERNAME, this.PASSWORD);
+    public void initializeConnection() {
+        try {
+            dbConnect = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
+            isSuccessful = true;
         } catch (SQLException e) {
-            return false;
+            isSuccessful = false;
+            e.printStackTrace();
         }
-        return true;
     }
 
     /**
@@ -98,11 +103,157 @@ public class SingletonDatabaseAccess{
      * @params nothing
      * @return nothing
      */
-    public void close() {
+    public void closeConnection() {
         try {
             dbConnect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Data retrieveData() {
+        ArrayList<Renter> renters = retrieveRenters();
+        ArrayList<Landlord> landlords = retrieveLandlords();
+        ArrayList<Property> properties = retrieveProperties(landlords);
+        ArrayList<Manager> managers = retrieveManagers();
+        ArrayList<Contract> contracts = retrieveContracts(properties, renters, landlords);
+        Data data = new Data(renters, properties, landlords, managers);
+        data.setRenters(retrieveRenters());
+
+        return data;
+    }
+
+    public ArrayList<Renter> retrieveRenters() {
+        ArrayList<Renter> renters = new ArrayList<Renter>();
+        String Query = "SELECT * FROM USERS INNER JOIN RENTER ON userID=renterID";
+        ResultSet results;
+        try {
+            Statement selectRenters = dbConnect.createStatement();
+            results = selectRenters.executeQuery(Query);
+            while(results.next()) {
+                renters.add(new Renter(Integer.valueOf(results.getString("userID")), results.getString("fname"),
+                            results.getString("lname"), results.getString("email"), results.getString("pass"),
+                        results.getString("dob")));
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        return renters;
+    }
+
+    public ArrayList<Manager> retrieveManagers() {
+        ArrayList<Manager> managers = new ArrayList<Manager>();
+        String Query = "SELECT * FROM USERS INNER JOIN MANAGER ON userID=managerID";
+        ResultSet results;
+        try {
+            Statement selectRenters = dbConnect.createStatement();
+            results = selectRenters.executeQuery(Query);
+            while(results.next()) {
+                managers.add(new Manager(Integer.valueOf(results.getString("userID")), results.getString("fname"),
+                        results.getString("lname"), results.getString("email"), results.getString("pass"),
+                        results.getString("dob")));
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        return managers;
+    }
+
+    public ArrayList<Landlord> retrieveLandlords() {
+        ArrayList<Landlord> landlords = new ArrayList<Landlord>();
+        String Query = "SELECT * FROM USERS INNER JOIN LANDLORD ON userID=landlordID";
+        ResultSet results;
+        try {
+            Statement selectRenters = dbConnect.createStatement();
+            results = selectRenters.executeQuery(Query);
+            while(results.next()) {
+                landlords.add(new Landlord(Integer.valueOf(results.getString("userID")), results.getString("fname"),
+                        results.getString("lname"), results.getString("email"), results.getString("pass"),
+                        results.getString("dob")));
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return landlords;
+    }
+    //Call after you call retrieveLandlords..
+    public ArrayList<Property> retrieveProperties(ArrayList<Landlord> landlords) {
+        ArrayList<Property> properties = new ArrayList<Property>();
+        String Query = "SELECT * FROM PROPERTY";
+        ResultSet results;
+        try {
+            Statement selectRenters = dbConnect.createStatement();
+            results = selectRenters.executeQuery(Query);
+            int landlordID = 1;
+            while(results.next()) {
+                properties.add(new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"),
+                        Integer.valueOf(results.getString("noBathrooms")), Integer.valueOf(results.getString("noBedthrooms")),
+                        (results.getString("isFurnished").equals(""+1) ? true: false), results.getString("address"),
+                        results.getString("quadrant"),results.getString("status"), Double.valueOf(results.getString("price"))));
+                landlordID = Integer.valueOf(results.getString("landlordID"));
+                for(int i = 0; i < landlords.size(); i++) {
+                    if(landlords.get(i).getLandlordID() == landlordID) {
+                        landlords.get(i).getProperties().add(properties.get(properties.size()-1));
+                        break;
+                    }
+                }
+
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        return properties;
+    }
+
+    public ArrayList<Contract> retrieveContracts(ArrayList<Property> properties, ArrayList<Renter> renters, ArrayList<Landlord> landlords) {
+        ArrayList<Contract> contracts = new ArrayList<Contract>();
+        String Query = "SELECT * FROM CONCTRACTS";
+        ResultSet results;
+        try {
+            Statement selectRenters = dbConnect.createStatement();
+            results = selectRenters.executeQuery(Query);
+            int landlordID = 0;
+            int renterID = 0;
+            int propertyID = 0;
+            while(results.next()) {
+                //Get the IDs from the Contract DB entry.
+                landlordID = Integer.valueOf(results.getString("landlordID"));
+                renterID = Integer.valueOf(results.getString("renterID"));
+                propertyID = Integer.valueOf(results.getString("propertyID"));
+                //Find the position in the corresponding ArrayList of landlords, renters, properties
+                for(int i = 0; i < landlords.size(); i++) {
+                    if(landlords.get(i).getLandlordID() == landlordID) {
+                        landlordID = i;
+                        break;
+                    }
+                }
+                for(int i = 0; i < renters.size(); i++) {
+                    if(renters.get(i).getRenterID() == renterID) {
+                        renterID = i;
+                        break;
+                    }
+                }
+                for(int i = 0; i < properties.size(); i++) {
+                    if(properties.get(i).getPropertyID() == propertyID) {
+                        propertyID = i;
+                        break;
+                    }
+                }
+                contracts.add(new Contract(Integer.valueOf(results.getString("contractID")), renters.get(renterID),
+                                properties.get(propertyID), landlords.get(landlordID), results.getString("startDate"),
+                                results.getString("endData"), Double.valueOf(results.getString("monthlyRent"))));
+                for(int i = 0; i < landlords.size(); i++) {
+                    if(landlords.get(i).getLandlordID() == landlordID) {
+                        landlords.get(i).getProperties().add(properties.get(properties.size()-1));
+                        break;
+                    }
+                }
+
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        return contracts;
     }
 }
