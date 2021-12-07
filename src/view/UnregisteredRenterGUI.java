@@ -78,7 +78,7 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         String bathroomOptions[]= {"1","2","3","4","5"};
         String quadrantOptions[]= {"NW","NE","SW","SE"};
         String furnishingOptions[]= {"Furnished","Unfurnished"};
-        String propertyOptions[]= {"Apartment","Attatched","Detatched","Townhouse"};
+        String propertyOptions[]= {"Apartment","Attached","Detached","Townhouse"};
         
         String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing"};
         
@@ -166,7 +166,9 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
         	SearchDatabase searchingDatabase=new SearchDatabase(access.getDBConnect());
         	
-        	ArrayList<Property> array= searchingDatabase.searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue, 500.0);
+        	ArrayList<Property> array= searchingDatabase.searchItem("property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue, 500.0);
+        
+        	
         	
         	String properties [][]=new String[array.size()][8];
         	
