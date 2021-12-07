@@ -20,6 +20,7 @@ public class SingletonDatabaseAccess{
     private String PASSWORD; //store the user's account password -> have to initialize it to one of ours
     private static Connection dbConnect; //connection data member to establish connection to interact with database
     private boolean isSuccessful;
+
     public SingletonDatabaseAccess() {
     }
 
@@ -30,7 +31,7 @@ public class SingletonDatabaseAccess{
      * @params the password for the database connection
      *
      */
-    public void SingletonDatabaseAccess (String DBURL, String USERNAME, String PASSWORD) {
+    public SingletonDatabaseAccess (String DBURL, String USERNAME, String PASSWORD) {
         //dont have to take user input once set to default value for password, username,
         // and DBURL
         this.DBURL = DBURL;
@@ -65,7 +66,11 @@ public class SingletonDatabaseAccess{
     public String getPassword() {
         return this.PASSWORD;
     }
-    
+
+    public boolean isSuccessful() {
+        return isSuccessful;
+    }
+
     //design pattern Singleton requirement
     public static SingletonDatabaseAccess getOnlyInstance(){
 		if(onlyInstance == null){
@@ -122,7 +127,6 @@ public class SingletonDatabaseAccess{
 
         return data;
     }
-
     public ArrayList<Renter> retrieveRenters() {
         ArrayList<Renter> renters = new ArrayList<Renter>();
         String Query = "SELECT * FROM USERS INNER JOIN RENTER ON userID=renterID";
@@ -188,9 +192,9 @@ public class SingletonDatabaseAccess{
             int landlordID = 1;
             while(results.next()) {
                 properties.add(new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"),
-                        Integer.valueOf(results.getString("noBathrooms")), Integer.valueOf(results.getString("noBedthrooms")),
+                        Integer.valueOf(results.getString("noBathrooms")), Integer.valueOf(results.getString("noBedrooms")),
                         (results.getString("isFurnished").equals(""+1) ? true: false), results.getString("address"),
-                        results.getString("quadrant"),results.getString("status"), Double.valueOf(results.getString("price"))));
+                        results.getString("quadrant"),results.getString("state"), Double.valueOf(results.getString("price"))));
                 landlordID = Integer.valueOf(results.getString("landlordID"));
                 for(int i = 0; i < landlords.size(); i++) {
                     if(landlords.get(i).getLandlordID() == landlordID) {
@@ -208,7 +212,7 @@ public class SingletonDatabaseAccess{
 
     public ArrayList<Contract> retrieveContracts(ArrayList<Property> properties, ArrayList<Renter> renters, ArrayList<Landlord> landlords) {
         ArrayList<Contract> contracts = new ArrayList<Contract>();
-        String Query = "SELECT * FROM CONCTRACTS";
+        String Query = "SELECT * FROM CONTRACT";
         ResultSet results;
         try {
             Statement selectRenters = dbConnect.createStatement();
