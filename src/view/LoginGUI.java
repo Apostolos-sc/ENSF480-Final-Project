@@ -45,8 +45,8 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         usernameLabel = new JLabel("Username      :");
         passwordLabel = new JLabel("Password      :");
         selectUserLabel = new JLabel("User Type      :");
-        usernameTextField = new JTextField("User's email");
-        passwordTextField = new JTextField("User's password");
+        usernameTextField = new JTextField("");
+        passwordTextField = new JTextField("");
         selectUserTypeComboBox = new JComboBox<String>(typeOfUsers);
         guestButton = new JButton("Continue as a Guest");
         connectButton = new JButton("Login.");
@@ -75,6 +75,10 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         selectUserTypeComboBox.setPreferredSize(new Dimension(175, 25));
         usernameTextField.setPreferredSize(new Dimension(175, 25));
         passwordTextField.setPreferredSize(new Dimension(175, 25));
+
+        usernameTextField.setToolTipText("User's Email.");
+        passwordTextField.setToolTipText("User's Password.");
+        selectUserTypeComboBox.setToolTipText("Select type of user.");
         //Add Components to the JPanels.
 
         headerPanel.add(generalMessage1);
@@ -126,7 +130,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
                 }
                 else if(userType.equals("Landlord")) {
                     this.setVisible(false);
-                	LandlordGUI frame = new LandlordGUI((Landlord)checkedUser, this);
+                	LandlordGUI frame = new LandlordGUI((Landlord)checkedUser, this, data);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);
                     });

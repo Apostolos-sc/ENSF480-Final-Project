@@ -35,10 +35,10 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
         
         
         String[] columnNames = { "Name", "Email", "Message" };
-        inbox=new JTable(data,columnNames);
+        inbox = new JTable(data,columnNames);
         
         back = new JButton("Back");
-        reply=new JButton("Reply");
+        reply = new JButton("Reply");
         
         JPanel mainContainer = new JPanel();
         JPanel headerPanel = new JPanel();

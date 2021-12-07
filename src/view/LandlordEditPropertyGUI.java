@@ -8,6 +8,9 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+    This java class is deprecated.
+ */
 public class LandlordEditPropertyGUI extends JFrame implements ActionListener, MouseListener {
     private JLabel generalMessage1;
     private JLabel generalMessage2;

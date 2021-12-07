@@ -149,7 +149,6 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing","Property Type"};
         
         if(e.getSource().equals(searchButton)) {
-        	
         	int noOfBed = Integer.valueOf(bedrooms.getSelectedItem().toString());
         	int noOfBath = Integer.valueOf(bathrooms.getSelectedItem().toString());
         	String furnish=furnishing.getSelectedItem().toString();
@@ -167,12 +166,12 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
         	SearchDatabase searchingDatabase=new SearchDatabase(access.getDBConnect());
         	
-        	ArrayList<Property> array= searchingDatabase.searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue);
+        	ArrayList<Property> array= searchingDatabase.searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue, 500.0);
         	
         	String properties [][]=new String[array.size()][8];
         	
         	for(int i=0;i<array.size();i++) {
-        		properties[i][0]="";  //???? Price ??????
+        		properties[i][0]= String.valueOf(array.get(i).getPropertyDetails().getPrice());  //???? Price ??????
         		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
         		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
         		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
@@ -215,7 +214,7 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
 			String properties [][]=new String[array.size()][8];
         	
         	for(int i=0;i<array.size();i++) {
-        		properties[i][0]="";  //???? Price ??????
+        		properties[i][0]= String.valueOf(array.get(i).getPropertyDetails().getPrice());  //???? Price ??????
         		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
         		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
         		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
