@@ -40,7 +40,7 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
         SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
         SearchDatabase search=new SearchDatabase(access.getDBConnect());
         
-        arr=search.getAllInboxMessages("Inbox",myInfo);//Gets all the messages belonging to specific reciever email
+        arr=search.getAllInboxMessages("inbox",myInfo);//Gets all the messages belonging to specific reciever email
  
         
         String data[][]=this.getMyMessages(arr);
@@ -118,9 +118,11 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
    String[][] getMyMessages(ArrayList<InboxMessages> array){
 	   String holder[][]=new String[array.size()][3];
 	   for(int i=0;i<array.size();i++) {
-		   holder[0][i]=array.get(i).getSenderEmail();
-		   holder[1][i]=array.get(i).getRecieverEmail();
-		   holder[2][i]=array.get(i).getMessage();
+		   //System.out.println(array.get(i).getRecieverEmail()+myInfo.getEmail()+"K");
+		   
+			   holder[i][0]=array.get(i).getSenderEmail();
+			   holder[i][1]=array.get(i).getRecieverEmail();
+			   holder[i][2]=array.get(i).getMessage();
 		   
 	   }
 	   return holder;
