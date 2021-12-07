@@ -27,7 +27,7 @@ public class SingletonDatabaseAccess{
      * @params the password for the database connection
      *
      */
-    public void SingletonDatabaseAccess (String DBURL, String USERNAME, String PASSWORD) {
+    public SingletonDatabaseAccess (String DBURL, String USERNAME, String PASSWORD) {
         //dont have to take user input once set to default value for password, username,
         // and DBURL
         this.DBURL = DBURL;
