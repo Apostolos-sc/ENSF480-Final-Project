@@ -8,6 +8,9 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * RegisterProperty GUI Object deprecated.
+ */
 public class RegisterProperty extends JFrame implements ActionListener, MouseListener {
     private JLabel generalMessage1;
     private JLabel generalMessage2;
@@ -58,8 +61,6 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         quadrantMessage = new JLabel("Quadrant: ");
         priceMessage = new JLabel("Price:  ");
         propertyTypeLabel = new JLabel("Property Type:  ");
-        //usernameLabel = new JLabel("Username      :");
-        //passwordLabel = new JLabel("Password      :");
         
         propertyIDTextField = new JTextField("Property ID", 18);
         bathroomsTextField = new JTextField("Bathrooms", 18);
@@ -74,14 +75,7 @@ public class RegisterProperty extends JFrame implements ActionListener, MouseLis
         
         addressTextField = new JTextField("Address", 18);
         quadrantTextField = new JTextField("Quadrant", 18);
-       // usernameTextField = new JTextField("User's username", 18);
-       // passwordTextField = new JTextField("User's password", 18);
 
-        //connectButton = new JButton("Register.");
-        //add Mouse Listeners to the JTextFields and ActionListener to the JButton
-        //usernameTextField.addMouseListener(this);
-        //passwordTextField.addMouseListener(this);
-        //connectButton.addActionListener(this);
         backButton = new JButton("Back");
         registerButton = new JButton("Register");
         

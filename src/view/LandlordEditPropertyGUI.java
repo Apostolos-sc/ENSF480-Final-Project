@@ -8,6 +8,9 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+    This java class is deprecated.
+ */
 public class LandlordEditPropertyGUI extends JFrame implements ActionListener, MouseListener {
     private JLabel generalMessage1;
     private JLabel generalMessage2;
@@ -20,8 +23,11 @@ public class LandlordEditPropertyGUI extends JFrame implements ActionListener, M
     
     private JButton backButton;
 
-    public LandlordEditPropertyGUI() {
+    private Landlord landlord;
+    
+    public LandlordEditPropertyGUI(Landlord landlord) {
         super("Connect to Server.");
+        this.landlord=landlord;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,19 +50,42 @@ public class LandlordEditPropertyGUI extends JFrame implements ActionListener, M
         //usernameTextField.addMouseListener(this);
         //passwordTextField.addMouseListener(this);
         //connectButton.addActionListener(this);
+        String properties [][]=new String[landlord.getPropertySize()][8];
+    	
+    	for(int i=0;i<landlord.getPropertySize();i++) {
+    		properties[i][0]="";  //???? Price ??????
+    		properties[i][1]=landlord.getProperty(i).getPropertyLocation().getAddress();
+    		properties[i][2]=String.valueOf(landlord.getProperty(i).getPropertyDetails().getNoBedrooms());
+    		properties[i][3]=String.valueOf(landlord.getProperty(i).getPropertyDetails().getNoBathrooms());
+    		properties[i][4]=landlord.getProperty(i).getPropertyLocation().getQuadrant();
+    		
+    		boolean furnishedCheck=landlord.getProperty(i).getPropertyDetails().isFurnished();
+    		String furnishToString = new String();
+    		
+    		if(furnishedCheck==true) {
+    			furnishToString="Furnished";
+    		}
+    		else {
+    			furnishToString="Unfurnished";
+    		}
+    		properties[i][5]=furnishToString;
+    		properties[i][6]=landlord.getProperty(i).getPropertyDetails().getPropertyType();
+    		properties[i][7]=String.valueOf(landlord.getProperty(i).getPropertyID());
+    	}
+        String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing","Property Type"};
+
+    	information=new JTable(properties,columns);
+    	
         backButton = new JButton("Back");
-        
-        
         backButton.addActionListener(this);
         //Create the JPanels.
         JPanel mainContainer = new JPanel();
         JPanel headerPanel = new JPanel();
-        JPanel informationPanel = new JPanel();
+        JScrollPane informationPanel = new JScrollPane(information);
         JPanel logoutPanel = new JPanel();
         //Set the Layouts for the JPanels
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
         headerPanel.setLayout(new FlowLayout());
-        informationPanel.setLayout(new FlowLayout());
        
         logoutPanel.setLayout(new FlowLayout());
         //Add Components to the JPanels.

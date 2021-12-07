@@ -5,12 +5,14 @@ public class PropertyDetails {
     private int noBathrooms;
     private int noBedrooms;
     private boolean isFurnished;
+    private double price;
 
-    public PropertyDetails(String propertyType, int noBathrooms, int noBedrooms, boolean isFurnished) {
+    public PropertyDetails(String propertyType, int noBathrooms, int noBedrooms, boolean isFurnished, double price) {
         this.isFurnished = isFurnished;
         this.noBathrooms = noBathrooms;
         this.noBedrooms = noBedrooms;
         this.propertyType = propertyType;
+        this.price = price;
     }
 
     public String getPropertyType() {
@@ -29,6 +31,10 @@ public class PropertyDetails {
         return isFurnished;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
     public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
     }
@@ -43,5 +49,9 @@ public class PropertyDetails {
 
     public void setFurnished(boolean furnished) {
         isFurnished = furnished;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

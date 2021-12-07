@@ -147,9 +147,8 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
         String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing","Property Type"};
-
+        
         if(e.getSource().equals(searchButton)) {
-        	
         	int noOfBed = Integer.valueOf(bedrooms.getSelectedItem().toString());
         	int noOfBath = Integer.valueOf(bathrooms.getSelectedItem().toString());
         	String furnish=furnishing.getSelectedItem().toString();
@@ -163,14 +162,16 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         	String quadrantValue=quadrant.getSelectedItem().toString();
         	String typeOfProperty= propertyType.getSelectedItem().toString();
         	
-        	System.out.println(noOfBed+" "+noOfBath+" "+furnish+" "+quadrantValue+" "+typeOfProperty);
+//        	System.out.println(noOfBed+" "+noOfBath+" "+furnish+" "+quadrantValue+" "+typeOfProperty);
+        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+        	SearchDatabase searchingDatabase=new SearchDatabase(access.getDBConnect());
         	
-        	ArrayList<Property> array= searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue);
+        	ArrayList<Property> array= searchingDatabase.searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue, 500.0);
         	
-        	String properties [][]=new String[array.size()][7];
+        	String properties [][]=new String[array.size()][8];
         	
         	for(int i=0;i<array.size();i++) {
-        		properties[i][0]="";  //???? Price ??????
+        		properties[i][0]= String.valueOf(array.get(i).getPropertyDetails().getPrice());  //???? Price ??????
         		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
         		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
         		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
@@ -185,6 +186,7 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         		}
         		properties[i][5]=furnishToString;
         		properties[i][6]=array.get(i).getPropertyDetails().getPropertyType();
+        		properties[i][7]=String.valueOf(array.get(i).getPropertyID());
         	}
         	
         	if(array.size()==0) {
@@ -197,45 +199,50 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
 	          });
         	}
         }
+       
         if(e.getSource().equals(searchAllButton)) {
             //String tmp[][]={{"$1000","101 Uni","1","5","NW","Furnished"},{"$1500","101 Mall","2","1","SW","Unfurnished"}};
 //            SearchPropertyGUI loginFrame = new SearchPropertyGUI(tmp);
 //	          EventQueue.invokeLater(() -> {
 //	              loginFrame.setVisible(true);
 //	          });
+        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+        	SearchDatabase searchingDatabase=new SearchDatabase(access.getDBConnect());
+			
+        	ArrayList<Property> array= searchingDatabase.getAllProperties("Property");
         	
+			String properties [][]=new String[array.size()][8];
         	
-//			ArrayList<Property> array= searchItem("Property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue);
-//        	
-//        	String properties [][]=new String[array.size()][7];
-//        	
-//        	for(int i=0;i<array.size();i++) {
-//        		properties[i][0]="";  //???? Price ??????
-//        		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
-//        		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
-//        		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
-//        		properties[i][4]=array.get(i).getPropertyLocation().getQuadrant();
-//        		boolean furnishedCheck=array.get(i).getPropertyDetails().isFurnished();
-//        		String furnishToString = new String();
-//        		if(furnishedCheck==true) {
-//        			furnishToString="Furnished";
-//        		}
-//        		else {
-//        			furnishToString="Unfurnished";
-//        		}
-//        		properties[i][5]=furnishToString;
-//        		properties[i][6]=array.get(i).getPropertyDetails().getPropertyType();
-//        	}
-//        	
-//        	if(array.size()==0) {
-//            	JOptionPane.showMessageDialog(null, "Could not find any such property. Try Again!");
-//        	}
-//        	else {
-//        	 SearchPropertyGUI loginFrame = new SearchPropertyGUI(properties);
-//	          EventQueue.invokeLater(() -> {
-//	              loginFrame.setVisible(true);
-//	          });
-//        	}
+        	for(int i=0;i<array.size();i++) {
+        		properties[i][0]= String.valueOf(array.get(i).getPropertyDetails().getPrice());  //???? Price ??????
+        		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
+        		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
+        		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
+        		properties[i][4]=array.get(i).getPropertyLocation().getQuadrant();
+        		
+        		boolean furnishedCheck=array.get(i).getPropertyDetails().isFurnished();
+        		String furnishToString = new String();
+        		
+        		if(furnishedCheck==true) {
+        			furnishToString="Furnished";
+        		}
+        		else {
+        			furnishToString="Unfurnished";
+        		}
+        		properties[i][5]=furnishToString;
+        		properties[i][6]=array.get(i).getPropertyDetails().getPropertyType();
+        		properties[i][7]=String.valueOf(array.get(i).getPropertyID());
+        	}
+        	
+        	if(array.size()==0) {
+            	JOptionPane.showMessageDialog(null, "Could not find any such property. Try Again!");
+        	}
+        	else {
+        	 SearchPropertyGUI loginFrame = new SearchPropertyGUI(properties);
+	          EventQueue.invokeLater(() -> {
+	              loginFrame.setVisible(true);
+	          });
+        	}
         }
 
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.

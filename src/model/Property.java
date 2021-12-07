@@ -7,9 +7,9 @@ public class Property {
     private String status;
 
     public Property(int propertyID, String propertyType, int noBathrooms, int noBedrooms,
-                    boolean isFurnished, String address, String quadrant,String status) {
+                    boolean isFurnished, String address, String quadrant,String status, double price) {
         this.propertyID = propertyID;
-        this.propertyDetails = new PropertyDetails(propertyType, noBathrooms, noBedrooms, isFurnished);
+        this.propertyDetails = new PropertyDetails(propertyType, noBathrooms, noBedrooms, isFurnished, price);
         this.propertyLocation = new PropertyLocation(address, quadrant);
         this.status = status;
     }
