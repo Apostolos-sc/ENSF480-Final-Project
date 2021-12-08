@@ -13,7 +13,7 @@ public class SearchDatabase {
         this.dbConnect= dbConnection;
     }
 
-    
+
     //the argument table is the name of the table we are traversing through, which is the property table
     public ArrayList<Property> searchItem(String table, String typeofProperty, int noOfBed, int noOfBath, boolean isFurnished, String quadrant, double price) throws IllegalArgumentException {
         ArrayList<Property> properties= new ArrayList<>();
@@ -213,6 +213,99 @@ public class SearchDatabase {
 	    	}
     	}
     	return email;
-    }    
+    }  
+    
+    public int propertyMaxID() {
+		//ArrayList<InboxMessages> messages = new ArrayList<>();
+	    int max=-10;
+	    try (Statement stmt = dbConnect.createStatement()) {
+	        ResultSet results = stmt.executeQuery("SELECT *FROM property"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+	        int i = 0;
+	        while (results.next()) {// takes into account number of rows that were returned by the query
+	            ResultSetMetaData rsmd = results.getMetaData();
+	         
+	            if(results.getInt("propertyID")>max) {
+	            	max=results.getInt("propertyID");
+	            }
+	                                  
+	            i++;
+	        }
+	        stmt.close();
+	        results.close();
+	
+	        if (i == 0) {
+	            throw new IllegalArgumentException("There are currently no properties in the system");
+	        }
+	
+	    } catch (SQLException e) {
+	        throw new IllegalArgumentException("Unable to access to database");
+	    }
+	    
+	    return max;
+    
+    }
+    
+    public void addProperty(Property p, int landlordID) {
+    	
+    	try (Statement stmt1 = dbConnect.createStatement()) {
+    		
+    
+            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO property(propertyID,landlordID,price,address,propertyType,quadrant,state,noBedrooms,noBathrooms,isFurnished) VALUES(?,?,?,?,?,?,?,?,?,?)");
+        	statement.setInt(1, p.getPropertyID());
+        	statement.setInt(2, landlordID);
+        	statement.setDouble(3, p.getPropertyDetails().getPrice());
+        	statement.setString(4, p.getPropertyLocation().getAddress());
+        	statement.setString(5, p.getPropertyDetails().getPropertyType());
+        	statement.setString(6, p.getPropertyLocation().getQuadrant());
+        	statement.setString(7, p.getStatus());
+        	statement.setInt(8, p.getPropertyDetails().getNoBedrooms());
+        	statement.setInt(9,p.getPropertyDetails().getNoBathrooms());
+        	int furnish=0;
+        	if(p.getPropertyDetails().isFurnished()==true) {
+        		furnish=1;
+        	}        	
+        	statement.setInt(10,furnish);
+        	
+        	System.out.println(statement);
+        	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	 statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    	//System.out.println(stmt+editValue);
+    }
+    public void updateProperty(Property p,int landlordID) {
+    
+    	
+    			try (Statement stmt1 = dbConnect.createStatement()) {
+    	    		
+    			    
+    	            PreparedStatement statement = dbConnect.prepareStatement("UPDATE property SET landlordID=?,price=?,address=?,propertyType=?,quadrant=?,state=?,noBedrooms=?,noBathrooms=?,isFurnished=? WHERE propertyID = ?");
+    	        	statement.setInt(1, landlordID);
+    	        	statement.setDouble(2, p.getPropertyDetails().getPrice());
+    	        	statement.setString(3, p.getPropertyLocation().getAddress());
+    	        	statement.setString(4, p.getPropertyDetails().getPropertyType());
+    	        	statement.setString(5, p.getPropertyLocation().getQuadrant());
+    	        	statement.setString(6, p.getStatus());
+    	        	statement.setInt(7, p.getPropertyDetails().getNoBedrooms());
+    	        	statement.setInt(8,p.getPropertyDetails().getNoBathrooms());
+
+    	        	int furnish=0;
+    	        	if(p.getPropertyDetails().isFurnished()==true) {
+    	        		furnish=1;
+    	        	}        	
+    	        	statement.setInt(9,furnish);
+    	        	statement.setInt(10, p.getPropertyID());
+
+    	        	System.out.println(statement);
+    	        	statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+    	        	 statement.close();
+    	        }
+    	        catch (SQLException e) {
+    	            throw new IllegalArgumentException("Unable to access to database");
+    	        }
+    	
+    }
 }
 
