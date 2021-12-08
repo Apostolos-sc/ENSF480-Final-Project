@@ -305,5 +305,29 @@ public class SearchDatabase {
     	            throw new IllegalArgumentException("Unable to access to database");
     	        }	
     }
+    public void updateLandlord(Landlord p) {
+        
+    	
+		try (Statement stmt1 = dbConnect.createStatement()) {
+    		
+		    
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE users SET fName=?,lName=?,email=?,pass=?,dob=? WHERE userID =?");
+        	statement.setString(1, p.getFirstName());
+        	statement.setString(2, p.getLastName());
+        	statement.setString(3, p.getEmail());
+        	statement.setString(4, p.getPassword());
+        	statement.setString(5, p.getDob());
+        	statement.setInt(6, p.getLandlordID());
+        
+
+        	System.out.println(statement);
+        	statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	 statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }	
+}
+    
 }
 
