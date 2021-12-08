@@ -11,7 +11,7 @@ import model.*;
 import java.awt.*;
 
 public class Reply extends JFrame implements ActionListener, MouseListener {
-    private String username;
+	private String username;
     private String password;
     private JLabel generalMessage1;
     private JLabel generalMessage2;
@@ -123,26 +123,25 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
     			
     			//System.out.println(reciever);
         		
+        		SearchDatabase search=new SearchDatabase(access.getDBConnect());
+        		String recieverEmail=search.getEmailFromID(Integer.valueOf(propertyIDTextField.getText()));
         		
-        		ArrayList<Landlord> arr=access.retrieveLandlords();
-        		String recieverEmail=null;
         		
-        		for(int i=0;i<arr.size();i++) {
-    				System.out.println(arr.get(i).getPropertySize());
-
-        			for(int j=0;j<arr.get(i).getProperties().size();j++) {
-    					System.out.println(arr.get(i).getEmail());
-
-        				if(arr.get(i).getProperty(j).getPropertyID()==Integer.valueOf(sender)
-        						||arr.get(i).getEmail().equals(sender)) {
-        					
-        					recieverEmail=arr.get(i).getEmail();
-        					//System.out.println(arr.get(i).getProperty(j).getPropertyID());
-        					//System.out.println(arr.get(i).getEmail());
-        					break;
-        				}
-        			}
-        		}
+//        		for(int i=0;i<landlordArray.size();i++) {
+//    				System.out.println(landlordArray.get(i).getPropertySize());
+//
+//        			for(int j=0;j<landlordArray.get(i).getProperties().size();j++) {
+//    					System.out.println(landlordArray.get(i).getEmail());
+//
+//        				if(landlordArray.get(i).getProperty(j).getPropertyID()==Integer.valueOf(propertyIDTextField.getText())) {
+//        					
+//        					recieverEmail=landlordArray.get(i).getEmail();
+//        					//System.out.println(arr.get(i).getProperty(j).getPropertyID());
+//        					//System.out.println(arr.get(i).getEmail());
+//        					break;
+//        				}
+//        			}
+//        		}
         		
         		if(recieverEmail==null) {
                 	JOptionPane.showMessageDialog(null, "Recipient could not recieve message. Try Again!");
@@ -150,25 +149,25 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
         		}
         		else {
                 
-        			SearchDatabase search=new SearchDatabase(access.getDBConnect());
+        			SearchDatabase searchInbox=new SearchDatabase(access.getDBConnect());
         			
-        		InboxMessages tmp=new InboxMessages(4,messageToSend,sender,recieverEmail);
-        		/*Send to database to add to inbox*/
-
+        			int id=searchInbox.inboxMaxID(); 
+        		InboxMessages tmp=new InboxMessages(id+1,messageToSend,sender,recieverEmail);
+	    		/*Send to database to add to inbox*/
+	    		search.sendEmailMessage(tmp);
+	        	JOptionPane.showMessageDialog(null, "Message Sent!");
         		
-            	JOptionPane.showMessageDialog(null, "Message Sent!");
-
         		}
     		}
     		else {
        		 	String recieverEmail=reciever;
     	
        		 	SearchDatabase search=new SearchDatabase(access.getDBConnect());
-	    			
-	    		InboxMessages tmp=new InboxMessages(4,messageToSend,sender,recieverEmail);
+	    			int id=search.inboxMaxID();    		 	
+       		 	//System.out.println(messageToSend+" "+sender+" "+recieverEmail);
+	    		InboxMessages tmp=new InboxMessages(id+1,messageToSend,sender,recieverEmail);
 	    		/*Send to database to add to inbox*/
-	
-	    		
+	    		search.sendEmailMessage(tmp);
 	        	JOptionPane.showMessageDialog(null, "Message Sent!");
 	
 	    		
