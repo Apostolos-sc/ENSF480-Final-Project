@@ -272,6 +272,9 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
                     landlord.setPassword(password);
                 }
                 //CALL CONTROLLER FUNCTION TO CHANGE landlord
+                
+                SearchDatabase search = new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+                search.updateLandlord(landlord);
                 JOptionPane.showMessageDialog(null, "Profile Information Changed!.");
             }
         }));
@@ -423,7 +426,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
                         Property addProperty = new Property(id+1,propertyTypeValue,bathrooms, bedrooms,furnished,address,quadrant,"Not Listed",price);
                        
                         search.addProperty(addProperty,landlord.getLandlordID());
-                        
+                        landlord.addProperty(addProperty);
                         //implement DB Action here.
                         JOptionPane.showMessageDialog(null, "Property was registered");
                         mainContainer.removeAll();
@@ -600,6 +603,17 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
                         Property p1=new Property(propertyID,propertyTypeValue,bathrooms,bedrooms,furnished,address,quadrant,"Listed",price);
                         SearchDatabase search=new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
                         search.updateProperty(p1, landlord.getLandlordID());
+                        
+                        ArrayList<Property> arr = landlord.getProperties();
+                        
+                        for(int i=0;i<arr.size();i++) {
+                        	if(arr.get(i).getPropertyID()==propertyID) {
+                        		arr.remove(i);
+                        		break;
+                        	}
+                        }
+                        arr.add(p1);
+                        
                         //implement DB Action here.
                         JOptionPane.showMessageDialog(null, "Property was updated.");
                         mainContainer.removeAll();
