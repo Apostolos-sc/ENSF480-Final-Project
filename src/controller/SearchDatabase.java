@@ -129,11 +129,11 @@ public class SearchDatabase {
     	//String finalStmt=stmt;
     	System.out.println(msg.getMessageID());
         try (Statement stmt1 = dbConnect.createStatement()) {
-            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO inbox(inboxID,senderEmail,recieverEmail,message) VALUES(?,?,?,?)");
-        	statement.setInt(1, msg.getMessageID());
-        	statement.setString(2, msg.getSenderEmail());
-        	statement.setString(3, msg.getRecieverEmail());
-        	statement.setString(4, msg.getMessage());
+            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO inbox(senderEmail,recieverEmail,message) VALUES(?,?,?)");
+        	//statement.setInt(1, msg.getMessageID());
+        	statement.setString(1, msg.getSenderEmail());
+        	statement.setString(2, msg.getRecieverEmail());
+        	statement.setString(3, msg.getMessage());
 
         	System.out.println(statement);
         	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
@@ -144,35 +144,34 @@ public class SearchDatabase {
         }
     	//System.out.println(stmt+editValue);
     }
-    public int inboxMaxID() {
-    		//ArrayList<InboxMessages> messages = new ArrayList<>();
-        int max=-10;
-        try (Statement stmt = dbConnect.createStatement()) {
-            ResultSet results = stmt.executeQuery("SELECT *FROM inbox"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
-            int i = 0;
-            while (results.next()) {// takes into account number of rows that were returned by the query
-                ResultSetMetaData rsmd = results.getMetaData();
-             
-                if(results.getInt("inboxID")>max) {
-                	max=results.getInt("inboxID");
-                }
-                                      
-                i++;
-            }
-            stmt.close();
-            results.close();
-
-            if (i == 0) {
-                throw new IllegalArgumentException("There are currently no messages in the system");
-            }
-
-        } catch (SQLException e) {
-            throw new IllegalArgumentException("Unable to access to database");
-        }
-        
-        return max;
-        
-    }
+//    public int inboxMaxID() {
+//    		//ArrayList<InboxMessages> messages = new ArrayList<>();
+//        int max=-1;
+//        try (Statement stmt = dbConnect.createStatement()) {
+//            ResultSet results = stmt.executeQuery("SELECT *FROM inbox"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+//            int i = 0;
+//            while (results.next()) {// takes into account number of rows that were returned by the query
+//                ResultSetMetaData rsmd = results.getMetaData();
+//   
+//                if(results.getInt("inboxID")>max) {
+//                	max=results.getInt("inboxID");
+//                }                    
+//                i++;
+//            }
+//            stmt.close();
+//            results.close();
+//
+//            if (i == 0) {
+//                throw new IllegalArgumentException("There are currently no messages in the system");
+//            }
+//
+//        } catch (SQLException e) {
+//            throw new IllegalArgumentException("Unable to access to database");
+//        }
+//        
+//        return max;
+//        
+//    }
     
     public String getEmailFromID(int ID) {
     	
@@ -304,8 +303,7 @@ public class SearchDatabase {
     	        }
     	        catch (SQLException e) {
     	            throw new IllegalArgumentException("Unable to access to database");
-    	        }
-    	
+    	        }	
     }
 }
 
