@@ -1,11 +1,13 @@
 package view;
 
 import java.awt.event.*;
-import controller.*;
-import model.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+
+import controller.*;
+import model.*;
+
 import java.awt.*;
 
 public class Reply extends JFrame implements ActionListener, MouseListener {
@@ -110,17 +112,67 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
     	if(e.getSource().equals(send)) {
-    		String sender;
+    		String reciever=usernameTextField.getText();
+    		String sender = senderTextField.getText();
+    		String messageToSend = message.getText();
+    		
+    		SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+    		
     		if(this.isInteger(propertyIDTextField.getText())) {
-    			sender=propertyIDTextField.getText();
+    			reciever=propertyIDTextField.getText();
+    			
+    			//System.out.println(reciever);
+        		
+        		
+        		ArrayList<Landlord> arr=access.retrieveLandlords();
+        		String recieverEmail=null;
+        		
+        		for(int i=0;i<arr.size();i++) {
+    				System.out.println(arr.get(i).getPropertySize());
+
+        			for(int j=0;j<arr.get(i).getProperties().size();j++) {
+    					System.out.println(arr.get(i).getEmail());
+
+        				if(arr.get(i).getProperty(j).getPropertyID()==Integer.valueOf(sender)
+        						||arr.get(i).getEmail().equals(sender)) {
+        					
+        					recieverEmail=arr.get(i).getEmail();
+        					//System.out.println(arr.get(i).getProperty(j).getPropertyID());
+        					//System.out.println(arr.get(i).getEmail());
+        					break;
+        				}
+        			}
+        		}
+        		
+        		if(recieverEmail==null) {
+                	JOptionPane.showMessageDialog(null, "Recipient could not recieve message. Try Again!");
+
+        		}
+        		else {
+                
+        			SearchDatabase search=new SearchDatabase(access.getDBConnect());
+        			
+        		InboxMessages tmp=new InboxMessages(4,messageToSend,sender,recieverEmail);
+        		/*Send to database to add to inbox*/
+
+        		
+            	JOptionPane.showMessageDialog(null, "Message Sent!");
+
+        		}
     		}
     		else {
-       		 sender = usernameTextField.getText();
+       		 	String recieverEmail=reciever;
+    	
+       		 	SearchDatabase search=new SearchDatabase(access.getDBConnect());
+	    			
+	    		InboxMessages tmp=new InboxMessages(4,messageToSend,sender,recieverEmail);
+	    		/*Send to database to add to inbox*/
+	
+	    		
+	        	JOptionPane.showMessageDialog(null, "Message Sent!");
+	
+	    		
     		}
-    		System.out.println(sender);
-    		String reciever = senderTextField.getText();
-    		String messageToSend = message.getText();
-    		/*Send to database to add to inbox*/
     	}
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
     }
