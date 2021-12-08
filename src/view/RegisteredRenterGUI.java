@@ -5,8 +5,14 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+
+import controller.SearchDatabase;
+import controller.SingletonDatabaseAccess;
+
 import java.awt.*;
-import java.awt.Desktop;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,6 +28,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     private JTextField passwordTextField;
 
     private JToggleButton subscribeMenuButton;
+    private JButton viewSubscribedButton;
     private JButton viewPropertyButton;
     private JButton payButton;
     private JButton messageButton;
@@ -29,6 +36,9 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     private JButton logoutButton;
     private Renter renter;
     private Frame parentFrame;
+    
+    JPanel mainContainer;
+
 
     public RegisteredRenterGUI(Renter renter, Frame parentFrame) {
         super("Registered Renter System. Logged in as "+ renter.getFirstName() + " " + renter.getLastName() + ".");
@@ -63,12 +73,14 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
             subDescription="Unsubscribed";
         }
         subscribeMenuButton = new JToggleButton(subDescription);
+        viewSubscribedButton= new JButton("View Suggested Properties");
         viewPropertyButton = new JButton("View Property");
         payButton = new JButton("Pay");
         messageButton = new JButton("Email Message");
         inboxButton = new JButton("Inbox");
         logoutButton = new JButton("Logout");
         
+        viewSubscribedButton.addActionListener(this);
         subscribeMenuButton.addActionListener(this);
         viewPropertyButton.addActionListener(this);
         payButton.addActionListener(this);
@@ -80,7 +92,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
             this.dispose();
         });
         //Create the JPanels.
-        JPanel mainContainer = new JPanel();
+        mainContainer = new JPanel();
         JPanel headerPanel = new JPanel();
         JPanel subscribePanel = new JPanel();
         JPanel viewPropertyPanel = new JPanel();
@@ -103,6 +115,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         headerPanel.add(generalMessage1);
         headerPanel.add(generalMessage2);
         subscribePanel.add(subscribeMenuButton);
+        subscribePanel.add(viewSubscribedButton);
         viewPropertyPanel.add(viewPropertyButton);
         payPanel.add(payButton);
         messagePanel.add(messageButton);
@@ -186,6 +199,15 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
             });
         }
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
+        if(e.getSource().equals(viewSubscribedButton)) {
+        	
+        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+        	SearchDatabase search=new SearchDatabase(access.getDBConnect());
+            ArrayList<Property> arr=search.getAllProperties("property");
+            
+            showProperties(arr);
+            	
+        }
     }
 
     public void mouseClicked(MouseEvent event) {
@@ -213,5 +235,48 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
 
     public void mouseEntered(MouseEvent event) {
 
+    }
+    public void showTable(String[][] tableInfo, String[] columns, String tableHeader) {
+        TableModel model = new DefaultTableModel(tableInfo,columns)
+        {
+            public boolean isCellEditable(int row, int column)
+            {
+                return false;//This causes all cells to be not editable
+            }
+        };
+        JTable table = new JTable(model);
+        table.setBackground(new Color(191, 191, 191));
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(128, 128, 128));
+        JScrollPane pane = new JScrollPane(table);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        mainContainer.removeAll();
+        JPanel headerPanel = new JPanel();
+        JPanel tablePanel = new JPanel();
+        headerPanel.setLayout(new FlowLayout());
+        tablePanel.setLayout(new GridLayout(1,1)); /* little trick ;) and believe me that this step is important to the automatic all columns resize! A import is also needed for using GridLayout*/
+        tablePanel.add(pane);
+
+        mainContainer.add(headerPanel);
+        mainContainer.add(tablePanel);
+        this.revalidate();
+        this.repaint();
+    }
+    
+    public void showProperties(ArrayList<Property>arr) {
+        String[][] tableInfo = new String[arr.size()][8];
+        for(int i = 0; i < arr.size(); i++) {
+        	
+            tableInfo[i][0] = ""+arr.get(i).getPropertyID();
+            tableInfo[i][1] = arr.get(i).getPropertyDetails().getPropertyType();
+            tableInfo[i][2] = arr.get(i).getPropertyLocation().getAddress();
+            tableInfo[i][3] = ""+arr.get(i).getPropertyDetails().getNoBedrooms();
+            tableInfo[i][4] = ""+arr.get(i).getPropertyDetails().getNoBathrooms();
+            tableInfo[i][5] = arr.get(i).getPropertyLocation().getQuadrant();
+            tableInfo[i][6] = (arr.get(i).getPropertyDetails().isFurnished() ? "Yes" : "No");
+            tableInfo[i][7] = arr.get(i).getStatus();
+        }
+        String columns[] = {"ID","Type","Address","NoBedrooms", "NoBathrooms","Quadrant","Furnished", "Status"};
+        showTable(tableInfo,columns , "Viewing Properties :");
     }
 }
