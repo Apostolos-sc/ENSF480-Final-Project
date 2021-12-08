@@ -13,7 +13,7 @@ public class SearchDatabase {
         this.dbConnect= dbConnection;
     }
 
-
+    
     //the argument table is the name of the table we are traversing through, which is the property table
     public ArrayList<Property> searchItem(String table, String typeofProperty, int noOfBed, int noOfBath, boolean isFurnished, String quadrant, double price) throws IllegalArgumentException {
         ArrayList<Property> properties= new ArrayList<>();
