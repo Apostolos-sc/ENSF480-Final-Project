@@ -121,4 +121,98 @@ public class SearchDatabase {
         }
         return messages;
     }
+    
+    public void sendEmailMessage(InboxMessages msg) {
+    	//String stmt="INSERT INTO inbox (inboxID,senderEmail,recieverEmail,message) VALUES (?,?,?,?)";
+    	//String editValue=" VALUES ('"+String.valueOf(msg.getMessageID())+"','"+msg.getSenderEmail()+"','"+msg.getRecieverEmail()+"','"+msg.getMessage()+"');";    	
+    	   
+    	//String finalStmt=stmt;
+    	System.out.println(msg.getMessageID());
+        try (Statement stmt1 = dbConnect.createStatement()) {
+            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO inbox(inboxID,senderEmail,recieverEmail,message) VALUES(?,?,?,?)");
+        	statement.setInt(1, msg.getMessageID());
+        	statement.setString(2, msg.getSenderEmail());
+        	statement.setString(3, msg.getRecieverEmail());
+        	statement.setString(4, msg.getMessage());
+
+        	System.out.println(statement);
+        	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	 statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    	//System.out.println(stmt+editValue);
+    }
+    public int inboxMaxID() {
+    		//ArrayList<InboxMessages> messages = new ArrayList<>();
+        int max=-10;
+        try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt.executeQuery("SELECT *FROM inbox"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            int i = 0;
+            while (results.next()) {// takes into account number of rows that were returned by the query
+                ResultSetMetaData rsmd = results.getMetaData();
+             
+                if(results.getInt("inboxID")>max) {
+                	max=results.getInt("inboxID");
+                }
+                                      
+                i++;
+            }
+            stmt.close();
+            results.close();
+
+            if (i == 0) {
+                throw new IllegalArgumentException("There are currently no messages in the system");
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+        
+        return max;
+        
+    }
+    
+    public String getEmailFromID(int ID) {
+    	
+    	int landlordID=-1;
+    	try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt.executeQuery("SELECT * FROM property");
+            int i = 0;
+            while (results.next()) {// takes into account number of rows that were returned by the query
+                ResultSetMetaData rsmd = results.getMetaData();
+                // propertyID , propertyType, noBathrooms, noBedrooms, isFurnished, address,
+                // quadrant, status
+                int holder=Integer.valueOf(results.getString("propertyID"));
+               if(holder==ID) {
+            	   landlordID=Integer.valueOf(results.getString("landlordID"));
+               }
+
+                i++;
+            }
+            stmt.close();
+            results.close();
+
+            if (i == 0) {
+                throw new IllegalArgumentException("There are currently no properties in the system");
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+
+    	SingletonDatabaseAccess access = SingletonDatabaseAccess.getOnlyInstance();
+    	ArrayList<Landlord> arr=access.retrieveLandlords();
+    	String email=null;
+    	if(landlordID!=-1) {
+	    	for(int i=0;i<arr.size();i++) {
+	    		if(arr.get(i).getLandlordID()==landlordID) {
+	    			email=arr.get(i).getEmail();
+	    		}
+	    	}
+    	}
+    	return email;
+    }    
 }
+
