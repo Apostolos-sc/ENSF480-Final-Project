@@ -151,8 +151,8 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
                 
         			SearchDatabase searchInbox=new SearchDatabase(access.getDBConnect());
         			
-        			int id=searchInbox.inboxMaxID(); 
-        		InboxMessages tmp=new InboxMessages(id+1,messageToSend,sender,recieverEmail);
+        			//int id=searchInbox.inboxMaxID(); 
+        		InboxMessages tmp=new InboxMessages(0,messageToSend,sender,recieverEmail);
 	    		/*Send to database to add to inbox*/
 	    		search.sendEmailMessage(tmp);
 	        	JOptionPane.showMessageDialog(null, "Message Sent!");
@@ -163,9 +163,9 @@ public class Reply extends JFrame implements ActionListener, MouseListener {
        		 	String recieverEmail=reciever;
     	
        		 	SearchDatabase search=new SearchDatabase(access.getDBConnect());
-	    			int id=search.inboxMaxID();    		 	
+	    		//	int id=search.inboxMaxID();    		 	
        		 	//System.out.println(messageToSend+" "+sender+" "+recieverEmail);
-	    		InboxMessages tmp=new InboxMessages(id+1,messageToSend,sender,recieverEmail);
+	    		InboxMessages tmp=new InboxMessages(0,messageToSend,sender,recieverEmail);
 	    		/*Send to database to add to inbox*/
 	    		search.sendEmailMessage(tmp);
 	        	JOptionPane.showMessageDialog(null, "Message Sent!");

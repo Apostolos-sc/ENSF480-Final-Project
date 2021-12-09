@@ -166,11 +166,11 @@ public class SearchDatabase {
     	//String finalStmt=stmt;
     	System.out.println(msg.getMessageID());
         try (Statement stmt1 = dbConnect.createStatement()) {
-            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO inbox(inboxID,senderEmail,recieverEmail,message) VALUES(?,?,?,?)");
-        	statement.setInt(1, msg.getMessageID());
-        	statement.setString(2, msg.getSenderEmail());
-        	statement.setString(3, msg.getRecieverEmail());
-        	statement.setString(4, msg.getMessage());
+            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO inbox(senderEmail,recieverEmail,message) VALUES(?,?,?)");
+        	//statement.setInt(1, msg.getMessageID());
+        	statement.setString(1, msg.getSenderEmail());
+        	statement.setString(2, msg.getRecieverEmail());
+        	statement.setString(3, msg.getMessage());
 
         	System.out.println(statement);
         	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
@@ -211,6 +211,34 @@ public class SearchDatabase {
         return max;
         
     }
+//    public int inboxMaxID() {
+//    		//ArrayList<InboxMessages> messages = new ArrayList<>();
+//        int max=-1;
+//        try (Statement stmt = dbConnect.createStatement()) {
+//            ResultSet results = stmt.executeQuery("SELECT *FROM inbox"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+//            int i = 0;
+//            while (results.next()) {// takes into account number of rows that were returned by the query
+//                ResultSetMetaData rsmd = results.getMetaData();
+//   
+//                if(results.getInt("inboxID")>max) {
+//                	max=results.getInt("inboxID");
+//                }                    
+//                i++;
+//            }
+//            stmt.close();
+//            results.close();
+//
+//            if (i == 0) {
+//                throw new IllegalArgumentException("There are currently no messages in the system");
+//            }
+//
+//        } catch (SQLException e) {
+//            throw new IllegalArgumentException("Unable to access to database");
+//        }
+//        
+//        return max;
+//        
+//    }
     
     public String getEmailFromID(int ID) {
     	
@@ -251,6 +279,145 @@ public class SearchDatabase {
 	    	}
     	}
     	return email;
-    }    
+    }  
+    
+    public int propertyMaxID() {
+		//ArrayList<InboxMessages> messages = new ArrayList<>();
+	    int max=-10;
+	    try (Statement stmt = dbConnect.createStatement()) {
+	        ResultSet results = stmt.executeQuery("SELECT *FROM property"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+	        int i = 0;
+	        while (results.next()) {// takes into account number of rows that were returned by the query
+	            ResultSetMetaData rsmd = results.getMetaData();
+	         
+	            if(results.getInt("propertyID")>max) {
+	            	max=results.getInt("propertyID");
+	            }
+	                                  
+	            i++;
+	        }
+	        stmt.close();
+	        results.close();
+	
+	        if (i == 0) {
+	            throw new IllegalArgumentException("There are currently no properties in the system");
+	        }
+	
+	    } catch (SQLException e) {
+	        throw new IllegalArgumentException("Unable to access to database");
+	    }
+	    
+	    return max;
+    
+    }
+    
+    public void addProperty(Property p, int landlordID) {
+    	
+    	try (Statement stmt1 = dbConnect.createStatement()) {
+    		
+    
+            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO property(propertyID,landlordID,price,address,propertyType,quadrant,state,noBedrooms,noBathrooms,isFurnished) VALUES(?,?,?,?,?,?,?,?,?,?)");
+        	statement.setInt(1, p.getPropertyID());
+        	statement.setInt(2, landlordID);
+        	statement.setDouble(3, p.getPropertyDetails().getPrice());
+        	statement.setString(4, p.getPropertyLocation().getAddress());
+        	statement.setString(5, p.getPropertyDetails().getPropertyType());
+        	statement.setString(6, p.getPropertyLocation().getQuadrant());
+        	statement.setString(7, p.getStatus());
+        	statement.setInt(8, p.getPropertyDetails().getNoBedrooms());
+        	statement.setInt(9,p.getPropertyDetails().getNoBathrooms());
+        	int furnish=0;
+        	if(p.getPropertyDetails().isFurnished()==true) {
+        		furnish=1;
+        	}        	
+        	statement.setInt(10,furnish);
+        	
+        	System.out.println(statement);
+        	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	 statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    	//System.out.println(stmt+editValue);
+    }
+    public void updateProperty(Property p,int landlordID) {
+    
+    	
+    			try (Statement stmt1 = dbConnect.createStatement()) {
+    	    		
+    			    
+    	            PreparedStatement statement = dbConnect.prepareStatement("UPDATE property SET price=?,address=?,propertyType=?,quadrant=?,state=?,noBedrooms=?,noBathrooms=?,isFurnished=? WHERE propertyID = ?");
+    	        	//statement.setInt(1, landlordID);
+    	        	statement.setDouble(1, p.getPropertyDetails().getPrice());
+    	        	statement.setString(2, p.getPropertyLocation().getAddress());
+    	        	statement.setString(3, p.getPropertyDetails().getPropertyType());
+    	        	statement.setString(4, p.getPropertyLocation().getQuadrant());
+    	        	statement.setString(5, p.getStatus());
+    	        	statement.setInt(6, p.getPropertyDetails().getNoBedrooms());
+    	        	statement.setInt(7,p.getPropertyDetails().getNoBathrooms());
+
+    	        	int furnish=0;
+    	        	if(p.getPropertyDetails().isFurnished()==true) {
+    	        		furnish=1;
+    	        	}        	
+    	        	statement.setInt(8,furnish);
+    	        	statement.setInt(9, p.getPropertyID());
+
+    	        	System.out.println(statement);
+    	        	statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+    	        	 statement.close();
+    	        }
+    	        catch (SQLException e) {
+    	            throw new IllegalArgumentException("Unable to access to database");
+    	        }	
+    }
+    public void updateLandlord(Landlord p) {
+        
+    	
+		try (Statement stmt1 = dbConnect.createStatement()) {
+    		
+		    
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE users SET fName=?,lName=?,email=?,pass=?,dob=? WHERE userID =?");
+        	statement.setString(1, p.getFirstName());
+        	statement.setString(2, p.getLastName());
+        	statement.setString(3, p.getEmail());
+        	statement.setString(4, p.getPassword());
+        	statement.setString(5, p.getDob());
+        	statement.setInt(6, p.getLandlordID());
+        
+
+        	System.out.println(statement);
+        	statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	 statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }	
+    }
+public void updateRenter(Renter r) {
+        
+    	
+		try (Statement stmt1 = dbConnect.createStatement()) {
+    		
+		    
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE users SET fName=?,lName=?,email=?,pass=?,dob=? WHERE userID =?");
+        	statement.setString(1, r.getFirstName());
+        	statement.setString(2, r.getLastName());
+        	statement.setString(3, r.getEmail());
+        	statement.setString(4, r.getPassword());
+        	statement.setString(5, r.getDob());
+        	statement.setInt(6, r.getRenterID());
+        
+
+        	System.out.println(statement);
+        	statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	 statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }	
+    }
+    
 }
 

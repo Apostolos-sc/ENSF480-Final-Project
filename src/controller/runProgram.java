@@ -37,7 +37,7 @@ public class runProgram {
 
 
         /* start with a LoginGui frame */
-        loginFrame = new LoginGUI(data);
+        loginFrame = new LoginGUI();
         EventQueue.invokeLater(() -> {
             loginFrame.setVisible(true);
         });
