@@ -13,7 +13,44 @@ public class SearchDatabase {
         this.dbConnect= dbConnection;
     }
 
-    
+    public void addProperty(Property prop, Landlord lord) {
+        try (Statement stmt1 = dbConnect.createStatement()){
+            PreparedStatement statement = dbConnect.
+            prepareStatement("INSERT INTO property(propertyID,landlordID,price,address,propertyType,quadrant,state,noBedrooms,noBathrooms,isFurnished) VALUES(?,?,?,?,?,?,?,?,?,?)");
+            statement.setInt(1, prop.getPropertyID());
+            statement.setInt(2, lord.getLandlordID());
+            statement.setDouble(3, prop.getPropertyDetails().getPrice());
+            statement.setString(4, prop.getPropertyLocation().getAddress());
+            statement.setString(5, prop.getPropertyDetails().getPropertyType());
+            statement.setString(6, prop.getPropertyLocation().getQuadrant());
+            statement.setString(7, prop.getStatus());
+            statement.setInt(8, prop.getPropertyDetails().getNoBedrooms());
+            statement.setInt(9, prop.getPropertyDetails().getNoBathrooms());
+            statement.setBoolean(10, prop.getPropertyDetails().isFurnished());
+
+            statement.execute(); 
+            //new function call check whether this property matches search criteria of renter
+            ArrayList<Integer> notifyRenters= notifProperty(prop);
+            if(notifyRenters.size()!=0){
+                //of matches notify the specific user
+            }
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
+    public ArrayList<Integer> notifProperty(Property prop){
+        ArrayList<Integer> notifyRenters= new ArrayList<Integer>();
+        // here when adding property if meets a renters search criteria get notified
+        // by observer
+        //traversing through search criteria table and checking if property matches
+        //return an arraylist of renters it mathched for an notify them
+        //else return empty array list
+        return notifyRenters;
+    }
+
     //the argument table is the name of the table we are traversing through, which is the property table
     public ArrayList<Property> searchItem(String table, String typeofProperty, int noOfBed, int noOfBath, boolean isFurnished, String quadrant, double price) throws IllegalArgumentException {
         ArrayList<Property> properties= new ArrayList<>();
@@ -144,6 +181,7 @@ public class SearchDatabase {
         }
     	//System.out.println(stmt+editValue);
     }
+
     public int inboxMaxID() {
     		//ArrayList<InboxMessages> messages = new ArrayList<>();
         int max=-10;
