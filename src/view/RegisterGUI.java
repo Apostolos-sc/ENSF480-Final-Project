@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
+import controller.SearchDatabase;
+import controller.SingletonDatabaseAccess;
 import model.User;
 
 import java.awt.*;
@@ -19,6 +21,7 @@ public class RegisterGUI extends JFrame implements ActionListener, MouseListener
     private JLabel fNameLabel;
     private JLabel lNameLabel;
 
+    private JComboBox<String> userType;
     private JTextField usernameTextField;
     private JTextField passwordTextField;
     private JTextField dobTextField;
@@ -27,6 +30,7 @@ public class RegisterGUI extends JFrame implements ActionListener, MouseListener
 
     private JButton connectButton;
     private JButton guestButton;
+    private JButton backButton;
 
     private JFrame parentFrame;
     public RegisterGUI(JFrame frame) {
@@ -56,8 +60,9 @@ public class RegisterGUI extends JFrame implements ActionListener, MouseListener
         fNameTextField = new JTextField("User's First Name",18);
         lNameTextField = new JTextField("User's Last Name",18);
         
-
+        String options[] = {"Renter","Landlord"};
         connectButton = new JButton("Register.");
+        backButton = new JButton("Back");
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
         usernameTextField.addMouseListener(this);
         passwordTextField.addMouseListener(this);
@@ -65,7 +70,15 @@ public class RegisterGUI extends JFrame implements ActionListener, MouseListener
         fNameTextField.addMouseListener(this);
         lNameTextField.addMouseListener(this);
         
+        userType = new JComboBox<String>(options);
+        userType.setToolTipText("Select type of user.");
+
         connectButton.addActionListener(this);
+        backButton.addActionListener(e -> {
+            this.setVisible(false);
+            parentFrame.setVisible(true);
+            this.dispose();
+        });
         //Create the JPanels.
         JPanel mainContainer = new JPanel();
         JPanel headerPanel = new JPanel();
@@ -102,8 +115,10 @@ public class RegisterGUI extends JFrame implements ActionListener, MouseListener
         fNamePanel.add(fNameTextField);
         lNamePanel.add(lNameLabel);
         lNamePanel.add(lNameTextField);
+        guestPanel.add(userType);
         connectPanel.add(connectButton);
-
+        connectPanel.add(backButton);
+        
         //Add the JPanels to the main JPanel
         mainContainer.add(headerPanel);
         mainContainer.add(fNamePanel);
@@ -125,16 +140,20 @@ public class RegisterGUI extends JFrame implements ActionListener, MouseListener
      */
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
-        username = usernameTextField.getText();
+       if(e.getSource().equals(connectButton)) {
+    	username = usernameTextField.getText();
         password = passwordTextField.getText();
         String dob=dobTextField.getText();
         String lName=lNameTextField.getText();
         String fName=fNameTextField.getText();
-        
+        String type=userType.getSelectedItem().toString();
         User u1=new User(fName,lName,username,password,dob);
+        SearchDatabase search = new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+        int id=search.maxUserID();
+        search.addUser(type, u1, id+1);
+        JOptionPane.showMessageDialog(null,"Congratulations you have just registered!" );
 
-        
-        
+       }
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
     }
 
