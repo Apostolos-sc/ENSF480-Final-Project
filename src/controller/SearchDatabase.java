@@ -41,6 +41,9 @@ public class SearchDatabase {
         }
     }
 
+    public void createReport(){
+        
+    }
     public ArrayList<Integer> notifProperty(Property prop){
         ArrayList<Integer> notifyRenters= new ArrayList<Integer>();
         // here when adding property if meets a renters search criteria get notified
