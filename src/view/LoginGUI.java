@@ -24,10 +24,9 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
 
     private JButton connectButton;
     private JButton guestButton;
-
-    public LoginGUI(Data data) {
+    
+    public LoginGUI() {
         super("Connect to Server.");
-        this.data = data;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,6 +111,9 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(connectButton)) {
             //Pull the data from the JTextFields username, password and url
+        	SingletonDatabaseAccess dbConnection=SingletonDatabaseAccess.getOnlyInstance(); 
+        	data = dbConnection.retrieveData();
+        	
             username = usernameTextField.getText();
             password = passwordTextField.getText();
             userType = selectUserTypeComboBox.getSelectedItem().toString();
@@ -225,4 +227,3 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         }
     }
 }
-
