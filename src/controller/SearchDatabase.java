@@ -426,6 +426,85 @@ public void updateRenter(Renter r) {
             throw new IllegalArgumentException("Unable to access to database");
         }	
     }
-    
+    public void addUser(String type,User u1,int userID) {
+    	
+    	if(type.equals("Renter")) {
+	    	try (Statement stmt1 = dbConnect.createStatement()) {
+	    		
+			    
+	            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO users(userID,fName,lName,email,pass,dob) VALUES(?,?,?,?,?,?)");
+	        	statement.setInt(1, userID);
+	        	statement.setString(2, u1.getFirstName());
+	        	statement.setString(3, u1.getLastName());
+	        	statement.setString(4, u1.getEmail());
+	        	statement.setString(5, u1.getPassword());
+	        	statement.setString(6, u1.getDob());
+	        
+	        	PreparedStatement statement2 = dbConnect.prepareStatement("INSERT INTO renter(renterID) VALUES(?)");
+	        	statement2.setInt(1, userID);
+	        	
+	        	
+	        	System.out.println(statement);
+	        	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+	        	statement2.execute();
+	        	statement.close();
+	        	statement2.close();
+	        	
+	        }
+	        catch (SQLException e) {
+	            throw new IllegalArgumentException("Unable to access to database");
+	        }
+    	}
+    	else {
+    		try (Statement stmt1 = dbConnect.createStatement()) {
+	    		
+			    
+    			 PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO users(userID,fName,lName,email,pass,dob) VALUES(?,?,?,?,?,?)");
+ 	        	statement.setInt(1, userID);
+ 	        	statement.setString(2, u1.getFirstName());
+ 	        	statement.setString(3, u1.getLastName());
+ 	        	statement.setString(4, u1.getEmail());
+ 	        	statement.setString(5, u1.getPassword());
+ 	        	statement.setString(6, u1.getDob());
+ 	        
+ 	        	PreparedStatement statement2 = dbConnect.prepareStatement("INSERT INTO landlord(landlordID) VALUES(?)");
+ 	        	statement2.setInt(1, userID);
+ 	        	
+ 	        	
+ 	        	System.out.println(statement);
+ 	        	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+ 	        	statement2.execute();
+ 	        	statement.close();
+ 	        	statement2.close();
+	        }
+	        catch (SQLException e) {
+	            throw new IllegalArgumentException("Unable to access to database");
+	        }
+    	}
+    }
+    public int maxUserID() {
+    	int max=1;
+    	try (Statement stmt = dbConnect.createStatement()) {
+    		
+    		ResultSet results = stmt.executeQuery("SELECT *FROM users"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+	        int i = 0;
+	        while (results.next()) {// takes into account number of rows that were returned by the query
+	            ResultSetMetaData rsmd = results.getMetaData();
+	         
+	            if(results.getInt("userID")>max) {
+	            	max=results.getInt("userID");
+	            }
+	                                  
+	            i++;
+	        }
+	        stmt.close();
+	        results.close();
+
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    	return max;
+    }
 }
 
