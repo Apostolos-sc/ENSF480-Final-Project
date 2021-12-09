@@ -280,22 +280,22 @@ public class SearchDatabase {
     			try (Statement stmt1 = dbConnect.createStatement()) {
     	    		
     			    
-    	            PreparedStatement statement = dbConnect.prepareStatement("UPDATE property SET landlordID=?,price=?,address=?,propertyType=?,quadrant=?,state=?,noBedrooms=?,noBathrooms=?,isFurnished=? WHERE propertyID = ?");
-    	        	statement.setInt(1, landlordID);
-    	        	statement.setDouble(2, p.getPropertyDetails().getPrice());
-    	        	statement.setString(3, p.getPropertyLocation().getAddress());
-    	        	statement.setString(4, p.getPropertyDetails().getPropertyType());
-    	        	statement.setString(5, p.getPropertyLocation().getQuadrant());
-    	        	statement.setString(6, p.getStatus());
-    	        	statement.setInt(7, p.getPropertyDetails().getNoBedrooms());
-    	        	statement.setInt(8,p.getPropertyDetails().getNoBathrooms());
+    	            PreparedStatement statement = dbConnect.prepareStatement("UPDATE property SET price=?,address=?,propertyType=?,quadrant=?,state=?,noBedrooms=?,noBathrooms=?,isFurnished=? WHERE propertyID = ?");
+    	        	//statement.setInt(1, landlordID);
+    	        	statement.setDouble(1, p.getPropertyDetails().getPrice());
+    	        	statement.setString(2, p.getPropertyLocation().getAddress());
+    	        	statement.setString(3, p.getPropertyDetails().getPropertyType());
+    	        	statement.setString(4, p.getPropertyLocation().getQuadrant());
+    	        	statement.setString(5, p.getStatus());
+    	        	statement.setInt(6, p.getPropertyDetails().getNoBedrooms());
+    	        	statement.setInt(7,p.getPropertyDetails().getNoBathrooms());
 
     	        	int furnish=0;
     	        	if(p.getPropertyDetails().isFurnished()==true) {
     	        		furnish=1;
     	        	}        	
-    	        	statement.setInt(9,furnish);
-    	        	statement.setInt(10, p.getPropertyID());
+    	        	statement.setInt(8,furnish);
+    	        	statement.setInt(9, p.getPropertyID());
 
     	        	System.out.println(statement);
     	        	statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
@@ -327,7 +327,30 @@ public class SearchDatabase {
         catch (SQLException e) {
             throw new IllegalArgumentException("Unable to access to database");
         }	
-}
+    }
+public void updateRenter(Renter r) {
+        
+    	
+		try (Statement stmt1 = dbConnect.createStatement()) {
+    		
+		    
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE users SET fName=?,lName=?,email=?,pass=?,dob=? WHERE userID =?");
+        	statement.setString(1, r.getFirstName());
+        	statement.setString(2, r.getLastName());
+        	statement.setString(3, r.getEmail());
+        	statement.setString(4, r.getPassword());
+        	statement.setString(5, r.getDob());
+        	statement.setInt(6, r.getRenterID());
+        
+
+        	System.out.println(statement);
+        	statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	 statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }	
+    }
     
 }
 
