@@ -1,5 +1,9 @@
 package model;
 
+//use date objects to keep track of dates?
+//this might be easier to check like cycle of time
+// for ex: what it asks us in the report for the manager
+
 public class Date {
     private int date;
     private int month;

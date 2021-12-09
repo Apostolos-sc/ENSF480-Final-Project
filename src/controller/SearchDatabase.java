@@ -2,8 +2,10 @@ package controller;
 
 import java.sql.*;
 import java.util.ArrayList;
-import model.Property;
+
 import model.*;
+import model.Date;
+
 import javax.swing.*;
 
 public class SearchDatabase {
@@ -33,6 +35,7 @@ public class SearchDatabase {
             ArrayList<Integer> notifyRenters= notifProperty(prop);
             if(notifyRenters.size()!=0){
                 //of matches notify the specific user
+                // nuha will continue this implementation
             }
             statement.close();
         } catch (SQLException e) {
@@ -41,10 +44,12 @@ public class SearchDatabase {
         }
     }
 
-    public void createReport(){
-        
+    public void createReport(Date period){
+        //nuha will continue this implementation
     }
+
     public ArrayList<Integer> notifProperty(Property prop){
+        // nuha will continue this implementation
         ArrayList<Integer> notifyRenters= new ArrayList<Integer>();
         // here when adding property if meets a renters search criteria get notified
         // by observer
