@@ -24,6 +24,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
 
     private JButton connectButton;
     private JButton guestButton;
+    private JButton signUpButton;
     
     public LoginGUI() {
         super("Connect to Server.");
@@ -49,11 +50,14 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         selectUserTypeComboBox = new JComboBox<String>(typeOfUsers);
         guestButton = new JButton("Continue as a Guest");
         connectButton = new JButton("Login.");
+        signUpButton = new JButton("Sign Up");
+        
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
         usernameTextField.addMouseListener(this);
         passwordTextField.addMouseListener(this);
         connectButton.addActionListener(this);
         guestButton.addActionListener(this);
+        signUpButton.addActionListener(this);
         //Create the JPanels.
         JPanel mainContainer = new JPanel();
         JPanel headerPanel = new JPanel();
@@ -90,6 +94,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         selectUserTypePanel.add(selectUserTypeComboBox);
         guestPanel.add(guestButton);
         connectPanel.add(connectButton);
+        connectPanel.add(signUpButton);
 
         //Add the JPanels to the main JPanel
         mainContainer.add(headerPanel);
@@ -153,6 +158,13 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
         if(e.getSource().equals(guestButton)) {
         	this.setVisible(false);
         	UnregisteredRenterGUI frame = new UnregisteredRenterGUI(this);
+            EventQueue.invokeLater(() -> {
+                frame.setVisible(true);
+            });
+        }
+        if(e.getSource().equals(signUpButton)) {
+        	this.setVisible(false);
+        	RegisterGUI frame = new RegisterGUI(this);
             EventQueue.invokeLater(() -> {
                 frame.setVisible(true);
             });
