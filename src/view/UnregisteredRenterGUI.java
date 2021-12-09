@@ -22,10 +22,12 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
     private JLabel quadrantLabel;
     private JLabel furnishingLabel;
     private JLabel propertyTypeLabel;
+    private JLabel priceLabel;
     
     private JTextField usernameTextField;
     private JTextField passwordTextField;
-
+    private JTextField priceTextField;
+    
     private JComboBox<String> bedrooms;
     private JComboBox<String> bathrooms;
     private JComboBox<String> quadrant;
@@ -58,13 +60,16 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         bathroomLabel = new JLabel("Bathroom:");
         quadrantLabel = new JLabel("Quadrant:");
         furnishingLabel = new JLabel("Furnishing:");
-        propertyTypeLabel = new JLabel("Property Type");
+        propertyTypeLabel = new JLabel("Property Type:");
+        priceLabel = new JLabel("Price:");
         //usernameLabel = new JLabel("Username      :");
         //passwordLabel = new JLabel("Password      :");
         
        // usernameTextField = new JTextField("User's username", 18);
        // passwordTextField = new JTextField("User's password", 18);
-
+        
+        priceTextField = new JTextField("Price...");
+        priceTextField.addMouseListener(this);
         //connectButton = new JButton("Register.");
         //add Mouse Listeners to the JTextFields and ActionListener to the JButton
         //usernameTextField.addMouseListener(this);
@@ -107,10 +112,12 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         JPanel headerPanel = new JPanel();
         JPanel topPanel = new JPanel();
         JPanel bottomPanel = new JPanel();
+        JPanel middlePanel = new JPanel();
         //Set the Layouts for the JPanels
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
         headerPanel.setLayout(new FlowLayout());
         topPanel.setLayout(new FlowLayout());
+        middlePanel.setLayout(new FlowLayout());
         bottomPanel.setLayout(new FlowLayout());
         //tablePanel.setLayout(new FlowLayout());
         //Add Components to the JPanels.
@@ -127,13 +134,16 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         topPanel.add(furnishing);
         topPanel.add(propertyTypeLabel);
         topPanel.add(propertyType);
-        topPanel.add(searchButton);
-        topPanel.add(exitButton);
+        middlePanel.add(priceLabel);
+        middlePanel.add(priceTextField);
+        bottomPanel.add(searchButton);
+        bottomPanel.add(exitButton);
         bottomPanel.add(searchAllButton);
         //tablePanel.add(exitButton);
         //Add the JPanels to the main JPanel
         mainContainer.add(headerPanel);
         mainContainer.add(topPanel);
+        mainContainer.add(middlePanel);
         mainContainer.add(bottomPanel);
         //Add the main panel to the JFrame.
         this.add(mainContainer);
@@ -161,12 +171,12 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
         	}
         	String quadrantValue=quadrant.getSelectedItem().toString();
         	String typeOfProperty= propertyType.getSelectedItem().toString();
-        	
+        	int price = Integer.valueOf(priceTextField.getText());
 //        	System.out.println(noOfBed+" "+noOfBath+" "+furnish+" "+quadrantValue+" "+typeOfProperty);
         	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
         	SearchDatabase searchingDatabase=new SearchDatabase(access.getDBConnect());
         	
-        	ArrayList<Property> array= searchingDatabase.searchItem("property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue, 500.0);
+        	ArrayList<Property> array= searchingDatabase.searchItem("property",typeOfProperty , noOfBed, noOfBath, furnishingValue, quadrantValue, price);
         
         	
         	
@@ -258,6 +268,9 @@ public class UnregisteredRenterGUI extends JFrame implements ActionListener, Mou
 
         if(event.getSource().equals(passwordTextField)) {
             passwordTextField.setText("");
+        }
+        if(event.getSource().equals(priceTextField)) {
+        	priceTextField.setText("");
         }
     }
 
