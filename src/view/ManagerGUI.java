@@ -46,6 +46,11 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private String[] information;
     private String title;
 
+    private int propertyID;
+    private Property prop;
+    private Landlord land;
+    private Renter renter;
+    
     public ManagerGUI(Manager mgr, JFrame parentFrame, Data data) {
         super("Manager System. Logged in as " + mgr.getFirstName() + " "+ mgr.getLastName() + ".");
         this.mgr= mgr;
@@ -274,7 +279,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
 
     public void showRenters() {
         String [][] tableInfo = new String[data.getRenters().size()][5];
-        for(int i = 0; i < data.getProperties().size(); i++) {
+        for(int i = 0; i < data.getRenters().size(); i++) {
             tableInfo[i][0] = ""+data.getRenters().get(i).getRenterID();
             tableInfo[i][1] = data.getRenters().get(i).getFirstName();
             tableInfo[i][2] = data.getRenters().get(i).getLastName();
@@ -408,7 +413,19 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                             furnished = false;
                         }
                         String propertyTypeValue = propertyTypeComboField.getSelectedItem().toString();
-
+                        
+                        Property p1=new Property(0,propertyTypeValue,bathrooms,bedrooms,furnished,address,quadrant,prop.getStatus(),price);
+                        p1.setPropertyID(propertyID);
+                        SearchDatabase search =new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+                        
+                        PropertyDetails details=new PropertyDetails(propertyTypeValue, bathrooms, bedrooms, furnished, price);
+                        PropertyLocation location=new PropertyLocation(address,quadrant);
+                       
+                        
+                        prop.setPropertyDetails(details);
+                        prop.setPropertyLocation(location);
+                        search.updateProperty(p1, 0);
+                        
                         
                         //implement DB Action here.
                         JOptionPane.showMessageDialog(null, "Property was updated.");
@@ -477,10 +494,12 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
             public void actionPerformed(ActionEvent e) {
 
                 String selection = selectPropertyComboBox.getSelectedItem().toString();
-                int propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
+                propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
                 for(int i = 0; i < data.getProperties().size(); i++) {
                     if(propertyID == data.getProperties().get(i).getPropertyID()) {
-                        bathroomsTextField.setText(""+data.getProperties().get(i).getPropertyDetails().getNoBathrooms());
+                    	
+                        prop=data.getProperties().get(i);
+                    	bathroomsTextField.setText(""+data.getProperties().get(i).getPropertyDetails().getNoBathrooms());
                         bedroomsTextField.setText(""+data.getProperties().get(i).getPropertyDetails().getNoBedrooms());
                         priceTextField.setText("" + data.getProperties().get(i).getPropertyDetails().getPrice());
                         addressTextField.setText(data.getProperties().get(i).getPropertyLocation().getAddress());
@@ -516,8 +535,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     	mainContainer.removeAll();
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
         String landlordList[] = new String[data.getLandlords().size()];
-        for(int i = 0; i < data.getProperties().size(); i++) {
-            landlordList[i] = data.getLandlords().get(i).getLandlordID() + " - " + data.getLandlords().get(i).getFirstName()+" "+data.getLandlords().get(i).getLastName();
+        for(int i = 0; i < data.getLandlords().size(); i++) {
+            landlordList[i] = String.valueOf(data.getLandlords().get(i).getLandlordID()) + " - " + data.getLandlords().get(i).getFirstName()+" "+data.getLandlords().get(i).getLastName();
         }
     	
     	
@@ -596,6 +615,14 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                         String email = emailTextField.getText();
                         String dob = dobTextField.getText();
  
+                        land.setDob(dob);
+                        land.setEmail(email);
+                        land.setFirstName(fName);
+                        land.setLastName(lName);
+                        
+                        SearchDatabase search = new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+                        search.updateLandlord(land);
+                        
                         
                         //implement DB Action here.
                         JOptionPane.showMessageDialog(null, "Landlord was updated.");
@@ -667,7 +694,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                 int propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
                 for(int i = 0; i < data.getLandlords().size(); i++) {
                     if(propertyID == data.getLandlords().get(i).getLandlordID()) {
-                        fNameTextField.setText(""+data.getLandlords().get(i).getFirstName());
+                        land=data.getLandlords().get(i);
+                    	fNameTextField.setText(""+data.getLandlords().get(i).getFirstName());
                         lNameTextField.setText(""+data.getLandlords().get(i).getLastName());
                         emailTextField.setText("" + data.getLandlords().get(i).getEmail());
                         dobTextField.setText(data.getLandlords().get(i).getDob());
@@ -777,6 +805,13 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                         String email = emailTextField.getText();
                         String dob = dobTextField.getText();
  
+                        renter.setDob(dob);
+                        renter.setEmail(email);
+                        renter.setFirstName(fName);
+                        renter.setLastName(lName);
+                        
+                        SearchDatabase search=new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+                        search.updateRenter(renter);
                         
                         //implement DB Action here.
                         JOptionPane.showMessageDialog(null, "Renter was updated.");
@@ -848,7 +883,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                 int propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
                 for(int i = 0; i < data.getRenters().size(); i++) {
                     if(propertyID == data.getRenters().get(i).getRenterID()) {
-                        fNameTextField.setText(""+data.getRenters().get(i).getFirstName());
+                        renter=data.getRenters().get(i);
+                    	fNameTextField.setText(""+data.getRenters().get(i).getFirstName());
                         lNameTextField.setText(""+data.getRenters().get(i).getLastName());
                         emailTextField.setText("" + data.getRenters().get(i).getEmail());
                         dobTextField.setText(data.getRenters().get(i).getDob());
