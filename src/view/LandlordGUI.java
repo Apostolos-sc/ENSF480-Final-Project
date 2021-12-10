@@ -885,11 +885,11 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         JLabel generalMessage = new JLabel("Edit Property :");
         JLabel selectPropertyLabel = new JLabel("Select Property :");
 
-        JComboBox selectPropertyComboBox = new JComboBox(propertyList);
+        JComboBox selectComboBox = new JComboBox(propertyList);
 
         generalMessage.setPreferredSize(new Dimension(175,25));
         selectPropertyLabel.setPreferredSize(new Dimension(175, 25));
-        selectPropertyComboBox.setPreferredSize(new Dimension(175, 25));
+        selectComboBox.setPreferredSize(new Dimension(175, 25));
 
         headerPanel.setLayout(new FlowLayout());
         selectPropertyPanel.setLayout(new FlowLayout());
@@ -1053,11 +1053,11 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         editPropertyPanel.add(registerPanel);
 
 
-        selectPropertyComboBox.addActionListener(new ActionListener() {
+        selectComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String selection = selectPropertyComboBox.getSelectedItem().toString();
+                String selection = selectComboBox.getSelectedItem().toString();
                 propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
                 for(int i = 0; i < landlord.getProperties().size(); i++) {
                     if(propertyID == landlord.getProperties().get(i).getPropertyID()) {
@@ -1084,7 +1084,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
 
         headerPanel.add(generalMessage);
         selectPropertyPanel.add(selectPropertyLabel);
-        selectPropertyPanel.add(selectPropertyComboBox);
+        selectPropertyPanel.add(selectComboBox);
 
         mainContainer.add(headerPanel);
         mainContainer.add(selectPropertyPanel);

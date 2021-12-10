@@ -580,12 +580,13 @@ public class SearchDatabase {
         try (Statement stmt1 = dbConnect.createStatement()) {
 
 
-            PreparedStatement statement = dbConnect.prepareStatement("UPDATE contract SET startDate=?,endDate=?,monthlyRent=? WHERE contractID =?");
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE contract SET startDate=?,endDate=?,monthlyRent=?, contractStatus=? WHERE contractID =?");
 
             statement.setString(1, c.getStartDate());
             statement.setString(2, c.getEndDate());
             statement.setDouble(3, c.getMonthlyRent());
-            statement.setInt(4, c.getContractID());
+            statement.setString(4, c.getContractStatus());
+            statement.setInt(5, c.getContractID());
 
             System.out.println(statement);
             statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");

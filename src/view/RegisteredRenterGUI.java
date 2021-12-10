@@ -336,7 +336,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     public void showMyContracts() {
         ArrayList<Contract> renterContracts = new ArrayList<Contract>();
         for (int i = 0; i < data.getContracts().size(); i++) {
-            if(data.getContracts().get(i).getLandlord().getLandlordID() == renter.getRenterID()) {
+            if(data.getContracts().get(i).getRenter().getRenterID() == renter.getRenterID()) {
                 renterContracts.add(data.getContracts().get(i));
             }
         }
@@ -356,18 +356,19 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     }
 
     public void showEditContract() {
+        String[] contractStatusOptions = {"Accepted", "Declined", "Pending"};
         mainContainer.removeAll();
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
         ArrayList<Contract> renterContracts = new ArrayList<Contract>();
         for (int i = 0; i < data.getContracts().size(); i++) {
-            if(data.getContracts().get(i).getLandlord().getLandlordID() == renter.getRenterID() &&
+            if(data.getContracts().get(i).getRenter().getRenterID() == renter.getRenterID() &&
                     !data.getContracts().get(i).getContractStatus().equals("Signed")) {
             	renterContracts.add(data.getContracts().get(i));
             }
         }
         String contractList[] = new String[renterContracts.size()];
         for(int i = 0; i < renterContracts.size(); i++) {
-            contractList[i] = "Contract ID: " +  renterContracts.get(i).getContractID() + ", Property ID: " + renterContracts.get(i).getProperty().getPropertyID() + ", Renter ID:  " + renterContracts.get(i).getRenter().getRenterID();
+            contractList[i] = "Contract ID: " +  renterContracts.get(i).getContractID() + ", Property ID: " + renterContracts.get(i).getProperty().getPropertyID();
         }
         JPanel headerPanel = new JPanel();
         JPanel selectPanel = new JPanel();
@@ -394,12 +395,15 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         JLabel landlordIDMessage2 = new JLabel();
         JLabel renterIDMessage2 = new JLabel();
         JLabel propertyIDMessage2 = new JLabel();
-        JLabel contractStatusMessage2 = new JLabel();
         JLabel propertyIDMessage = new JLabel("Property ID: ");
         JLabel startDateMessage = new JLabel("Start Date: ");
         JLabel endDateMessage = new JLabel("End Date: ");
         JLabel monthlyRentMessage = new JLabel("Monthly Rent: ");
+        JLabel startDateMessage2 = new JLabel("Start Date: ");
+        JLabel endDateMessage2 = new JLabel("End Date: ");
+        JLabel monthlyRentMessage2 = new JLabel("Monthly Rent: ");
         JLabel contractStatusMessage = new JLabel("Contract Status: ");
+
 
         contractIDMessage.setPreferredSize(new Dimension(175, 25));
         landlordIDMessage.setPreferredSize(new Dimension(175, 25));
@@ -412,43 +416,47 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         startDateMessage.setPreferredSize(new Dimension(175, 25));
         endDateMessage.setPreferredSize(new Dimension(175, 25));
         monthlyRentMessage.setPreferredSize(new Dimension(175, 25));
+        startDateMessage2.setPreferredSize(new Dimension(175, 25));
+        endDateMessage2.setPreferredSize(new Dimension(175, 25));
+        monthlyRentMessage2.setPreferredSize(new Dimension(175, 25));
         contractStatusMessage.setPreferredSize(new Dimension(175,25));
-        contractStatusMessage2.setPreferredSize(new Dimension(175,25));
 
         JTextField startDateTextField = new JTextField("Start Date");
         JTextField endDateTextField = new JTextField("End Date");
         JTextField monthlyRentTextField = new JTextField("Monthly Rent");
+        JComboBox contractStatusComboField = new JComboBox<String>(contractStatusOptions);
 
         startDateTextField.setToolTipText("Set Start Date to ..");
         endDateTextField.setToolTipText("Set End Date to ..");
         monthlyRentTextField.setToolTipText("Set Monthly Rent to...");
+        contractStatusComboField.setToolTipText("Set Contract Status to ..");
 
         startDateTextField.setPreferredSize(new Dimension(175, 25));
         endDateTextField.setPreferredSize(new Dimension(175, 25));
         monthlyRentTextField.setPreferredSize(new Dimension(175, 25));
+
+        contractStatusComboField.setPreferredSize(new Dimension(175, 25));
+
         JButton updateButton = new JButton("Update Contract");
-//        JButton deleteButton = new JButton("Delete Contract");
 
         updateButton.addActionListener((new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource().equals(updateButton)) {
 
-                    if (startDateTextField.getText() != ""
-                            && isDouble(monthlyRentTextField.getText()) && startDateTextField.getText() != "") {
+                    if (contractStatusComboField.getSelectedItem().toString() == "Accepted"
+                            || contractStatusComboField.getSelectedItem().toString() == "Declined") {
 
-                        String startDate = startDateTextField.getText();
-                        String endDate = endDateTextField.getText();
-                        Double monthlyRent = Double.valueOf(monthlyRentTextField.getText());
 
-                        contract.setStartDate(startDate);
-                        contract.setEndDate(endDate);
-                        contract.getMonthlyRent();
+                        String contractStatus = contractStatusComboField.getSelectedItem().toString();
+
+                        contract.setContractStatus(contractStatus);
                         SearchDatabase search=new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
                         search.updateContract(contract);
 
                         //implement DB Action here.
                         JOptionPane.showMessageDialog(null, "Contract was updated.");
+                        data.setContracts(SingletonDatabaseAccess.getOnlyInstance().retrieveContracts(data.getProperties(), data.getRenters(), data.getLandlords()));
                         mainContainer.removeAll();
                         revalidate();
                         repaint();
@@ -495,13 +503,13 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         propertyIDPanel.add(propertyIDMessage);
         propertyIDPanel.add(propertyIDMessage2);
         startDatePanel.add(startDateMessage);
-        startDatePanel.add(startDateTextField);
+        startDatePanel.add(startDateMessage2);
         endDatePanel.add(endDateMessage);
-        endDatePanel.add(endDateTextField);
+        endDatePanel.add(endDateMessage2);
         monthlyRentPanel.add(monthlyRentMessage);
-        monthlyRentPanel.add(monthlyRentTextField);
+        monthlyRentPanel.add(monthlyRentMessage2);
         contractStatusPanel.add(contractStatusMessage);
-        contractStatusPanel.add(contractStatusMessage2);
+        contractStatusPanel.add(contractStatusComboField);
         registerPanel.add(updateButton);
 
         //Add the JPanels to the main JPanel
@@ -532,7 +540,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
                         startDateTextField.setText(""+renterContracts.get(i).getStartDate());
                         endDateTextField.setText(""+renterContracts.get(i).getEndDate());
                         monthlyRentTextField.setText(""+renterContracts.get(i).getMonthlyRent());
-                        contractStatusMessage2.setText(""+renterContracts.get(i).getContractStatus());
+                        contractStatusComboField.setSelectedItem(renterContracts.get(i).getContractStatus());
                         mainContainer.add(editPanel);
                         revalidate();
                         repaint();
