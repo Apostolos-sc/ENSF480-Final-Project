@@ -27,25 +27,28 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
 
     private JTextField usernameTextField;
     private JTextField passwordTextField;
-
-    private JToggleButton subscribeMenuButton;
-    private JButton viewSubscribedButton;
-    private JButton viewPropertyButton;
-    private JButton payButton;
-    private JButton messageButton;
-    private JButton inboxButton;
-    private JButton logoutButton;
-    private JButton backButton;
+    private JCheckBoxMenuItem subscribeMenuButton;   
     
+    private JMenuItem viewSubscribedButton;
+    private JMenuItem viewPropertyButton;
+    private JMenuItem payButton;
+    private JMenuItem messageButton;
+    private JMenuItem inboxButton;
+    private JMenuItem logoutButton;
+    private JMenuItem editContract;
+    private JMenuItem viewMyContracts;
+    private JMenuBar menuBar;
+    private JMenu propertyMenu;
+    private JMenu profileMenu;
+    private JMenu contractMenu;
+
     private Renter renter;
     private Data data;
     private Contract contract;
     private Frame parentFrame;
     
     JPanel mainContainer;
-    private JButton editContract;
-    private JButton viewMyContracts;
-
+   
 
     public RegisteredRenterGUI(Renter renter, Frame parentFrame,Data d) {
         super("Registered Renter System. Logged in as "+ renter.getFirstName() + " " + renter.getLastName() + ".");
@@ -60,98 +63,13 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
      * Sets gui.
      */
     public void setupGUI() {
-        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
-        generalMessage1 = new JLabel("Property Management Software.");
-        generalMessage2 = new JLabel("Please select one of the options.");
-        //usernameLabel = new JLabel("Username      :");
-        //passwordLabel = new JLabel("Password      :");
-        
-       // usernameTextField = new JTextField("User's username", 18);
-       // passwordTextField = new JTextField("User's password", 18);
-
-        //connectButton = new JButton("Register.");
-        //add Mouse Listeners to the JTextFields and ActionListener to the JButton
-        //usernameTextField.addMouseListener(this);
-        //passwordTextField.addMouseListener(this);
-        //connectButton.addActionListener(this);
-        if(renter.isSubscribed()) {
-           subDescription="Subscribed";
-        }
-        else {
-            subDescription="Unsubscribed";
-        }
-        subscribeMenuButton = new JToggleButton(subDescription);
-        viewSubscribedButton= new JButton("View Suggested Properties");
-        viewPropertyButton = new JButton("View Property");
-        payButton = new JButton("Pay");
-        messageButton = new JButton("Email Message");
-        inboxButton = new JButton("Inbox");
-        logoutButton = new JButton("Logout");
-        editContract = new JButton("Edit Contract");
-        viewMyContracts = new JButton("View Contract");
-        
-        viewSubscribedButton.addActionListener(this);
-        subscribeMenuButton.addActionListener(this);
-        viewPropertyButton.addActionListener(this);
-        payButton.addActionListener(this);
-        messageButton.addActionListener(this);
-        inboxButton.addActionListener(this);
-        editContract.addActionListener(this);;
-        viewMyContracts.addActionListener(this);
-        
-        logoutButton.addActionListener(e -> {
-            this.setVisible(false);
-            parentFrame.setVisible(true);
-            this.dispose();
-        });
-        //Create the JPanels.
+        setupMenu();
         mainContainer = new JPanel();
-        JPanel headerPanel = new JPanel();
-        JPanel subscribePanel = new JPanel();
-        JPanel viewPropertyPanel = new JPanel();
-        JPanel payPanel = new JPanel();
-        JPanel messagePanel = new JPanel();
-        JPanel inboxPanel = new JPanel();
-        JPanel contractPanel = new JPanel();
-        JPanel logoutPanel = new JPanel();
-        
-        //Set the Layouts for the JPanels
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
-        headerPanel.setLayout(new FlowLayout());
-        subscribePanel.setLayout(new FlowLayout());
-        viewPropertyPanel.setLayout(new FlowLayout());
-        payPanel.setLayout(new FlowLayout());
-        messagePanel.setLayout(new FlowLayout());
-        inboxPanel.setLayout(new FlowLayout());
-        contractPanel.setLayout(new FlowLayout());
-        logoutPanel.setLayout(new FlowLayout());
-        //Add Components to the JPanels.
-
-        headerPanel.add(generalMessage1);
-        headerPanel.add(generalMessage2);
-        subscribePanel.add(subscribeMenuButton);
-        subscribePanel.add(viewSubscribedButton);
-        viewPropertyPanel.add(viewPropertyButton);
-        payPanel.add(payButton);
-        messagePanel.add(messageButton);
-        inboxPanel.add(inboxButton);
-        contractPanel.add(editContract);
-        contractPanel.add(viewMyContracts);
-        
-        logoutPanel.add(logoutButton);
-        //Add the JPanels to the main JPanel
-        mainContainer.add(headerPanel);
-        mainContainer.add(subscribePanel);
-        mainContainer.add(viewPropertyPanel);
-        mainContainer.add(payPanel);
-        mainContainer.add(messagePanel);
-        mainContainer.add(inboxPanel);
-        mainContainer.add(contractPanel);
-        mainContainer.add(logoutPanel);
-        //Add the main panel to the JFrame.
         this.add(mainContainer);
     }
-
+   
+ 
     /**
      * actionPerformed function used to handle an action performed on the
      * Connect Button.
@@ -159,15 +77,21 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
      */
     public void actionPerformed(ActionEvent e) {
         //Pull the data from the JTextFields username, password and url
-        if(e.getSource().equals(viewMyContracts)) {
+        if(e.getSource().equals(logoutButton)) {
+                this.setVisible(false);
+                parentFrame.setVisible(true);
+                this.dispose();
+        }
+    	
+    	if(e.getSource().equals(viewMyContracts)) {
             showMyContracts();
         }
 
         if(e.getSource().equals(editContract)) {
             showEditContract();
         }
-        if(e.getSource().equals(subscribeMenuButton)) {
-        	if(subDescription=="Unsubscribed") {
+       // if(e.getSource().equals(subscribeMenuButton)) {
+        	if(subscribeMenuButton.isSelected()) {
         		subDescription="Subscribed";
         		subscribeMenuButton.setText(subDescription);
         		renter.setSubscribed(true);
@@ -176,7 +100,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         		
         		search.updateRenter(renter);
         	}
-        	else {
+        	if(subscribeMenuButton.isSelected()==false) {
         		System.out.println("Test");
 
         		subDescription="Unsubscribed";
@@ -188,7 +112,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         		search.updateRenter(renter);
         	}
         	
-        }
+       // }
         if(e.getSource().equals(messageButton)) {
         	 Reply loginFrame = new Reply();
              EventQueue.invokeLater(() -> {
@@ -278,6 +202,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         }
     }
 
+
     public void mouseClicked(MouseEvent event) {
 
         if(event.getSource().equals(usernameTextField)) {
@@ -304,6 +229,59 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     public void mouseEntered(MouseEvent event) {
 
     }
+    public void setupMenu() {
+    	menuBar = new JMenuBar();
+        propertyMenu = new JMenu("Property");
+        profileMenu = new JMenu("User Actions");
+        contractMenu = new JMenu("Contract");
+        
+        viewSubscribedButton= new JMenuItem("View Suggested Properties");
+        viewPropertyButton = new JMenuItem("View Property");
+        payButton = new JMenuItem("Pay");
+        messageButton = new JMenuItem("Email Message");
+        inboxButton = new JMenuItem("Inbox");
+        logoutButton = new JMenuItem("Logout");
+        editContract = new JMenuItem("Edit Contract");
+        viewMyContracts = new JMenuItem("View Contract");
+        
+        boolean sub=false;
+        if(renter.isSubscribed()) {
+        	sub=true;
+        }
+        subscribeMenuButton = new JCheckBoxMenuItem("Subscribe",sub);
+        
+        viewSubscribedButton.addActionListener(this);
+        subscribeMenuButton.addActionListener(this);
+        
+        viewPropertyButton.addActionListener(this);
+        payButton.addActionListener(this);
+        messageButton.addActionListener(this);
+        inboxButton.addActionListener(this);
+        editContract.addActionListener(this);;
+        viewMyContracts.addActionListener(this);
+        logoutButton.addActionListener(this);
+
+        
+        propertyMenu.add(subscribeMenuButton);
+        propertyMenu.add(viewSubscribedButton);
+        propertyMenu.add(viewPropertyButton);
+        propertyMenu.add(payButton);
+        propertyMenu.add(viewPropertyButton);  
+
+        profileMenu.add(messageButton);
+        profileMenu.add(inboxButton);
+        profileMenu.add(logoutButton);
+        
+        contractMenu.add(editContract);
+        contractMenu.add(viewMyContracts);
+        
+        menuBar.add(propertyMenu);
+        menuBar.add(contractMenu);
+        menuBar.add(profileMenu);
+        
+        this.add(menuBar);
+        this.setJMenuBar(menuBar);
+    }
     public void showTable(String[][] tableInfo, String[] columns, String tableHeader) {
         TableModel model = new DefaultTableModel(tableInfo,columns)
         {
@@ -320,7 +298,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         mainContainer.removeAll();
       
-        this.backButton=new JButton("Back");
+       // this.backButton=new JButton("Back");
 
         JPanel headerPanel = new JPanel();
         JPanel tablePanel = new JPanel();
@@ -331,20 +309,6 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         tablePanel.add(pane);
         backPanel.setLayout(new FlowLayout());
         
-        backButton.addActionListener((new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                if (evt.getSource().equals(backButton)) {
-
-//                        mainContainer.removeAll();
-//                        revalidate();
-//                        repaint();
-                    
-                        setupGUI();
-                }
-            }
-        }));
-        backPanel.add(backButton);
         mainContainer.add(headerPanel);
         mainContainer.add(tablePanel);
         mainContainer.add(backPanel);
