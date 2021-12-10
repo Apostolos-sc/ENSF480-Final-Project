@@ -392,7 +392,6 @@ public class SearchDatabase {
         return max;
 
     }
-    
 
     //used by manager to set property fees and period the fees are valid for
     public void updatePropFees(Property p, int managerID, int validPeriod, double payment){
@@ -424,7 +423,6 @@ public class SearchDatabase {
         }
     }
 
-
     //check validity of all periods and if valid period of properties is expired then it changes the
     //state from listed to registered
     public void checkPropertyPeriod(){
@@ -440,7 +438,7 @@ public class SearchDatabase {
         }
     }
 
-     public static Date addDays(Date date, int days) {
+    public static Date addDays(Date date, int days) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DATE, days);
@@ -654,6 +652,7 @@ public class SearchDatabase {
 	        }
     	}
     }
+
     public int maxUserID() {
     	int max=1;
     	try (Statement stmt = dbConnect.createStatement()) {
@@ -678,7 +677,8 @@ public class SearchDatabase {
         }
     	return max;
     }
-	 public void addSearchedProperty(ArrayList<Property> arr,Renter r) {
+
+    public void addSearchedProperty(ArrayList<Property> arr,Renter r) {
     	
     	for(int i=0;i<arr.size();i++) {
 	    	try (Statement stmt1 = dbConnect.createStatement()) {
@@ -707,7 +707,8 @@ public class SearchDatabase {
 	        }
     	}
     }
-	    public ArrayList<Property> getNotifiedProperty(Renter id) {
+
+    public ArrayList<Property> getNotifiedProperty(Renter id) {
             ArrayList<Property> properties = new ArrayList<>();
             ResultSet results;
             ResultSet result2;
@@ -740,6 +741,7 @@ public class SearchDatabase {
             }
             return properties;
         }
+
     public void addPropertyType(PropertyType propertyType) {
         try (Statement stmt1 = dbConnect.createStatement()) {
 

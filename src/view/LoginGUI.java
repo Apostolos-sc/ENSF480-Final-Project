@@ -127,12 +127,12 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
 //            password = "tester";
 //            userType = "Manager";
             //Attempt to login using the information given :
-//            username = "j.lance@gmail.com";
-//            password = "tested";
-//            userType = "Landlord";
-            username = "t.roma@gmail.com";
-            password = "testing";
-            userType = "Renter";
+            username = "j.lance@gmail.com";
+            password = "tested";
+            userType = "Landlord";
+//            username = "t.roma@gmail.com";
+//            password = "testing";
+//            userType = "Renter";
             User checkedUser = checkUser(username, password, userType);
             if(checkedUser != null) {
                 JOptionPane.showMessageDialog(null, "You successfully connected to the database with username : "
