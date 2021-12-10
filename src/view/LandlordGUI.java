@@ -27,6 +27,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
     private JMenuItem viewMyContracts;
     private JMenuItem createContract;
     private JMenuItem editProfile;
+    private JMenuItem payItem;
     private JMenuItem inbox;
     private JMenuItem logoutOption;
 
@@ -125,7 +126,11 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
             parentFrame.setVisible(true);
             this.dispose();
         }
+        if(e.getSource().equals(payItem)) {
+        	
+        }
     }
+    
 
     public void mouseClicked(MouseEvent event) {
 
@@ -167,6 +172,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         inbox = new JMenuItem("My Inbox");
         logoutOption = new JMenuItem("Logout");
 
+        payItem = new JMenuItem("Pay");
 
         editProperty.addActionListener(this);
         viewMyProperties.addActionListener(this);
@@ -185,6 +191,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         contractMenu.add(createContract);
 
         profileMenu.add(editProfile);
+        profileMenu.add(payItem);
         profileMenu.add(inbox);
         profileMenu.add(logoutOption);
 
