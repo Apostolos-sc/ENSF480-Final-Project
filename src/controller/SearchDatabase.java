@@ -527,4 +527,34 @@ public void updateRenter(Renter r) {
         }
     	return max;
     }
+	 public void addSearchedProperty(ArrayList<Property> arr,Renter r) {
+    	
+    	for(int i=0;i<arr.size();i++) {
+	    	try (Statement stmt1 = dbConnect.createStatement()) {
+	
+	            PreparedStatement statement = dbConnect.prepareStatement(
+	                    "INSERT INTO notifCriteria(renterID,propertyType,noBedrooms,noBathrooms,quadrant,isFurnished,propertyID) VALUES(?,?,?,?,?,?,?)");
+	            statement.setInt(1,r.getRenterID());
+	            statement.setString(2, arr.get(i).getPropertyDetails().getPropertyType());
+	            statement.setInt(3, arr.get(i).getPropertyDetails().getNoBedrooms());
+	            statement.setInt(4, arr.get(i).getPropertyDetails().getNoBathrooms());
+	            statement.setString(5, arr.get(i).getPropertyLocation().getQuadrant());
+	        
+	            int furnish = 0;
+	            if (arr.get(i).getPropertyDetails().isFurnished() == true) {
+	                furnish = 1;
+	            }
+	            statement.setInt(6, furnish);
+	            statement.setInt(7, arr.get(i).getPropertyID());
+	            
+	            System.out.println(statement);
+	            statement.execute(); 
+	            statement.close();
+	            	            
+	        } catch (SQLException e) {
+	            throw new IllegalArgumentException("Unable to access to database");
+	        }
+    	}
+    }
 }
+
