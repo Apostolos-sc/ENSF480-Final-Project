@@ -249,7 +249,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     }
 
     public void showProperties() {
-        String[][] tableInfo = new String[data.getProperties().size()][8];
+        String[][] tableInfo = new String[data.getProperties().size()][9];
         for(int i = 0; i < data.getProperties().size(); i++) {
             tableInfo[i][0] = ""+data.getProperties().get(i).getPropertyID();
             tableInfo[i][1] = data.getProperties().get(i).getPropertyDetails().getPropertyType();
@@ -259,8 +259,9 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
             tableInfo[i][5] = data.getProperties().get(i).getPropertyLocation().getQuadrant();
             tableInfo[i][6] = (data.getProperties().get(i).getPropertyDetails().isFurnished() ? "Yes" : "No");
             tableInfo[i][7] = data.getProperties().get(i).getStatus();
+            tableInfo[i][8] = String.valueOf(data.getProperties().get(i).getPropertyDetails().getValidPeriod());
         }
-        String columns[] = {"ID","Type","Address","NoBedrooms", "NoBathrooms","Quadrant","Furnished", "Status"};
+        String columns[] = {"ID","Type","Address","NoBedrooms", "NoBathrooms","Quadrant","Furnished", "Status","Valid Period"};
         showTable(tableInfo,columns , "Viewing Properties :");
     }
 
@@ -354,7 +355,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         JLabel quadrantMessage = new JLabel("Quadrant: ");
         JLabel priceMessage = new JLabel("Price:  ");
         JLabel propertyTypeLabel = new JLabel("Property Type:  ");
-
+        JLabel statusLabel = new JLabel("Property Status:   ");
+        
         bathroomsMessage.setPreferredSize(new Dimension(175, 25));
         bedroomsMessage.setPreferredSize(new Dimension(175, 25));
         furnishedMessage.setPreferredSize(new Dimension(175, 25));
@@ -362,12 +364,13 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         quadrantMessage.setPreferredSize(new Dimension(175, 25));
         priceMessage.setPreferredSize(new Dimension(175, 25));
         propertyTypeLabel.setPreferredSize(new Dimension(175, 25));
-
+        statusLabel.setPreferredSize(new Dimension(175, 25));
+        
         JTextField bathroomsTextField = new JTextField("Bathrooms");
         JTextField bedroomsTextField = new JTextField("Bedrooms");
         JTextField priceTextField = new JTextField("Price");
         JTextField addressTextField = new JTextField("Address");
-
+        JTextField statusTextField= new JTextField("Status");
 
         JComboBox furnishedComboField = new JComboBox<String>(options);
         JComboBox propertyTypeComboField =new JComboBox<String>(propertyOptions);
@@ -385,7 +388,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         bedroomsTextField.setPreferredSize(new Dimension(175, 25));
         priceTextField.setPreferredSize(new Dimension(175, 25));
         addressTextField.setPreferredSize(new Dimension(175, 25));
-
+        statusTextField.setPreferredSize(new Dimension(175, 25));
 
         furnishedComboField.setPreferredSize(new Dimension(175, 25));
         propertyTypeComboField.setPreferredSize(new Dimension(175, 25));
@@ -416,12 +419,13 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                         
                         Property p1=new Property(0,propertyTypeValue,bathrooms,bedrooms,furnished,address,quadrant,prop.getStatus(),price);
                         p1.setPropertyID(propertyID);
+                        p1.setStatus(statusTextField.getText());
                         SearchDatabase search =new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
                         
                         PropertyDetails details=new PropertyDetails(propertyTypeValue, bathrooms, bedrooms, furnished, price);
                         PropertyLocation location=new PropertyLocation(address,quadrant);
                        
-                        
+                        prop.setStatus(statusTextField.getText());
                         prop.setPropertyDetails(details);
                         prop.setPropertyLocation(location);
                         search.updateProperty(p1, 0);
@@ -447,6 +451,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         JPanel quadrantPanel = new JPanel();
         JPanel pricePanel = new JPanel();
         JPanel propertyTypePanel = new JPanel();
+        JPanel statusPanel = new JPanel();
         JPanel registerPanel = new JPanel();
 
         //Set the Layouts for the JPanels
@@ -458,6 +463,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         quadrantPanel.setLayout(new FlowLayout());
         pricePanel.setLayout(new FlowLayout());
         propertyTypePanel.setLayout(new FlowLayout());
+        statusPanel.setLayout(new FlowLayout());
         registerPanel.setLayout(new FlowLayout());
 
         //Add Components to the JPanels.
@@ -476,6 +482,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         pricePanel.add(priceTextField);
         propertyTypePanel.add(propertyTypeLabel);
         propertyTypePanel.add(propertyTypeComboField);
+        statusPanel.add(statusLabel);
+        statusPanel.add(statusTextField);
         registerPanel.add(updateButton);
 
         //Add the JPanels to the main JPanel
@@ -486,6 +494,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         editPropertyPanel.add(furnishedPanel);
         editPropertyPanel.add(pricePanel);
         editPropertyPanel.add(propertyTypePanel);
+        editPropertyPanel.add(statusPanel);
         editPropertyPanel.add(registerPanel);
 
 
@@ -510,6 +519,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                         } else {
                             furnishedComboField.setSelectedItem("Not Furnished");
                         }
+                        statusTextField.setText("" + data.getProperties().get(i).getStatus());
+
                         mainContainer.add(editPropertyPanel);
                         revalidate();
                         repaint();
