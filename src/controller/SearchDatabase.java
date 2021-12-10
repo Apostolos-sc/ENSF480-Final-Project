@@ -1,10 +1,10 @@
 package controller;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.Date;
 
 import model.*;
-import model.Date;
 
 import javax.swing.*;
 
@@ -16,7 +16,6 @@ public class SearchDatabase {
     }
 
     public void addProperty(Property p, int landlordID) {
-
         try (Statement stmt1 = dbConnect.createStatement()) {
 
             PreparedStatement statement = dbConnect.prepareStatement(
@@ -65,7 +64,6 @@ public class SearchDatabase {
             }
             stmt.close();
             results.close();
-
         } catch (SQLException e) {
             throw new IllegalArgumentException("Unable to access to database");
         }
@@ -315,15 +313,44 @@ public class SearchDatabase {
         }
     }
 
-    //before calling this function check if state is an acceptable input of states [listed, unlisted, etc..]
-    //if it is call function
-    // if not send user error message
     public void updatePropState(Property p, String state){
         try (Statement stmt1 = dbConnect.createStatement()) {
             PreparedStatement statement = dbConnect.prepareStatement(
                     "UPDATE property SET state=? WHERE propertyID = " + p.getPropertyID());
             statement.setString(1, state);
             statement.executeUpdate(); // +"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            statement.close();
+            if(state=="listed"){
+                setPropertyPeriod(p);
+            }
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
+     public static Date addDays(Date date, int days) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, days);
+        return new Date(c.getTimeInMillis());
+    }
+
+    public static Date subtractDays(Date date, int days) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, -days);
+        return new Date(c.getTimeInMillis());
+    }
+
+    public void setPropertyPeriod(Property p){
+        try (Statement stmt1 = dbConnect.createStatement()) {
+            long millis = System.currentTimeMillis();
+            java.sql.Date date = new java.sql.Date(millis);
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "UPDATE property SET startDate=" + date + " WHERE propertyID = " + p.getPropertyID());
+            PreparedStatement stat= dbConnect.prepareStatement(
+                    "UPDATE property SET endDate=" + addDays(date, p.getPropertyDetails().getValidPeriod()) + " WHERE propertyID = " + p.getPropertyID());
+            statement.executeUpdate();
             statement.close();
         } catch (SQLException e) {
             throw new IllegalArgumentException("Unable to access to database");
@@ -357,6 +384,7 @@ public class SearchDatabase {
     	            throw new IllegalArgumentException("Unable to access to database");
     	        }	
     }
+
     public void updateLandlord(Landlord p) {
         
     	
@@ -380,6 +408,7 @@ public class SearchDatabase {
             throw new IllegalArgumentException("Unable to access to database");
         }	
     }
+
 public void updateRenter(Renter r) {
         
     	
