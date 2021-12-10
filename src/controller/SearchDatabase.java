@@ -14,7 +14,42 @@ public class SearchDatabase {
     public SearchDatabase(Connection dbConnection){
         this.dbConnect= dbConnection;
     }
-
+public ArrayList<Property> managerReport(int days){
+         ArrayList<Property> listedInPeriod = new ArrayList<>();
+         ArrayList<Integer> property=new ArrayList<Integer>();
+         try (Statement stmt = dbConnect.createStatement()) {
+             ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY_TYPES");
+             while (results.next()) {// takes into account number of rows that were returned by the query
+                 ResultSetMetaData rsmd = results.getMetaData();
+                 if (results.getInt("validDays")<=days) {
+                     property.add(results.getInt("propertyTypeID"));
+                 }
+             }
+             stmt.close();
+             results.close();
+         } catch (SQLException e) {
+             throw new IllegalArgumentException("Unable to access to database");
+         }
+         for(int i=0;i<property.size();i++) {
+	         try (Statement stmt = dbConnect.createStatement()) {
+	             ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY");
+	             while (results.next()) {// takes into account number of rows that were returned by the query
+	                 ResultSetMetaData rsmd = results.getMetaData();
+	                 if (results.getInt("propertyID")==(int)property.get(i)) {
+	                	 Property prop= new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
+	                             Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"), results.getString("address"),
+	                             results.getString("quadrant"), results.getString("state"), results.getInt("Price"));
+	                	 listedInPeriod.add(prop);
+	                 }
+	             }
+	             stmt.close();
+	             results.close();
+	         } catch (SQLException e) {
+	             throw new IllegalArgumentException("Unable to access to database");
+	         }
+         }
+         return listedInPeriod;
+    }
     public void addProperty(Property p, int landlordID) {
         try (Statement stmt1 = dbConnect.createStatement()) {
 
