@@ -47,7 +47,7 @@ public class Inbox extends JFrame implements ActionListener, MouseListener {
        // String data[][]= {{"John","jonh1@gmail.com","House1"},{"Bob","Bob2@gmail.com","House2"}};
         
         
-        String[] columnNames = { "Sender", "Reciever", "Message" };
+        String[] columnNames = { "Sender", "Receiver", "Message" };
         inbox = new JTable(data,columnNames);
         
         back = new JButton("Back");
