@@ -127,7 +127,15 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
             this.dispose();
         }
         if(e.getSource().equals(payItem)) {
-        	
+        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+        	SearchDatabase search = new SearchDatabase(access.getDBConnect());
+        	ArrayList<Property> arr=landlord.getProperties();
+        	for(int i=0;i<arr.size();i++) {
+        		arr.get(i).setStatus("Listed");
+        		System.out.println(arr.get(i).getStatus());
+
+        		search.updateProperty(arr.get(i),landlord.getLandlordID());
+        	}
         }
     }
     
@@ -181,6 +189,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         editProfile.addActionListener(this);
         inbox.addActionListener(this);
         logoutOption.addActionListener(this);
+        payItem.addActionListener(this);
 
         propertyMenu.add(viewMyProperties);
         propertyMenu.add(editProperty);
