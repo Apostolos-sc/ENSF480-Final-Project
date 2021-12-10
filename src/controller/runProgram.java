@@ -24,7 +24,7 @@ public class runProgram {
 
         //test_initialization(data);
         // jdbc:mysql://localhost:3306/sonoo","root","root"
-        SingletonDatabaseAccess dbConnection = new SingletonDatabaseAccess("jdbc:mysql://localhost:3306/property_management", "ensf409", "ensf409");
+        SingletonDatabaseAccess dbConnection = new SingletonDatabaseAccess("jdbc:mysql://localhost:3306/property_management", "root", "Minakshi1Devinder$");
         //dbConnection.saveData(data);
         if(dbConnection.isSuccessful()) {
             System.out.print("Successful connection.");
