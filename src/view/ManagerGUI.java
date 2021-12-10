@@ -21,6 +21,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private JMenu edit;
     private JMenu view;
     private JMenu report;
+    private JMenu propertyTypeMenu;
     private JMenu settings;
     private JMenuItem editLandlord;
     private JMenuItem editProperty;
@@ -29,6 +30,9 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private JMenuItem viewProperty;
     private JMenuItem viewRenter;
     private JMenuItem showReport;
+    private JMenuItem showPropertyTypes;
+    private JMenuItem editPropertyType;
+    private JMenuItem addPropertyType;
     private JMenuItem logoutOption;
     private JButton editPropertyButton;
     private JButton editLandlordButton;
@@ -50,6 +54,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private Property prop;
     private Landlord land;
     private Renter renter;
+    private PropertyType propertyType;
     
     public ManagerGUI(Manager mgr, JFrame parentFrame, Data data) {
         super("Manager System. Logged in as " + mgr.getFirstName() + " "+ mgr.getLastName() + ".");
@@ -71,60 +76,10 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
 
         //create menu
         setupMenu();
-        /*
-        editPropertyButton = new JButton("Edit Property");
-        editLandlordButton = new JButton("Edit Landlord");
-        editRenterButton = new JButton("Edit Renter");
-        
-        viewPropertyButton = new JButton("View Property");
-        viewLandlordButton = new JButton("View Landlord");
-        viewRenterButton = new JButton("View Renter");
-        
-        logoutButton = new JButton("Logout");
-        editPropertyButton.addActionListener(this);
-        editLandlordButton.addActionListener(this);
-        editRenterButton.addActionListener(this);
-        
-        viewPropertyButton.addActionListener(this);
-        viewLandlordButton.addActionListener(this);
-        viewRenterButton.addActionListener(this);
-        logoutButton.addActionListener(e -> {
-            this.setVisible(false);
-            parentFrame.setVisible(true);
-            this.dispose();
-        });*/
         //Create the JPanels.
         mainContainer = new JPanel();
-        /*JPanel headerPanel = new JPanel();
-        JPanel editPanel = new JPanel();
-        JPanel viewPanel = new JPanel();
-        JPanel backPanel = new JPanel();
-        */
         //Set the Layouts for the JPanels
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
-        /*headerPanel.setLayout(new FlowLayout());
-        
-        editPanel.setLayout(new FlowLayout());
-        viewPanel.setLayout(new FlowLayout());
-        backPanel.setLayout(new FlowLayout());*/
-        //Add Components to the JPanels.
-/*
-        headerPanel.add(generalMessage1);
-        //headerPanel.add(generalMessage2);
-        editPanel.add(editRenterButton);
-        editPanel.add(editLandlordButton);
-        editPanel.add(editPropertyButton);
-        
-        viewPanel.add(viewRenterButton);
-        viewPanel.add(viewLandlordButton);
-        viewPanel.add(viewPropertyButton);
-        
-        backPanel.add(logoutButton);
-        //Add the JPanels to the main JPanel
-        mainContainer.add(headerPanel);
-        mainContainer.add(editPanel);
-        mainContainer.add(viewPanel);
-        mainContainer.add(backPanel);*/
         //Add the main panel to the JFrame.
         this.add(mainContainer);
     }
@@ -135,6 +90,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         view = new JMenu("View");
         edit = new JMenu("Edit");
         report = new JMenu("Report");
+        propertyTypeMenu = new JMenu("Property Type");
         settings = new JMenu("Options");
 
         viewLandlord = new JMenuItem("Landlord");
@@ -145,8 +101,12 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         editProperty = new JMenuItem("Property");
         editRenter = new JMenuItem("Renter");
 
+        showPropertyTypes = new JMenuItem("Show Types");
+        editPropertyType = new JMenuItem("Edit Type");
+        addPropertyType = new JMenuItem("Create Type");
+
         showReport = new JMenuItem("Show Report");
-        
+
         logoutOption = new JMenuItem("Logout");
         logoutOption.addActionListener(this);
         viewProperty.addActionListener(this);
@@ -155,6 +115,9 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         editProperty.addActionListener(this);
         editRenter.addActionListener(this);
         editLandlord.addActionListener(this);
+        showPropertyTypes.addActionListener(this);
+        editPropertyType.addActionListener(this);
+        addPropertyType.addActionListener(this);
         showReport.addActionListener(this);
         
         view.add(viewLandlord);
@@ -165,6 +128,10 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         edit.add(editProperty);
         edit.add(editRenter);
 
+        propertyTypeMenu.add(showPropertyTypes);
+        propertyTypeMenu.add(editPropertyType);
+        propertyTypeMenu.add(addPropertyType);
+
         report.add(showReport);
         
         settings.add(logoutOption);
@@ -172,6 +139,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         menuBar.add(view);
         menuBar.add(edit);
         menuBar.add(report);
+        menuBar.add(propertyTypeMenu);
         menuBar.add(settings);
 
         this.add(menuBar);
@@ -209,27 +177,27 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
 	    if(e.getSource().equals(showReport)) {
 	    	showReport();
 	    }
+
+	    if(e.getSource().equals(showPropertyTypes)) {
+	        showPropertyTypes();
+        }
+	    if(e.getSource().equals(editPropertyType)) {
+	        showEditPropertyType();
+        }
+
+	    if(e.getSource().equals(addPropertyType)) {
+	        showAddPropertyType();
+        }
 	    if(e.getSource().equals(viewLandlordButton)) {
 	    	
 	    }
 	    if(e.getSource().equals(viewPropertyButton)) {
-	    	
-//	    	PropertyViewGUI loginFrame = new PropertyViewGUI(Property prop, User user);
-//            EventQueue.invokeLater(() -> {
-//                loginFrame.setVisible(true);
-//            });
+
 	    }
     }
 
     public void mouseClicked(MouseEvent event) {
 
-//        if(event.getSource().equals(usernameTextField)) {
-//            usernameTextField.setText("");
-//        }
-//
-//        if(event.getSource().equals(passwordTextField)) {
-//            passwordTextField.setText("");
-//        }
     }
 
     public void mouseExited(MouseEvent event) {
@@ -555,11 +523,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
 
         headerPanel.setLayout(new FlowLayout());
         selectLandlordPanel.setLayout(new FlowLayout());
-        //editPropertyPanel.setLayout(new FlowLayout());
         editLandlordPanel.setLayout(new BoxLayout(editLandlordPanel, BoxLayout.PAGE_AXIS));
-//        String options[] = {"Furnished","Not Furnished"};
-//        String propertyOptions[]= {"Apartment","Attached","Detached","Townhouse"};
-//        String quadrantOptions[] = {"SW", "NW", "NE", "SE"};
 
         //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
         JLabel fNameMessage = new JLabel("First Name: ");
@@ -579,11 +543,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         JTextField emailTextField = new JTextField("Email:");
         JTextField dobTextField = new JTextField("Date of Birth: ");
 
-
-//        JComboBox furnishedComboField = new JComboBox<String>(options);
-//        JComboBox propertyTypeComboField =new JComboBox<String>(propertyOptions);
-//        JComboBox quadrantComboField = new JComboBox<String>(quadrantOptions);
-
         fNameTextField.setToolTipText("Set First Name to ..");
         lNameTextField.setToolTipText("Set Last Name to ..");
         emailTextField.setToolTipText("Set Email to...");
@@ -594,11 +553,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         lNameTextField.setPreferredSize(new Dimension(175, 25));
         emailTextField.setPreferredSize(new Dimension(175, 25));
         dobTextField.setPreferredSize(new Dimension(175, 25));
-
-
-//        furnishedComboField.setPreferredSize(new Dimension(175, 25));
-//        propertyTypeComboField.setPreferredSize(new Dimension(175, 25));
-//        quadrantComboField.setPreferredSize(new Dimension(175, 25));
 
         JButton updateButton = new JButton("Update");
 
@@ -641,9 +595,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         JPanel lNamePanel = new JPanel();
         JPanel emailPanel = new JPanel();
         JPanel dobPanel = new JPanel();
-//        JPanel quadrantPanel = new JPanel();
-//        JPanel pricePanel = new JPanel();
-//        JPanel propertyTypePanel = new JPanel();
         JPanel registerPanel = new JPanel();
 
         //Set the Layouts for the JPanels
@@ -651,10 +602,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         lNamePanel.setLayout(new FlowLayout());
         emailPanel.setLayout(new FlowLayout());
         dobPanel.setLayout(new FlowLayout());
-//        pricePanel.setLayout(new FlowLayout());
-//        quadrantPanel.setLayout(new FlowLayout());
-//        pricePanel.setLayout(new FlowLayout());
-//        propertyTypePanel.setLayout(new FlowLayout());
         registerPanel.setLayout(new FlowLayout());
 
         //Add Components to the JPanels.
@@ -667,12 +614,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         emailPanel.add(emailTextField);
         dobPanel.add(dobMessage);
         dobPanel.add(dobTextField);
-//        furnishedPanel.add(furnishedMessage);
-//        furnishedPanel.add(furnishedComboField);
-//        pricePanel.add(priceMessage);
-//        pricePanel.add(priceTextField);
-//        propertyTypePanel.add(propertyTypeLabel);
-//        propertyTypePanel.add(propertyTypeComboField);
         registerPanel.add(updateButton);
 
         //Add the JPanels to the main JPanel
@@ -680,9 +621,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         editLandlordPanel.add(lNamePanel);
         editLandlordPanel.add(emailPanel);
         editLandlordPanel.add(dobPanel);
-//        editLandlordPanel.add(furnishedPanel);
-//        editPropertyPanel.add(pricePanel);
-//        editPropertyPanel.add(propertyTypePanel);
         editLandlordPanel.add(registerPanel);
 
 
@@ -745,11 +683,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
 
         headerPanel.setLayout(new FlowLayout());
         selectRenterPanel.setLayout(new FlowLayout());
-        //editPropertyPanel.setLayout(new FlowLayout());
         editRenterPanel.setLayout(new BoxLayout(editRenterPanel, BoxLayout.PAGE_AXIS));
-//        String options[] = {"Furnished","Not Furnished"};
-//        String propertyOptions[]= {"Apartment","Attached","Detached","Townhouse"};
-//        String quadrantOptions[] = {"SW", "NW", "NE", "SE"};
 
         //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
         JLabel fNameMessage = new JLabel("First Name: ");
@@ -769,11 +703,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         JTextField emailTextField = new JTextField("Email:");
         JTextField dobTextField = new JTextField("Date of Birth: ");
 
-
-//        JComboBox furnishedComboField = new JComboBox<String>(options);
-//        JComboBox propertyTypeComboField =new JComboBox<String>(propertyOptions);
-//        JComboBox quadrantComboField = new JComboBox<String>(quadrantOptions);
-
         fNameTextField.setToolTipText("Set First Name to ..");
         lNameTextField.setToolTipText("Set Last Name to ..");
         emailTextField.setToolTipText("Set Email to...");
@@ -785,10 +714,6 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         emailTextField.setPreferredSize(new Dimension(175, 25));
         dobTextField.setPreferredSize(new Dimension(175, 25));
 
-
-//        furnishedComboField.setPreferredSize(new Dimension(175, 25));
-//        propertyTypeComboField.setPreferredSize(new Dimension(175, 25));
-//        quadrantComboField.setPreferredSize(new Dimension(175, 25));
 
         JButton updateButton = new JButton("Update");
 
@@ -939,9 +864,272 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     	  mainContainer.add(propertyPanel);
     	  revalidate();
           repaint();
-    	  }
+    }
     
-   
+   public void showPropertyTypes() {
+       String[][] tableInfo = new String[data.getPropertyTypes().size()][8];
+       for(int i = 0; i < data.getPropertyTypes().size(); i++) {
+           tableInfo[i][0] = ""+data.getPropertyTypes().get(i).getPropertyTypeID();
+           tableInfo[i][1] = data.getPropertyTypes().get(i).getPropertyType();
+           tableInfo[i][2] = "" + data.getPropertyTypes().get(i).getValidDays();
+           tableInfo[i][3] = ""+ data.getPropertyTypes().get(i).getFee();
+       }
+       String columns[] = {"ID","Type","Valid Days","Fee"};
+       showTable(tableInfo,columns , "Viewing propertyTypes :");
+   }
+
+   public void showEditPropertyType() {
+       mainContainer.removeAll();
+       mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+       String propertyTypeList[] = new String[data.getPropertyTypes().size()];
+       for(int i = 0; i < data.getPropertyTypes().size(); i++) {
+           propertyTypeList[i] = data.getPropertyTypes().get(i).getPropertyTypeID() + " - " + data.getPropertyTypes().get(i).getPropertyType();
+       }
+
+
+       JPanel headerPanel = new JPanel();
+       JPanel selectPropertyTypePanel = new JPanel();
+       JPanel editPropertyTypePanel = new JPanel();
+
+       JLabel generalMessage = new JLabel("Edit Property Type :");
+       JLabel selectRenterLabel = new JLabel("Select Property Type :");
+
+       JComboBox selectPropertyTypeComboBox = new JComboBox(propertyTypeList);
+
+       generalMessage.setPreferredSize(new Dimension(175,25));
+       selectRenterLabel.setPreferredSize(new Dimension(175, 25));
+       selectPropertyTypeComboBox.setPreferredSize(new Dimension(175, 25));
+
+       headerPanel.setLayout(new FlowLayout());
+       selectPropertyTypePanel.setLayout(new FlowLayout());
+       editPropertyTypePanel.setLayout(new BoxLayout(editPropertyTypePanel, BoxLayout.PAGE_AXIS));
+
+       //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+       JLabel propertyTypeIDLabel = new JLabel("ID: ");
+       JLabel propertyTypeLabel = new JLabel("Type: ");
+       JLabel propertyTypeFeesLabel = new JLabel("Fee : ");
+       JLabel propertyTypeValidDaysLabel = new JLabel("Valid Days: ");
+
+
+       propertyTypeIDLabel.setPreferredSize(new Dimension(175, 25));
+       propertyTypeLabel.setPreferredSize(new Dimension(175, 25));
+       propertyTypeFeesLabel.setPreferredSize(new Dimension(175, 25));
+       propertyTypeValidDaysLabel.setPreferredSize(new Dimension(175, 25));
+
+
+       JLabel propertyTypeID2Label = new JLabel("");
+       JTextField propertyTypeTextField = new JTextField("Type: ");
+       JTextField propertyTypeFeesTextField = new JTextField("Fees:");
+       JTextField propertyTypeValidDaysTextField = new JTextField("Valid Days: ");
+
+       propertyTypeTextField.setToolTipText("Set Type to ..");
+       propertyTypeFeesTextField.setToolTipText("Set Fees to...");
+       propertyTypeValidDaysTextField.setToolTipText("Set Valid Days to..");
+
+
+       propertyTypeID2Label.setPreferredSize(new Dimension(175, 25));
+       propertyTypeTextField.setPreferredSize(new Dimension(175, 25));
+       propertyTypeFeesTextField.setPreferredSize(new Dimension(175, 25));
+       propertyTypeValidDaysTextField.setPreferredSize(new Dimension(175, 25));
+
+
+       JButton updateButton = new JButton("Update");
+
+       updateButton.addActionListener((new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent evt) {
+               if (evt.getSource().equals(updateButton)) {
+
+                   if (propertyTypeTextField.getText() != "" && propertyTypeFeesTextField.getText() != ""
+                           && propertyTypeValidDaysTextField.getText() != "") {
+
+                       String type = propertyTypeTextField.getText();
+                       double fees = Double.valueOf(propertyTypeFeesTextField.getText());
+                       int validDays = Integer.valueOf(propertyTypeValidDaysTextField.getText());
+
+                       propertyType.setPropertyType(type);
+                       propertyType.setFee(fees);
+                       propertyType.setValidDays(validDays);
+
+                       SearchDatabase search=new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+                       search.updatePropertyType(propertyType);
+
+                       //implement DB Action here.
+                       JOptionPane.showMessageDialog(null, "Property Type was updated.");
+                       mainContainer.removeAll();
+                       revalidate();
+                       repaint();
+                   } else {
+                       JOptionPane.showMessageDialog(null, "There was an error with your input. Please re-enter info.");
+                   }
+               }
+           }
+       }));
+
+       //Create the JPanels.
+       JPanel propertyTypeIDPanel = new JPanel();
+       JPanel propertyTypeTypePanel = new JPanel();
+       JPanel propertyTypeFeesPanel = new JPanel();
+       JPanel propertyTypeValidDaysPanel = new JPanel();
+       JPanel updatePanel = new JPanel();
+
+       //Set the Layouts for the JPanels
+       propertyTypeIDPanel.setLayout(new FlowLayout());
+       propertyTypeTypePanel.setLayout(new FlowLayout());
+       propertyTypeFeesPanel.setLayout(new FlowLayout());
+       propertyTypeValidDaysPanel.setLayout(new FlowLayout());
+       updatePanel.setLayout(new FlowLayout());
+
+       //Add Components to the JPanels.
+
+       propertyTypeIDPanel.add(propertyTypeIDLabel);
+       propertyTypeIDPanel.add(propertyTypeID2Label);
+       propertyTypeTypePanel.add(propertyTypeLabel);
+       propertyTypeTypePanel.add(propertyTypeTextField);
+       propertyTypeFeesPanel.add(propertyTypeFeesLabel);
+       propertyTypeFeesPanel.add(propertyTypeFeesTextField);
+       propertyTypeValidDaysPanel.add(propertyTypeValidDaysLabel);
+       propertyTypeValidDaysPanel.add(propertyTypeValidDaysTextField);
+       updatePanel.add(updateButton);
+
+       //Add the JPanels to the main JPanel
+       editPropertyTypePanel.add(propertyTypeIDPanel);
+       editPropertyTypePanel.add(propertyTypeTypePanel);
+       editPropertyTypePanel.add(propertyTypeFeesPanel);
+       editPropertyTypePanel.add(propertyTypeValidDaysPanel);
+       editPropertyTypePanel.add(updatePanel);
+
+
+       selectPropertyTypeComboBox.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+
+               String selection = selectPropertyTypeComboBox.getSelectedItem().toString();
+               int propertyTypeID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
+               for(int i = 0; i < data.getRenters().size(); i++) {
+                   if(propertyTypeID == data.getPropertyTypes().get(i).getPropertyTypeID()) {
+                       propertyType = data.getPropertyTypes().get(i);
+                       propertyTypeID2Label.setText(""+data.getPropertyTypes().get(i).getPropertyTypeID());
+                       propertyTypeTextField.setText(data.getPropertyTypes().get(i).getPropertyType());
+                       propertyTypeFeesTextField.setText(""+data.getPropertyTypes().get(i).getFee());
+                       propertyTypeValidDaysTextField.setText("" + data.getPropertyTypes().get(i).getValidDays());
+
+                       mainContainer.add(editPropertyTypePanel);
+                       revalidate();
+                       repaint();
+                       break;
+                   }
+               }
+           }
+       });
+
+       headerPanel.add(generalMessage);
+       selectPropertyTypePanel.add(selectRenterLabel);
+       selectPropertyTypePanel.add(selectPropertyTypeComboBox);
+
+       mainContainer.add(headerPanel);
+       mainContainer.add(selectPropertyTypePanel);
+
+       revalidate();
+       repaint();
+   }
+
+   public void showAddPropertyType() {
+       String options[] = {"Furnished","Not Furnished"};
+       String[] propertyTypeOptions = new String[data.getPropertyTypes().size()];
+       for(int i = 0; i < data.getPropertyTypes().size(); i++) {
+
+       }
+       //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+       JLabel generalMessage = new JLabel("Create Property Type");
+       JLabel propertyTypeMessage = new JLabel("Property Type: ");
+       JLabel propertyTypeFeesMessage = new JLabel("Fee: ");
+       JLabel propertyTypeValidDaysMessage = new JLabel("Valid Days: ");
+
+       propertyTypeMessage.setPreferredSize(new Dimension(175, 25));
+       propertyTypeFeesMessage.setPreferredSize(new Dimension(175, 25));
+       propertyTypeValidDaysMessage.setPreferredSize(new Dimension(175, 25));
+
+       JTextField propertyTypeTextField = new JTextField("");
+       JTextField propertyTypeFeesTextField = new JTextField("");
+       JTextField propertyTypeValidDaysTextField = new JTextField("");
+
+       propertyTypeTextField.setToolTipText("Set bedrooms Number to ..");
+       propertyTypeFeesTextField.setToolTipText("Set bathrooms Number to ..");
+       propertyTypeValidDaysTextField.setToolTipText("Set address to...");
+
+       propertyTypeTextField.setPreferredSize(new Dimension(175, 25));
+       propertyTypeFeesTextField.setPreferredSize(new Dimension(175, 25));
+       propertyTypeValidDaysTextField.setPreferredSize(new Dimension(175, 25));
+
+       JButton createButton = new JButton("Register");
+
+       createButton.addActionListener((new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent evt) {
+               if (evt.getSource().equals(createButton)) {
+
+                   if (propertyTypeTextField.getText() != ""
+                           && isDouble(propertyTypeFeesTextField.getText()) == true && isInteger(propertyTypeValidDaysTextField.getText())) {
+
+                       String type = propertyTypeTextField.getText();
+                       double fee = Double.valueOf(propertyTypeFeesTextField.getText());
+                       int validDays = Integer.valueOf(propertyTypeValidDaysTextField.getText());
+                       SingletonDatabaseAccess access = SingletonDatabaseAccess.getOnlyInstance();
+                       SearchDatabase search = new SearchDatabase(access.getDBConnect());
+                       propertyType = new PropertyType(data.getPropertyTypes().size(), type, fee, validDays);
+                       search.addPropertyType(propertyType);
+                       data.getPropertyTypes().add(propertyType);
+                       //implement DB Action here.
+                       JOptionPane.showMessageDialog(null, "Property Type was created.");
+                       mainContainer.removeAll();
+                       revalidate();
+                       repaint();
+                   } else {
+                       JOptionPane.showMessageDialog(null, "There was an error with your input. Please re-enter info.");
+                   }
+               }
+           }
+       }));
+
+       //Create the JPanels.
+       mainContainer.removeAll();
+       JPanel headerPanel = new JPanel();
+       JPanel propertyTypePanel = new JPanel();
+       JPanel propertyTypeFeesPanel = new JPanel();
+       JPanel propertyTypeValidDaysPanel = new JPanel();
+       JPanel createPanel = new JPanel();
+
+       //Set the Layouts for the JPanels
+       mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+       headerPanel.setLayout(new FlowLayout());
+       propertyTypePanel.setLayout(new FlowLayout());
+       propertyTypeFeesPanel.setLayout(new FlowLayout());
+       propertyTypeValidDaysPanel.setLayout(new FlowLayout());
+       createPanel.setLayout(new FlowLayout());
+
+       //Add Components to the JPanels.
+
+       headerPanel.add(generalMessage);
+       propertyTypePanel.add(propertyTypeMessage);
+       propertyTypePanel.add(propertyTypeTextField);
+       propertyTypeFeesPanel.add(propertyTypeFeesMessage);
+       propertyTypeFeesPanel.add(propertyTypeFeesTextField);
+       propertyTypeValidDaysPanel.add(propertyTypeValidDaysMessage);
+       propertyTypeValidDaysPanel.add(propertyTypeValidDaysTextField);
+       createPanel.add(createButton);
+
+       //Add the JPanels to the main JPanel
+       mainContainer.add(headerPanel);
+       mainContainer.add(propertyTypePanel);
+       mainContainer.add(propertyTypeFeesPanel);
+       mainContainer.add(propertyTypeValidDaysPanel);
+       mainContainer.add(createPanel);
+       //Add the main panel to the JFrame.
+       this.add(mainContainer);
+       revalidate();
+       repaint();
+   }
     	  
     public boolean isInteger(String tmp) {
         for(int i=0;i<tmp.length();i++) {
@@ -950,5 +1138,16 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
             }
         }
         return true;
+    }
+
+    private boolean isDouble(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        }
+        catch(NumberFormatException e) {
+            return false;
+        }
+
     }
 }

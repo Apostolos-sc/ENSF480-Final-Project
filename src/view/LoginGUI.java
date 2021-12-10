@@ -122,6 +122,10 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
             username = usernameTextField.getText();
             password = passwordTextField.getText();
             userType = selectUserTypeComboBox.getSelectedItem().toString();
+
+            username = "j.smith@gmail.com";
+            password = "tester";
+            userType = "Manager";
             //Attempt to login using the information given :
 //            username = "j.lance@gmail.com";
 //            password = "tested";

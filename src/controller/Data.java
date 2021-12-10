@@ -10,6 +10,7 @@ public class Data {
     private ArrayList<Landlord> landlords;
     private ArrayList<Manager> managers;
     private ArrayList<Contract> contracts;
+    private ArrayList<PropertyType> propertyTypes;
 
 
     public Data() {
@@ -18,14 +19,16 @@ public class Data {
         landlords = new ArrayList<Landlord>();
         managers = new ArrayList<Manager>();
         contracts = new ArrayList<Contract>();
+        propertyTypes = new ArrayList<PropertyType>();
     }
 
-    public Data(ArrayList<Renter> renters, ArrayList<Property> properties, ArrayList<Landlord> landlords, ArrayList<Manager> managers, ArrayList<Contract> contracts) {
+    public Data(ArrayList<Renter> renters, ArrayList<Property> properties, ArrayList<Landlord> landlords, ArrayList<Manager> managers, ArrayList<Contract> contracts, ArrayList<PropertyType> propertyTypes) {
         this.renters = renters;
         this.properties = properties;
         this.landlords = landlords;
         this.managers = managers;
         this.contracts = contracts;
+        this.propertyTypes = propertyTypes;
     }
 
     public ArrayList<Renter> getRenters() {
@@ -44,8 +47,12 @@ public class Data {
         return managers;
     }
 
-    public ArrayList<model.Contract> getContracts() {
+    public ArrayList<Contract> getContracts() {
         return contracts;
+    }
+
+    public ArrayList<PropertyType> getPropertyTypes() {
+        return propertyTypes;
     }
 
     public void setRenters(ArrayList<Renter> renters) {
@@ -66,5 +73,9 @@ public class Data {
 
     public void setContracts(ArrayList<model.Contract> contracts) {
         this.contracts = contracts;
+    }
+
+    public void setPropertyTypes(ArrayList<PropertyType> propertyTypes) {
+        this.propertyTypes = propertyTypes;
     }
 }
