@@ -137,6 +137,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
                 }
                 else if(userType.equals("Landlord")) {
                     this.setVisible(false);
+                    System.out.println("# of contracts: " + data.getContracts().size());
                 	LandlordGUI frame = new LandlordGUI((Landlord)checkedUser, this, data);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);

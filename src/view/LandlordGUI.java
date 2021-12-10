@@ -19,9 +19,13 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
     private JMenuBar menuBar;
     private JMenu propertyMenu;
     private JMenu profileMenu;
+    private JMenu contractMenu;
     private JMenuItem editProperty;
     private JMenuItem registerProperty;
     private JMenuItem viewMyProperties;
+    private JMenuItem editContract;
+    private JMenuItem viewMyContracts;
+    private JMenuItem createContract;
     private JMenuItem editProfile;
     private JMenuItem inbox;
     private JMenuItem logoutOption;
@@ -149,10 +153,15 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         menuBar = new JMenuBar();
         propertyMenu = new JMenu("Property");
         profileMenu = new JMenu("User Actions");
+        contractMenu = new JMenu("Contract");
 
         editProperty = new JMenuItem("Edit Property");
         viewMyProperties= new JMenuItem("View my Properties");
         registerProperty = new JMenuItem("Register a Property");
+
+        editContract = new JMenuItem("Edit Contracts");
+        viewMyContracts= new JMenuItem("View my Contracts");
+        createContract = new JMenuItem("Create a Contract");
 
         editProfile = new JMenuItem("Edit My Profile");
         inbox = new JMenuItem("My Inbox");
@@ -171,12 +180,17 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         propertyMenu.add(editProperty);
         propertyMenu.add(registerProperty);
 
+        contractMenu.add(viewMyContracts);
+        contractMenu.add(editContract);
+        contractMenu.add(createContract);
+
         profileMenu.add(editProfile);
         profileMenu.add(inbox);
         profileMenu.add(logoutOption);
 
 
         menuBar.add(propertyMenu);
+        menuBar.add(contractMenu);
         menuBar.add(profileMenu);
 
         this.add(menuBar);
@@ -329,6 +343,10 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         //Add the main panel to the JFrame.
         this.revalidate();
         this.repaint();
+    }
+
+    public void showContracts() {
+
     }
 
     public void showMyProperties() {

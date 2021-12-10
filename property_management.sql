@@ -27,6 +27,7 @@ CREATE  TABLE LANDLORD (
 
 CREATE  TABLE RENTER (
 	renterID INTEGER NOT NULL,
+    subscribe TINYINT(1) NOT NULL,
 	PRIMARY KEY (renterID),
 	FOREIGN KEY (renterID) REFERENCES USERS(userID)
 );
@@ -42,9 +43,6 @@ CREATE TABLE PROPERTY (
     landlordID INTEGER NOT NULL, 
     price DECIMAL(15, 2) NOT NULL,
 	validPeriod INTEGER NOT NULL,
-	startDate DATE NOT NULL,
-	endDate DATE  NOT NULL,
-	payment DECIMAL(15, 2) NOT NULL,
     address VARCHAR(30) NOT NULL,
 	propertyType VARCHAR(30) NOT NULL,
     quadrant VARCHAR(2) NOT NULL, 
@@ -70,19 +68,27 @@ CREATE TABLE CONTRACT (
 	FOREIGN KEY (renterID) REFERENCES RENTER(renterID)
 );
 
+CREATE TABLE INBOX(
+    inboxID INTEGER NOT NULL,
+    senderEmail VARCHAR(30) NOT NULL,
+    recieverEmail VARCHAR(30) NOT NULL,
+    message VARCHAR(500) NOT NULL,
+    PRIMARY KEY(inboxID)
+);
 CREATE TABLE NOTIFCRITERIA(
-	renterID INTEGER NOT NULL,
-	propertyType VARCHAR(30) NOT NULL,
-	noBedrooms INTEGER NOT NULL,
+    renterID INTEGER NOT NULL,
+    propertyType VARCHAR(30) NOT NULL,
+    noBedrooms INTEGER NOT NULL,
     noBathrooms INTEGER NOT NULL,
-	quadrant VARCHAR(2) NOT NULL, 
-	isFurnished TINYINT(1)
-)
+    quadrant VARCHAR(2) NOT NULL, 
+    isFurnished TINYINT(1),
+    propertyID INTEGER NOT NULL
+);
 
 CREATE TABLE SUGGESTEDPROPERTY(
-	renterID INTEGER NOT NULL,
-	propertyID INTEGER NOT NULL
-)
+    renterID INTEGER NOT NULL,
+    propertyID INTEGER NOT NULL
+);
 
 INSERT INTO USERS (userID, fname, lname, email, pass, dob) 
 VALUES    
@@ -127,3 +133,8 @@ VALUES
 		(505, 4, 'Detached', 4,5,true,'20 Bow Ridge Crescent', 'SW','Listed', 1500),
 		(506, 8,'Detached', 4,5,true,'20 Bow Ridge Crescent', 'SW','Listed', 1700),
 		(507, 8, 'Detached', 4,5,true,'20 Bow Ridge Crescent', 'SW','Listed', 1900);
+        
+INSERT INTO CONTRACT (contractID, landlordID, renterID, propertyID, startDate, endDate, monthlyRent) 
+VALUES (1, 3, 15, 500, '2021-01-01', '2021-12-23', 700.50), 
+(2, 3, 22, 503, '2021-04-27', '2021-08-12', 1250.35),
+(3, 3, 17, 504, '2021-07-07', '2021-11-09', 1500);

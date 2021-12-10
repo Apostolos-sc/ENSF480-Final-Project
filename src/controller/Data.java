@@ -9,6 +9,7 @@ public class Data {
     private ArrayList<Property> properties;
     private ArrayList<Landlord> landlords;
     private ArrayList<Manager> managers;
+    private ArrayList<Contract> contracts;
 
 
     public Data() {
@@ -16,13 +17,15 @@ public class Data {
         properties = new ArrayList<Property>();
         landlords = new ArrayList<Landlord>();
         managers = new ArrayList<Manager>();
+        contracts = new ArrayList<Contract>();
     }
 
-    public Data(ArrayList<Renter> renters, ArrayList<Property> properties, ArrayList<Landlord> landlords, ArrayList<Manager> managers) {
+    public Data(ArrayList<Renter> renters, ArrayList<Property> properties, ArrayList<Landlord> landlords, ArrayList<Manager> managers, ArrayList<Contract> contracts) {
         this.renters = renters;
         this.properties = properties;
         this.landlords = landlords;
         this.managers = managers;
+        this.contracts = contracts;
     }
 
     public ArrayList<Renter> getRenters() {
@@ -41,6 +44,10 @@ public class Data {
         return managers;
     }
 
+    public ArrayList<model.Contract> getContracts() {
+        return contracts;
+    }
+
     public void setRenters(ArrayList<Renter> renters) {
         this.renters = renters;
     }
@@ -55,5 +62,9 @@ public class Data {
 
     public void setManagers(ArrayList<Manager> managers) {
         this.managers = managers;
+    }
+
+    public void setContracts(ArrayList<model.Contract> contracts) {
+        this.contracts = contracts;
     }
 }

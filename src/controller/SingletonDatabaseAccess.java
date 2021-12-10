@@ -9,7 +9,6 @@ package controller;
  */
 
 import model.*;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -122,9 +121,8 @@ public class SingletonDatabaseAccess{
         ArrayList<Property> properties = retrieveProperties(landlords);
         ArrayList<Manager> managers = retrieveManagers();
         ArrayList<Contract> contracts = retrieveContracts(properties, renters, landlords);
-        Data data = new Data(renters, properties, landlords, managers);
+        Data data = new Data(renters, properties, landlords, managers, contracts);
         data.setRenters(retrieveRenters());
-
         return data;
     }
     public ArrayList<Renter> retrieveRenters() {
@@ -246,7 +244,7 @@ public class SingletonDatabaseAccess{
                 }
                 contracts.add(new Contract(Integer.valueOf(results.getString("contractID")), renters.get(renterID),
                                 properties.get(propertyID), landlords.get(landlordID), results.getString("startDate"),
-                                results.getString("endData"), Double.valueOf(results.getString("monthlyRent"))));
+                                results.getString("endDate"), Double.valueOf(results.getString("monthlyRent"))));
                 for(int i = 0; i < landlords.size(); i++) {
                     if(landlords.get(i).getLandlordID() == landlordID) {
                         landlords.get(i).getProperties().add(properties.get(properties.size()-1));
