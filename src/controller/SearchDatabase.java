@@ -371,15 +371,17 @@ public class SearchDatabase {
         }
     }
 
-    // "SELECT * FROM PROPERTY WHERE startDate >="+startOfPer+"startDate < "+endOfPer
-    //checks
-    //not done
-    public void checkPropertyPeriod(Property p){
+
+    //check validity of all periods and if valid period of properties is expired then it changes the
+    //state from listed to registered
+    public void checkPropertyPeriod(){
         java.sql.Date sqlDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());;
         try (Statement stmt1 = dbConnect.createStatement()) {
             PreparedStatement statement = dbConnect.prepareStatement(
-                    "SELECT * FROM property WHERE propertyID = " + p.getPropertyID() +"AND endDate >= "+ sqlDate);
-            
+                    "UPDATE property SET state=? WHERE endDate >= "+ sqlDate);
+            statement.setString(1, "Registered");
+            statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
             throw new IllegalArgumentException("Unable to access to database");
         }
