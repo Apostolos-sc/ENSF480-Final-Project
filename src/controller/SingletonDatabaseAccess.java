@@ -125,18 +125,49 @@ public class SingletonDatabaseAccess{
         data.setRenters(retrieveRenters());
         return data;
     }
-    public ArrayList<Renter> retrieveRenters() {
+//     public ArrayList<Renter> retrieveRenters() {
+//         ArrayList<Renter> renters = new ArrayList<Renter>();
+//         String Query = "SELECT * FROM USERS INNER JOIN RENTER ON userID=renterID";
+//         ResultSet results;
+//         try {
+//             Statement selectRenters = dbConnect.createStatement();
+//             results = selectRenters.executeQuery(Query);
+//             while(results.next()) {
+//                 renters.add(new Renter(Integer.valueOf(results.getString("userID")), results.getString("fname"),
+//                             results.getString("lname"), results.getString("email"), results.getString("pass"),
+//                         results.getString("dob")));
+//             }
+//         } catch(SQLException ex) {
+//             ex.printStackTrace();
+//         }
+//         return renters;
+//     }
+	public ArrayList<Renter> retrieveRenters() {
         ArrayList<Renter> renters = new ArrayList<Renter>();
         String Query = "SELECT * FROM USERS INNER JOIN RENTER ON userID=renterID";
+        String query2 = "SELECT * FROM RENTER";
         ResultSet results;
+        ResultSet result2;
         try {
             Statement selectRenters = dbConnect.createStatement();
+            Statement selectSubscribe = dbConnect.createStatement();
             results = selectRenters.executeQuery(Query);
-            while(results.next()) {
-                renters.add(new Renter(Integer.valueOf(results.getString("userID")), results.getString("fname"),
-                            results.getString("lname"), results.getString("email"), results.getString("pass"),
-                        results.getString("dob")));
-            }
+            result2 = selectSubscribe.executeQuery(query2);
+            
+            while(results.next() &&result2.next()) {
+            	
+	               Renter r1= (new Renter(Integer.valueOf(results.getString("userID")), results.getString("fname"),
+	                            results.getString("lname"), results.getString("email"), results.getString("pass"),
+	                        results.getString("dob")));
+	               
+	               boolean sub=false;
+	               if(result2.getInt("subscribe")==1){
+	            	   sub=true;
+	               }
+	               r1.setSubscribed(sub);
+	               renters.add(r1);
+            	}
+            
         } catch(SQLException ex) {
             ex.printStackTrace();
         }
