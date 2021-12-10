@@ -314,9 +314,9 @@ public class SearchDatabase {
     public int propertyMaxID() {
 	    int max=-10;
 	    try (Statement stmt = dbConnect.createStatement()) {
-	        ResultSet results = stmt.executeQuery("SELECT *FROM property"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+	        ResultSet results = stmt.executeQuery("SELECT *FROM property"); 
 	        int i = 0;
-	        while (results.next()) {// takes into account number of rows that were returned by the query
+	        while (results.next()) {
 	            ResultSetMetaData rsmd = results.getMetaData();
 	         
 	            if(results.getInt("propertyID")>max) {
