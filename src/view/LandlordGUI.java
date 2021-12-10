@@ -13,6 +13,7 @@ import java.awt.*;
 public class LandlordGUI extends JFrame implements ActionListener, MouseListener {
     private Data data;
     private Landlord landlord;
+    private Contract contract;
     private Frame parentFrame;
 
     //MenuBar members
@@ -41,6 +42,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         super("Landlord System. Logged in as " + landlord.getFirstName() + " " + landlord.getLastName() + ".");
         this.landlord = landlord;
         this.parentFrame = parentFrame;
+        this.data = data;
         setupGUI();
         setSize(600,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,44 +51,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
      * Sets gui.
      */
     public void setupGUI() {
-        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
-
         setupMenu();
-        /*
-        //Create the JPanels.
-        JPanel mainContainer = new JPanel();
-        JPanel headerPanel = new JPanel();
-        JPanel editPropertyPanel = new JPanel();
-        JPanel editProfilePanel = new JPanel();
-        JPanel registerPropertyPanel = new JPanel();
-        JPanel inboxPanel = new JPanel();
-        JPanel logoutPanel = new JPanel();
-        
-        //Set the Layouts for the JPanels
-        headerPanel.setLayout(new FlowLayout());
-        editPropertyPanel.setLayout(new FlowLayout());
-        editProfilePanel.setLayout(new FlowLayout());
-        registerPropertyPanel.setLayout(new FlowLayout());
-        inboxPanel.setLayout(new FlowLayout());
-        logoutPanel.setLayout(new FlowLayout());
-        //Add Components to the JPanels.
-        headerPanel.add(generalMessage1);
-        headerPanel.add(generalMessage2);
-        editPropertyPanel.add(editProperty);
-        editProfilePanel.add(editProfile);
-        registerPropertyPanel.add(registerProperty);
-        inboxPanel.add(inboxButton);
-        logoutPanel.add(logout);
-        
-        //Add the JPanels to the main JPanel
-        mainContainer.add(headerPanel);
-        mainContainer.add(editPropertyPanel);
-        mainContainer.add(editProfilePanel);
-        mainContainer.add(registerPropertyPanel);
-        mainContainer.add(inboxPanel);
-        mainContainer.add(logoutPanel);
-        //Add the main panel to the JFrame.
-        */
         mainContainer = new JPanel();
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
         this.add(mainContainer);
@@ -106,6 +71,18 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         if(e.getSource().equals(viewMyProperties)) {
             showMyProperties();
         }
+
+        if(e.getSource().equals(viewMyContracts)) {
+            showMyContracts();
+        }
+
+        if(e.getSource().equals(editContract)) {
+            showEditContract();
+        }
+//
+//        if(e.getSource().equals(createContract)) {
+//            showCreateContracts();
+//        }
 
         if(e.getSource().equals(registerProperty)) {
             showRegisterProperty();
@@ -179,6 +156,10 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         editProperty.addActionListener(this);
         viewMyProperties.addActionListener(this);
         registerProperty.addActionListener(this);
+
+        editContract.addActionListener(this);
+        viewMyContracts.addActionListener(this);
+        createContract.addActionListener(this);
 
         editProfile.addActionListener(this);
         inbox.addActionListener(this);
@@ -355,7 +336,225 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         this.repaint();
     }
 
-    public void showContracts() {
+    public void showMyContracts() {
+        ArrayList<Contract> landlordContracts = new ArrayList<Contract>();
+        for (int i = 0; i < data.getContracts().size(); i++) {
+            if(data.getContracts().get(i).getLandlord().getLandlordID() == landlord.getLandlordID()) {
+                landlordContracts.add(data.getContracts().get(i));
+            }
+        }
+        String[][] tableInfo = new String[landlordContracts.size()][7];
+        for(int i = 0; i < landlordContracts.size(); i++) {
+            tableInfo[i][0] = ""+landlordContracts.get(i).getContractID();
+            tableInfo[i][1] = landlordContracts.get(i).getRenter().getFirstName() + " " + landlordContracts.get(i).getRenter().getLastName();
+            tableInfo[i][2] = ""+landlordContracts.get(i).getProperty().getPropertyID();
+            tableInfo[i][3] = landlordContracts.get(i).getStartDate();
+            tableInfo[i][4] = landlordContracts.get(i).getEndDate();
+            tableInfo[i][5] = ""+landlordContracts.get(i).getMonthlyRent();
+            tableInfo[i][6] = landlordContracts.get(i).getContractStatus();
+
+        }
+        String columns[] = {"Contract ID", "Renter","Property","Start Date", "End Date","Monthly Rent", "Contract Status"};
+        showTable(tableInfo,columns , "Viewing my Contracts :");
+    }
+
+    public void showEditContract() {
+        mainContainer.removeAll();
+        mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+        ArrayList<Contract> landlordContracts = new ArrayList<Contract>();
+        for (int i = 0; i < data.getContracts().size(); i++) {
+            if(data.getContracts().get(i).getLandlord().getLandlordID() == landlord.getLandlordID() &&
+                    !data.getContracts().get(i).getContractStatus().equals("Signed")) {
+                landlordContracts.add(data.getContracts().get(i));
+            }
+        }
+        String contractList[] = new String[landlordContracts.size()];
+        for(int i = 0; i < landlordContracts.size(); i++) {
+            contractList[i] = "Contract ID: " +  landlordContracts.get(i).getContractID() + ", Property ID: " + landlordContracts.get(i).getProperty().getPropertyID() + ", Renter ID:  " + landlordContracts.get(i).getRenter().getRenterID();
+        }
+        JPanel headerPanel = new JPanel();
+        JPanel selectPanel = new JPanel();
+        JPanel editPanel = new JPanel();
+
+        JLabel generalMessage = new JLabel("Edit Contract :");
+        JLabel SelectLabel = new JLabel("Select Contract :");
+
+        JComboBox selectComboBox = new JComboBox(contractList);
+
+        generalMessage.setPreferredSize(new Dimension(175,25));
+        SelectLabel.setPreferredSize(new Dimension(175, 25));
+        selectComboBox.setPreferredSize(new Dimension(175, 25));
+
+        headerPanel.setLayout(new FlowLayout());
+        selectPanel.setLayout(new FlowLayout());
+        //editPropertyPanel.setLayout(new FlowLayout());
+        editPanel.setLayout(new BoxLayout(editPanel, BoxLayout.PAGE_AXIS));
+        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+        JLabel contractIDMessage = new JLabel("Contract ID: ");
+        JLabel landlordIDMessage = new JLabel("Landlord ID: ");
+        JLabel renterIDMessage = new JLabel("Renter ID: ");
+        JLabel contractIDMessage2 = new JLabel();
+        JLabel landlordIDMessage2 = new JLabel();
+        JLabel renterIDMessage2 = new JLabel();
+        JLabel propertyIDMessage2 = new JLabel();
+        JLabel contractStatusMessage2 = new JLabel();
+        JLabel propertyIDMessage = new JLabel("Property ID: ");
+        JLabel startDateMessage = new JLabel("Start Date: ");
+        JLabel endDateMessage = new JLabel("End Date: ");
+        JLabel monthlyRentMessage = new JLabel("Monthly Rent: ");
+        JLabel contractStatusMessage = new JLabel("Contract Status: ");
+
+        contractIDMessage.setPreferredSize(new Dimension(175, 25));
+        landlordIDMessage.setPreferredSize(new Dimension(175, 25));
+        renterIDMessage.setPreferredSize(new Dimension(175, 25));
+        contractIDMessage2.setPreferredSize(new Dimension(175, 25));
+        landlordIDMessage2.setPreferredSize(new Dimension(175, 25));
+        renterIDMessage2.setPreferredSize(new Dimension(175,25));
+        propertyIDMessage.setPreferredSize(new Dimension(175, 25));
+        propertyIDMessage2.setPreferredSize(new Dimension(175, 25));
+        startDateMessage.setPreferredSize(new Dimension(175, 25));
+        endDateMessage.setPreferredSize(new Dimension(175, 25));
+        monthlyRentMessage.setPreferredSize(new Dimension(175, 25));
+        contractStatusMessage.setPreferredSize(new Dimension(175,25));
+        contractStatusMessage2.setPreferredSize(new Dimension(175,25));
+
+        JTextField startDateTextField = new JTextField("Start Date");
+        JTextField endDateTextField = new JTextField("End Date");
+        JTextField monthlyRentTextField = new JTextField("Monthly Rent");
+
+        startDateTextField.setToolTipText("Set Start Date to ..");
+        endDateTextField.setToolTipText("Set End Date to ..");
+        monthlyRentTextField.setToolTipText("Set Monthly Rent to...");
+
+        startDateTextField.setPreferredSize(new Dimension(175, 25));
+        endDateTextField.setPreferredSize(new Dimension(175, 25));
+        monthlyRentTextField.setPreferredSize(new Dimension(175, 25));
+        JButton updateButton = new JButton("Update Contract");
+//        JButton deleteButton = new JButton("Delete Contract");
+
+        updateButton.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(updateButton)) {
+
+                    if (startDateTextField.getText() != ""
+                            && isDouble(monthlyRentTextField.getText()) && startDateTextField.getText() != "") {
+
+                        String startDate = startDateTextField.getText();
+                        String endDate = endDateTextField.getText();
+                        Double monthlyRent = Double.valueOf(monthlyRentTextField.getText());
+
+                        contract.setStartDate(startDate);
+                        contract.setEndDate(endDate);
+                        contract.getMonthlyRent();
+                        SearchDatabase search=new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+                        search.updateContract(contract);
+
+                        //implement DB Action here.
+                        JOptionPane.showMessageDialog(null, "Contract was updated.");
+                        mainContainer.removeAll();
+                        revalidate();
+                        repaint();
+
+                    } else {
+                        JOptionPane.showMessageDialog(null, "There was an error with your input. Please re-enter info.");
+                    }
+                }
+            }
+        }));
+
+
+
+        //Create the JPanels.
+        JPanel contradIDPanel = new JPanel();
+        JPanel landlordIDPanel = new JPanel();
+        JPanel renterIDPanel = new JPanel();
+        JPanel propertyIDPanel = new JPanel();
+        JPanel startDatePanel = new JPanel();
+        JPanel endDatePanel = new JPanel();
+        JPanel monthlyRentPanel = new JPanel();
+        JPanel contractStatusPanel = new JPanel();
+        JPanel registerPanel = new JPanel();
+
+        //Set the Layouts for the JPanels
+        contradIDPanel.setLayout(new FlowLayout());
+        landlordIDPanel.setLayout(new FlowLayout());
+        renterIDPanel.setLayout(new FlowLayout());
+        propertyIDPanel.setLayout(new FlowLayout());
+        startDatePanel.setLayout(new FlowLayout());
+        endDatePanel.setLayout(new FlowLayout());
+        monthlyRentPanel.setLayout(new FlowLayout());
+        contractStatusPanel.setLayout(new FlowLayout());
+        registerPanel.setLayout(new FlowLayout());
+
+        //Add Components to the JPanels.
+
+        contradIDPanel.add(contractIDMessage);
+        contradIDPanel.add(contractIDMessage2);
+        landlordIDPanel.add(landlordIDMessage);
+        landlordIDPanel.add(landlordIDMessage2);
+        renterIDPanel.add(renterIDMessage);
+        renterIDPanel.add(renterIDMessage2);
+        propertyIDPanel.add(propertyIDMessage);
+        propertyIDPanel.add(propertyIDMessage2);
+        startDatePanel.add(startDateMessage);
+        startDatePanel.add(startDateTextField);
+        endDatePanel.add(endDateMessage);
+        endDatePanel.add(endDateTextField);
+        monthlyRentPanel.add(monthlyRentMessage);
+        monthlyRentPanel.add(monthlyRentTextField);
+        contractStatusPanel.add(contractStatusMessage);
+        contractStatusPanel.add(contractStatusMessage2);
+        registerPanel.add(updateButton);
+
+        //Add the JPanels to the main JPanel
+        editPanel.add(contradIDPanel);
+        editPanel.add(landlordIDPanel);
+        editPanel.add(renterIDPanel);
+        editPanel.add(propertyIDPanel);
+        editPanel.add(startDatePanel);
+        editPanel.add(endDatePanel);
+        editPanel.add(monthlyRentPanel);
+        editPanel.add(contractStatusPanel);
+        editPanel.add(registerPanel);
+
+
+        selectComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String selection = selectComboBox.getSelectedItem().toString();
+                int contractID = Integer.valueOf(selection.substring(13, 14));
+                for(int i = 0; i < landlordContracts.size(); i++) {
+                    if(contractID == landlordContracts.get(i).getContractID()) {
+                        contract = landlordContracts.get(i);
+                        contractIDMessage2.setText(""+landlordContracts.get(i).getContractID());
+                        landlordIDMessage2.setText(""+landlordContracts.get(i).getLandlord().getLandlordID());
+                        renterIDMessage2.setText(""+landlordContracts.get(i).getRenter().getRenterID());
+                        propertyIDMessage2.setText(""+landlordContracts.get(i).getProperty().getPropertyID());
+                        startDateTextField.setText(""+landlordContracts.get(i).getStartDate());
+                        endDateTextField.setText(""+landlordContracts.get(i).getEndDate());
+                        monthlyRentTextField.setText(""+landlordContracts.get(i).getMonthlyRent());
+                        contractStatusMessage2.setText(""+landlordContracts.get(i).getContractStatus());
+                        mainContainer.add(editPanel);
+                        revalidate();
+                        repaint();
+                        break;
+                    }
+                }
+            }
+        });
+
+        headerPanel.add(generalMessage);
+        selectPanel.add(headerPanel);
+        selectPanel.add(selectComboBox);
+
+        mainContainer.add(headerPanel);
+        mainContainer.add(selectPanel);
+
+        revalidate();
+        repaint();
+
 
     }
 
@@ -987,4 +1186,14 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         }
         return true;
     }
+
+    public boolean isDouble(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
 }

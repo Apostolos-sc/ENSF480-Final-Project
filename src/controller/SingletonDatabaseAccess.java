@@ -275,7 +275,7 @@ public class SingletonDatabaseAccess{
                 }
                 contracts.add(new Contract(Integer.valueOf(results.getString("contractID")), renters.get(renterID),
                                 properties.get(propertyID), landlords.get(landlordID), results.getString("startDate"),
-                                results.getString("endDate"), Double.valueOf(results.getString("monthlyRent"))));
+                                results.getString("endDate"), Double.valueOf(results.getString("monthlyRent")), results.getString("contractStatus")));
                 for(int i = 0; i < landlords.size(); i++) {
                     if(landlords.get(i).getLandlordID() == landlordID) {
                         landlords.get(i).getProperties().add(properties.get(properties.size()-1));

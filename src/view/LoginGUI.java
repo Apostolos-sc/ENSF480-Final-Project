@@ -123,6 +123,9 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
             password = passwordTextField.getText();
             userType = selectUserTypeComboBox.getSelectedItem().toString();
             //Attempt to login using the information given :
+            username = "j.lance@gmail.com";
+            password = "tested";
+            userType = "Landlord";
             User checkedUser = checkUser(username, password, userType);
             if(checkedUser != null) {
                 JOptionPane.showMessageDialog(null, "You successfully connected to the database with username : "

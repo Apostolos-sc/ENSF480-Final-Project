@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Contract {
@@ -10,8 +11,9 @@ public class Contract {
     private String startDate;
     private String endDate;
     private double monthlyRent;
+    private String contractStatus;
 
-    public Contract(int contractID, Renter renter, Property property, Landlord landlord, String startDate, String endDate, double monthlyRent) {
+    public Contract(int contractID, Renter renter, Property property, Landlord landlord, String startDate, String endDate, double monthlyRent, String contractStatus) {
         this.contractID = contractID;
         this.landlord = landlord;
         this.property = property;
@@ -19,6 +21,7 @@ public class Contract {
         this.startDate = startDate;
         this.endDate = endDate;
         this.monthlyRent = monthlyRent;
+        this.contractStatus = contractStatus;
     }
 
     public int getContractID() {
@@ -49,6 +52,10 @@ public class Contract {
         return monthlyRent;
     }
 
+    public String getContractStatus() {
+        return contractStatus;
+    }
+
     public void setContractID(int contractID) {
         this.contractID = contractID;
     }
@@ -75,5 +82,9 @@ public class Contract {
 
     public void setMonthlyRent(double monthlyRent) {
         this.monthlyRent = monthlyRent;
+    }
+
+    public void setContractStatus(String contractStatus) {
+        this.contractStatus = contractStatus;
     }
 }

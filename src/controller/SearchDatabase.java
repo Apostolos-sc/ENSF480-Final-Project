@@ -497,6 +497,29 @@ public void updateRenter(Renter r) {
         }	
     }
 
+    public void updateContract(Contract c) {
+
+
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE contract SET startDate=?,endDate=?,monthlyRent=? WHERE contractID =?");
+
+            statement.setString(1, c.getStartDate());
+            statement.setString(2, c.getEndDate());
+            statement.setDouble(3, c.getMonthlyRent());
+            statement.setInt(4, c.getContractID());
+
+            System.out.println(statement);
+            statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            statement.close();
+
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access database");
+        }
+    }
+
     public void addUser(String type,User u1,int userID) {
     	
     	if(type.equals("Renter")) {

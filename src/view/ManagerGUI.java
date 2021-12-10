@@ -830,9 +830,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         JPanel lNamePanel = new JPanel();
         JPanel emailPanel = new JPanel();
         JPanel dobPanel = new JPanel();
-//        JPanel quadrantPanel = new JPanel();
-//        JPanel pricePanel = new JPanel();
-//        JPanel propertyTypePanel = new JPanel();
+
         JPanel registerPanel = new JPanel();
 
         //Set the Layouts for the JPanels
@@ -840,10 +838,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         lNamePanel.setLayout(new FlowLayout());
         emailPanel.setLayout(new FlowLayout());
         dobPanel.setLayout(new FlowLayout());
-//        pricePanel.setLayout(new FlowLayout());
-//        quadrantPanel.setLayout(new FlowLayout());
-//        pricePanel.setLayout(new FlowLayout());
-//        propertyTypePanel.setLayout(new FlowLayout());
+
         registerPanel.setLayout(new FlowLayout());
 
         //Add Components to the JPanels.
@@ -856,12 +851,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         emailPanel.add(emailTextField);
         dobPanel.add(dobMessage);
         dobPanel.add(dobTextField);
-//        furnishedPanel.add(furnishedMessage);
-//        furnishedPanel.add(furnishedComboField);
-//        pricePanel.add(priceMessage);
-//        pricePanel.add(priceTextField);
-//        propertyTypePanel.add(propertyTypeLabel);
-//        propertyTypePanel.add(propertyTypeComboField);
+
         registerPanel.add(updateButton);
 
         //Add the JPanels to the main JPanel
@@ -869,9 +859,7 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
         editRenterPanel.add(lNamePanel);
         editRenterPanel.add(emailPanel);
         editRenterPanel.add(dobPanel);
-//        editLandlordPanel.add(furnishedPanel);
-//        editPropertyPanel.add(pricePanel);
-//        editPropertyPanel.add(propertyTypePanel);
+
         editRenterPanel.add(registerPanel);
 
 
