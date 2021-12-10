@@ -147,6 +147,10 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         		subDescription="Subscribed";
         		subscribeMenuButton.setText(subDescription);
         		renter.setSubscribed(true);
+        		
+        		SearchDatabase search = new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+        		
+        		search.updateRenter(renter);
         	}
         	else {
         		System.out.println("Test");
@@ -155,6 +159,9 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         		subscribeMenuButton.setText(subDescription);
         		renter.setSubscribed(false);
 
+        		SearchDatabase search = new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+        		
+        		search.updateRenter(renter);
         	}
         	
         }
