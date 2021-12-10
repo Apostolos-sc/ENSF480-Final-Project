@@ -34,6 +34,8 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
     private JButton messageButton;
     private JButton inboxButton;
     private JButton logoutButton;
+    private JButton backButton;
+    
     private Renter renter;
     private Frame parentFrame;
     
@@ -201,11 +203,11 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         //Attempt to create a databaseAccess object called database using the inputs provided by the user.
         if(e.getSource().equals(viewSubscribedButton)) {
         	
-        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
-        	SearchDatabase search=new SearchDatabase(access.getDBConnect());
-            ArrayList<Property> arr=search.getAllProperties("property");
-            
-            showProperties(arr);
+//        	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
+//        	SearchDatabase search=new SearchDatabase(access.getDBConnect());
+//            ArrayList<Property> arr=search.getAllProperties("property");
+//            
+//            showProperties(arr);
             	
         }
     }
@@ -251,14 +253,35 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
         JScrollPane pane = new JScrollPane(table);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         mainContainer.removeAll();
+      
+        this.backButton=new JButton("Back");
+
         JPanel headerPanel = new JPanel();
         JPanel tablePanel = new JPanel();
+        JPanel backPanel = new JPanel();
+        
         headerPanel.setLayout(new FlowLayout());
         tablePanel.setLayout(new GridLayout(1,1)); /* little trick ;) and believe me that this step is important to the automatic all columns resize! A import is also needed for using GridLayout*/
         tablePanel.add(pane);
+        backPanel.setLayout(new FlowLayout());
+        
+        backButton.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(backButton)) {
 
+//                        mainContainer.removeAll();
+//                        revalidate();
+//                        repaint();
+                    
+                        setupGUI();
+                }
+            }
+        }));
+        backPanel.add(backButton);
         mainContainer.add(headerPanel);
         mainContainer.add(tablePanel);
+        mainContainer.add(backPanel);
         this.revalidate();
         this.repaint();
     }
