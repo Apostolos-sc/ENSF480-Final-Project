@@ -6,6 +6,9 @@ public class PropertyDetails {
     private int noBedrooms;
     private boolean isFurnished;
     private double price;
+    private double payment=20;
+    private int validPeriod= 2; //days
+
 
     public PropertyDetails(String propertyType, int noBathrooms, int noBedrooms, boolean isFurnished, double price) {
         this.isFurnished = isFurnished;
@@ -14,7 +17,21 @@ public class PropertyDetails {
         this.propertyType = propertyType;
         this.price = price;
     }
+    
+    public int getValidPeriod() {
+        return validPeriod;
+    }
+    public void setValidPeriods(int val) {
+        this.validPeriod=val;
+    }
 
+    public double getPayment() {
+        return payment;
+    }
+
+    public void setPayment(double val) {
+        this.payment = val;
+    }
     public String getPropertyType() {
         return propertyType;
     }

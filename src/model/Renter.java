@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Renter extends User{
     private int renterID;
-    private boolean isSubscribed;
+    private boolean isSubscribed; 
     private ArrayList<String> subscriptionSettings = new ArrayList<String>();
 
     public Renter(int renterID, String firstName, String lastName, String email, String password, String dob) {

@@ -41,6 +41,8 @@ CREATE TABLE PROPERTY (
 	propertyID INTEGER NOT NULL, 
     landlordID INTEGER NOT NULL, 
     price DECIMAL(15, 2) NOT NULL,
+	validPeriod INTEGER NOT NULL,
+	payment DECIMAL(15, 2) NOT NULL,
     address VARCHAR(30) NOT NULL,
 	propertyType VARCHAR(30) NOT NULL,
     quadrant VARCHAR(2) NOT NULL, 
@@ -65,6 +67,20 @@ CREATE TABLE CONTRACT (
 	FOREIGN KEY (landlordID) REFERENCES LANDLORD(landlordID),
 	FOREIGN KEY (renterID) REFERENCES RENTER(renterID)
 );
+
+CREATE TABLE NOTIFCRITERIA(
+	renterID INTEGER NOT NULL,
+	propertyType VARCHAR(30) NOT NULL,
+	noBedrooms INTEGER NOT NULL,
+    noBathrooms INTEGER NOT NULL,
+	quadrant VARCHAR(2) NOT NULL, 
+	isFurnished TINYINT(1)
+)
+
+CREATE TABLE SUGGESTEDPROPERTY(
+	renterID INTEGER NOT NULL,
+	propertyID INTEGER NOT NULL
+)
 
 INSERT INTO USERS (userID, fname, lname, email, pass, dob) 
 VALUES    

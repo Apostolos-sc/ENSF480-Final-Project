@@ -76,7 +76,9 @@ public class SearchPropertyGUI extends JFrame implements ActionListener, MouseLi
         JPanel headerPanel = new JPanel();
         JScrollPane tablePanel = new JScrollPane(table);
         JPanel bottomPanel = new JPanel();
+
         //Set the Layouts for the JPanels
+        
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
         headerPanel.setLayout(new FlowLayout());
         bottomPanel.setLayout(new FlowLayout());

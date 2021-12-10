@@ -15,31 +15,31 @@ public class SearchDatabase {
         this.dbConnect= dbConnection;
     }
 
-    public void addProperty(Property prop, Landlord lord) {
-        try (Statement stmt1 = dbConnect.createStatement()){
-            PreparedStatement statement = dbConnect.
-            prepareStatement("INSERT INTO property(propertyID,landlordID,price,address,propertyType,quadrant,state,noBedrooms,noBathrooms,isFurnished) VALUES(?,?,?,?,?,?,?,?,?,?)");
-            statement.setInt(1, prop.getPropertyID());
-            statement.setInt(2, lord.getLandlordID());
-            statement.setDouble(3, prop.getPropertyDetails().getPrice());
-            statement.setString(4, prop.getPropertyLocation().getAddress());
-            statement.setString(5, prop.getPropertyDetails().getPropertyType());
-            statement.setString(6, prop.getPropertyLocation().getQuadrant());
-            statement.setString(7, prop.getStatus());
-            statement.setInt(8, prop.getPropertyDetails().getNoBedrooms());
-            statement.setInt(9, prop.getPropertyDetails().getNoBathrooms());
-            statement.setBoolean(10, prop.getPropertyDetails().isFurnished());
+    public void addProperty(Property p, int landlordID) {
 
-            statement.execute(); 
-            //new function call check whether this property matches search criteria of renter
-            ArrayList<Integer> notifyRenters= notifProperty(prop);
-            if(notifyRenters.size()!=0){
-                //of matches notify the specific user
-                // nuha will continue this implementation
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "INSERT INTO property(propertyID,landlordID,price,address,propertyType,quadrant,state,noBedrooms,noBathrooms,isFurnished) VALUES(?,?,?,?,?,?,?,?,?,?)");
+            statement.setInt(1, p.getPropertyID());
+            statement.setInt(2, landlordID);
+            statement.setDouble(3, p.getPropertyDetails().getPrice());
+            statement.setString(4, p.getPropertyLocation().getAddress());
+            statement.setString(5, p.getPropertyDetails().getPropertyType());
+            statement.setString(6, p.getPropertyLocation().getQuadrant());
+            statement.setString(7, p.getStatus());
+            statement.setInt(8, p.getPropertyDetails().getNoBedrooms());
+            statement.setInt(9, p.getPropertyDetails().getNoBathrooms());
+            int furnish = 0;
+            if (p.getPropertyDetails().isFurnished() == true) {
+                furnish = 1;
             }
+            statement.setInt(10, furnish);
+
+            System.out.println(statement);
+            statement.execute(); 
             statement.close();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
             throw new IllegalArgumentException("Unable to access to database");
         }
     }
@@ -48,35 +48,50 @@ public class SearchDatabase {
         //nuha will continue this implementation
     }
 
-    public ArrayList<Integer> notifProperty(Property prop){
-        // nuha will continue this implementation
-        ArrayList<Integer> notifyRenters= new ArrayList<Integer>();
-        // here when adding property if meets a renters search criteria get notified
-        // by observer
-        //traversing through search criteria table and checking if property matches
-        //return an arraylist of renters it mathched for an notify them
-        //else return empty array list
-        return notifyRenters;
+    public void notifProperty(Property prop){
+        try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt.executeQuery("SELECT *FROM NOTIFCRITERIA");
+            while (results.next()) {// takes into account number of rows that were returned by the query
+                ResultSetMetaData rsmd = results.getMetaData();
+                if (results.getString("propertyType").equals(prop.getPropertyDetails().getPropertyType())
+                        && Integer.valueOf(results.getString("noBathrooms")).equals(prop.getPropertyDetails().getNoBathrooms())
+                        && Integer.valueOf(results.getString("noBedrooms")).equals(prop.getPropertyDetails().getNoBedrooms())
+                        && results.getBoolean("isFurnished") == prop.getPropertyDetails().isFurnished()
+                        && results.getString("quadrant").equals(prop.getPropertyLocation().getQuadrant())
+                        && results.getString("state").equals("Listed")) 
+                {
+                    addToSuggestedProperties(results.getInt("renterID"), prop.getPropertyID());                          
+                }
+            }
+            stmt.close();
+            results.close();
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
     }
 
+    public void addToSuggestedProperties(int renterID,int propertyID){
+        try (Statement stmt = dbConnect.createStatement()) {
+            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO SUGGESTEDPROPERTY(renterID, propertyID) VALUES(?,?)");
+            statement.setInt(1, renterID);
+            statement.setInt(2, propertyID);
+            statement.execute();
+            statement.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
     //the argument table is the name of the table we are traversing through, which is the property table
     public ArrayList<Property> searchItem(String table, String typeofProperty, int noOfBed, int noOfBath, boolean isFurnished, String quadrant, double price) throws IllegalArgumentException {
         ArrayList<Property> properties= new ArrayList<>();
-
         try(Statement stmt = dbConnect.createStatement()) {
                 ResultSet results = stmt.executeQuery("SELECT *FROM " + table);
-                /*+ " WHERE propertyType= '" + typeofProperty + "'"
-                        + " WHERE noBedrooms= '" + noOfBed + "'" + " WHERE noBathrooms= '" + noOfBath + "'"
-                        + " WHERE isFurnished= '" + isFurnished + "'" + " WHERE quadrant= '" + quadrant);*/
                 int i=0;
                 while (results.next()) {//takes into account number of rows that were returned by the query
                     ResultSetMetaData rsmd = results.getMetaData();
-                                                //propertyID           , propertyType,            noBathrooms,     noBedrooms,       isFurnished,               address,          quadrant, status
-//                       Property prop= new Property(results.getInt(1), results.getString(2), results.getInt(2), results.getInt(3), results.getBoolean(4), results.getString(5), 
-//                       results.getString(6),  results.getString(7), 500);
-//                       System.out.print(results.getString("propertyType")+" "+Integer.valueOf(results.getString("noBathrooms"))+" "+Integer.valueOf(results.getString("noBedrooms"))+" "+results.getBoolean("isFurnished")+
-//                    		   " "+results.getString("quadrant")+" "+results.getString("state")=="Listed");
-//                       System.out.println();
                    if(results.getString("propertyType").equals(typeofProperty) && Integer.valueOf(results.getString("noBathrooms")).equals(noOfBath)
                     		&&Integer.valueOf(results.getString("noBedrooms")).equals(noOfBed)&&results.getBoolean("isFurnished")==isFurnished&&results.getString("quadrant").equals(quadrant)
                     		&&results.getString("state").equals("Listed")) {
@@ -168,10 +183,6 @@ public class SearchDatabase {
     }
     
     public void sendEmailMessage(InboxMessages msg) {
-    	//String stmt="INSERT INTO inbox (inboxID,senderEmail,recieverEmail,message) VALUES (?,?,?,?)";
-    	//String editValue=" VALUES ('"+String.valueOf(msg.getMessageID())+"','"+msg.getSenderEmail()+"','"+msg.getRecieverEmail()+"','"+msg.getMessage()+"');";    	
-    	   
-    	//String finalStmt=stmt;
     	System.out.println(msg.getMessageID());
         try (Statement stmt1 = dbConnect.createStatement()) {
             PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO inbox(senderEmail,recieverEmail,message) VALUES(?,?,?)");
@@ -181,22 +192,20 @@ public class SearchDatabase {
         	statement.setString(3, msg.getMessage());
 
         	System.out.println(statement);
-        	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+        	statement.execute(); 
         	 statement.close();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException("Unable to access to database");
         }
-    	//System.out.println(stmt+editValue);
     }
 
     public int inboxMaxID() {
-    		//ArrayList<InboxMessages> messages = new ArrayList<>();
         int max=-10;
         try (Statement stmt = dbConnect.createStatement()) {
-            ResultSet results = stmt.executeQuery("SELECT *FROM inbox"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            ResultSet results = stmt.executeQuery("SELECT *FROM inbox"); 
             int i = 0;
-            while (results.next()) {// takes into account number of rows that were returned by the query
+            while (results.next()) {
                 ResultSetMetaData rsmd = results.getMetaData();
              
                 if(results.getInt("inboxID")>max) {
@@ -219,34 +228,6 @@ public class SearchDatabase {
         return max;
         
     }
-//    public int inboxMaxID() {
-//    		//ArrayList<InboxMessages> messages = new ArrayList<>();
-//        int max=-1;
-//        try (Statement stmt = dbConnect.createStatement()) {
-//            ResultSet results = stmt.executeQuery("SELECT *FROM inbox"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
-//            int i = 0;
-//            while (results.next()) {// takes into account number of rows that were returned by the query
-//                ResultSetMetaData rsmd = results.getMetaData();
-//   
-//                if(results.getInt("inboxID")>max) {
-//                	max=results.getInt("inboxID");
-//                }                    
-//                i++;
-//            }
-//            stmt.close();
-//            results.close();
-//
-//            if (i == 0) {
-//                throw new IllegalArgumentException("There are currently no messages in the system");
-//            }
-//
-//        } catch (SQLException e) {
-//            throw new IllegalArgumentException("Unable to access to database");
-//        }
-//        
-//        return max;
-//        
-//    }
     
     public String getEmailFromID(int ID) {
     	
@@ -319,42 +300,38 @@ public class SearchDatabase {
     
     }
     
-    public void addProperty(Property p, int landlordID) {
-    	
-    	try (Statement stmt1 = dbConnect.createStatement()) {
-    		
-    
-            PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO property(propertyID,landlordID,price,address,propertyType,quadrant,state,noBedrooms,noBathrooms,isFurnished) VALUES(?,?,?,?,?,?,?,?,?,?)");
-        	statement.setInt(1, p.getPropertyID());
-        	statement.setInt(2, landlordID);
-        	statement.setDouble(3, p.getPropertyDetails().getPrice());
-        	statement.setString(4, p.getPropertyLocation().getAddress());
-        	statement.setString(5, p.getPropertyDetails().getPropertyType());
-        	statement.setString(6, p.getPropertyLocation().getQuadrant());
-        	statement.setString(7, p.getStatus());
-        	statement.setInt(8, p.getPropertyDetails().getNoBedrooms());
-        	statement.setInt(9,p.getPropertyDetails().getNoBathrooms());
-        	int furnish=0;
-        	if(p.getPropertyDetails().isFurnished()==true) {
-        		furnish=1;
-        	}        	
-        	statement.setInt(10,furnish);
-        	
-        	System.out.println(statement);
-        	statement.execute(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
-        	 statement.close();
-        }
-        catch (SQLException e) {
+
+    //used by manager to set property fees and period the fees are valid for
+    public void updatePropFees(Property p, int managerID, int validPeriod, double payment){
+        try (Statement stmt1 = dbConnect.createStatement()) {
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "UPDATE property SET validPeriod=?, payment=? WHERE propertyID = "+ p.getPropertyID());
+            statement.setInt(1, validPeriod );
+            statement.setDouble(2, payment);
+            statement.executeUpdate(); 
+            statement.close();
+        } catch (SQLException e) {
             throw new IllegalArgumentException("Unable to access to database");
         }
-    	//System.out.println(stmt+editValue);
     }
+
+    //before calling this function check if state is an acceptable input of states [listed, unlisted, etc..]
+    //if it is call function
+    // if not send user error message
+    public void updatePropState(Property p, String state){
+        try (Statement stmt1 = dbConnect.createStatement()) {
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "UPDATE property SET state=? WHERE propertyID = " + p.getPropertyID());
+            statement.setString(1, state);
+            statement.executeUpdate(); // +"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            statement.close();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
     public void updateProperty(Property p,int landlordID) {
-    
-    	
     			try (Statement stmt1 = dbConnect.createStatement()) {
-    	    		
-    			    
     	            PreparedStatement statement = dbConnect.prepareStatement("UPDATE property SET price=?,address=?,propertyType=?,quadrant=?,state=?,noBedrooms=?,noBathrooms=?,isFurnished=? WHERE propertyID = ?");
     	        	//statement.setInt(1, landlordID);
     	        	statement.setDouble(1, p.getPropertyDetails().getPrice());
