@@ -133,7 +133,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
                 
                 if(userType.equals("Renter")) {
                     this.setVisible(false);
-                	RegisteredRenterGUI frame = new RegisteredRenterGUI((Renter)checkedUser, this);
+                	RegisteredRenterGUI frame = new RegisteredRenterGUI((Renter)checkedUser, this, data);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);
                     });
