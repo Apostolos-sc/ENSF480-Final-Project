@@ -42,6 +42,8 @@ CREATE TABLE PROPERTY (
     landlordID INTEGER NOT NULL, 
     price DECIMAL(15, 2) NOT NULL,
 	validPeriod INTEGER NOT NULL,
+	startDate DATE NOT NULL,
+	endDate DATE  NOT NULL,
 	payment DECIMAL(15, 2) NOT NULL,
     address VARCHAR(30) NOT NULL,
 	propertyType VARCHAR(30) NOT NULL,
