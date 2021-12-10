@@ -146,12 +146,9 @@ public class SearchDatabase {
                        properties.add(prop);
                 		}
                        i++;
-                    
                 }
                 stmt.close();
                 results.close();
-     
-
             if (i==0) {
                 throw new IllegalArgumentException("No such property exists");
             }
@@ -195,6 +192,7 @@ public class SearchDatabase {
         }
         return properties;
     }
+
     public ArrayList<InboxMessages> getAllInboxMessages(String table,User reciever){
         ArrayList<InboxMessages> messages = new ArrayList<>();
         
@@ -251,7 +249,6 @@ public class SearchDatabase {
             int i = 0;
             while (results.next()) {
                 ResultSetMetaData rsmd = results.getMetaData();
-             
                 if(results.getInt("inboxID")>max) {
                 	max=results.getInt("inboxID");
                 }
@@ -358,6 +355,7 @@ public class SearchDatabase {
         }
     }
 
+    //can use this function when have to change the state of a specific property
     public void updatePropState(Property p, String state){
         try (Statement stmt1 = dbConnect.createStatement()) {
             PreparedStatement statement = dbConnect.prepareStatement(
@@ -368,6 +366,20 @@ public class SearchDatabase {
             if(state=="listed"){
                 setPropertyPeriod(p);
             }
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
+    // "SELECT * FROM PROPERTY WHERE startDate >="+startOfPer+"startDate < "+endOfPer
+    //checks
+    //not done
+    public void checkPropertyPeriod(Property p){
+        java.sql.Date sqlDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());;
+        try (Statement stmt1 = dbConnect.createStatement()) {
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "SELECT * FROM property WHERE propertyID = " + p.getPropertyID() +"AND endDate >= "+ sqlDate);
+            
         } catch (SQLException e) {
             throw new IllegalArgumentException("Unable to access to database");
         }
@@ -431,11 +443,7 @@ public class SearchDatabase {
     }
 
     public void updateLandlord(Landlord p) {
-        
-    	
 		try (Statement stmt1 = dbConnect.createStatement()) {
-    		
-		    
             PreparedStatement statement = dbConnect.prepareStatement("UPDATE users SET fName=?,lName=?,email=?,pass=?,dob=? WHERE userID =?");
         	statement.setString(1, p.getFirstName());
         	statement.setString(2, p.getLastName());
@@ -455,8 +463,6 @@ public class SearchDatabase {
     }
 
 public void updateRenter(Renter r) {
-        
-    	
 		try (Statement stmt1 = dbConnect.createStatement()) {
     		
 		    
@@ -488,6 +494,7 @@ public void updateRenter(Renter r) {
             throw new IllegalArgumentException("Unable to access to database");
         }	
     }
+
     public void addUser(String type,User u1,int userID) {
     	
     	if(type.equals("Renter")) {
