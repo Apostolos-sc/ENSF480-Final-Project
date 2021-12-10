@@ -12,6 +12,7 @@ public class Renter extends User{
         this.renterID = renterID;
     }
 
+
     public int getRenterID() {
         return this.renterID;
     }

@@ -127,9 +127,9 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
             password = "tester";
             userType = "Manager";
             //Attempt to login using the information given :
-//            username = "j.lance@gmail.com";
-//            password = "tested";
-//            userType = "Landlord";
+            username = "j.lance@gmail.com";
+            password = "tested";
+            userType = "Landlord";
 //            username = "t.roma@gmail.com";
 //            password = "testing";
 //            userType = "Renter";

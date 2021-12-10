@@ -47,6 +47,30 @@ public class SearchDatabase {
         }
     }
 
+    public void addContract(Contract c) {
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "INSERT INTO contract(contractID, landlordID,renterID,propertyID,startDate,endDate,monthlyRent,contractStatus) VALUES(?,?,?,?,?,?,?,?)");
+
+            statement.setInt(1, c.getContractID());
+            statement.setInt(2, c.getLandlord().getLandlordID());
+            statement.setInt(3, c.getRenter().getRenterID());
+            statement.setInt(4, c.getProperty().getPropertyID());
+            statement.setString(5, c.getStartDate());
+            statement.setString(6, c.getEndDate());
+            statement.setDouble(7, c.getMonthlyRent());
+            statement.setString(8, c.getContractStatus());
+
+            System.out.println(statement);
+            statement.execute();
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
     public PeriodicalReport createReport(String startOfPer, String endOfPer){
         Date startDate = java.sql.Date.valueOf(startOfPer);
         Date endDate = java.sql.Date.valueOf(endOfPer);
@@ -338,6 +362,35 @@ public class SearchDatabase {
 	    
 	    return max;
     
+    }
+
+    public int contractMaxID() {
+        int max=-10;
+        try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt.executeQuery("SELECT *FROM contract");
+            int i = 0;
+            while (results.next()) {
+                ResultSetMetaData rsmd = results.getMetaData();
+
+                if(results.getInt("contractID")>max) {
+                    max=results.getInt("contractID");
+                }
+
+                i++;
+            }
+            stmt.close();
+            results.close();
+
+            if (i == 0) {
+                throw new IllegalArgumentException("There are currently no properties in the system");
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+
+        return max;
+
     }
     
 
