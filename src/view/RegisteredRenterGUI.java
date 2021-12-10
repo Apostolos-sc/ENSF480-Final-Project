@@ -196,7 +196,7 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
             });
             */
         	
-        	UnregisteredRenterGUI loginFrame = new UnregisteredRenterGUI(this);
+        	RegisteredRenterSearch loginFrame = new RegisteredRenterSearch(this,renter);
             EventQueue.invokeLater(() -> {
                 loginFrame.setVisible(true);
             });
@@ -215,7 +215,42 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
 //            ArrayList<Property> arr=search.getAllProperties("property");
 //            
 //            showProperties(arr);
-            	
+        	
+        	SearchDatabase search = new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+        	
+//        	
+//        		String properties [][]=new String[array.size()][8];
+//        	
+//        	for(int i=0;i<array.size();i++) {
+//        		properties[i][0]= String.valueOf(array.get(i).getPropertyDetails().getPrice());  //???? Price ??????
+//        		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
+//        		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
+//        		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
+//        		properties[i][4]=array.get(i).getPropertyLocation().getQuadrant();
+//        		
+//        		boolean furnishedCheck=array.get(i).getPropertyDetails().isFurnished();
+//        		String furnishToString = new String();
+//        		
+//        		if(furnishedCheck==true) {
+//        			furnishToString="Furnished";
+//        		}
+//        		else {
+//        			furnishToString="Unfurnished";
+//        		}
+//        		properties[i][5]=furnishToString;
+//        		properties[i][6]=array.get(i).getPropertyDetails().getPropertyType();
+//        		properties[i][7]=String.valueOf(array.get(i).getPropertyID());
+//        	}
+//        	
+//        	if(array.size()==0) {
+//            	JOptionPane.showMessageDialog(null, "Could not find any such property. Try Again!");
+//        	}
+//        	else {
+//        	 SearchPropertyGUI loginFrame = new SearchPropertyGUI(properties);
+//	          EventQueue.invokeLater(() -> {
+//	              loginFrame.setVisible(true);
+//	          });
+//        	}
         }
     }
 
