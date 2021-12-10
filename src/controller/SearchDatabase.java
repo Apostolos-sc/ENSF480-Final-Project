@@ -454,7 +454,29 @@ public class SearchDatabase {
         }	
     }
 
-public void updateRenter(Renter r) {
+    public void updatePropertyType(PropertyType propertyType) {
+
+
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE property_types SET propertyType=?,fees=?,validDays=? WHERE propertyTypeID =?");
+            statement.setString(1, propertyType.getPropertyType());
+            statement.setString(2, ""+propertyType.getFee());
+            statement.setString(3, ""+propertyType.getValidDays());
+            statement.setString(4, ""+propertyType.getPropertyTypeID());
+
+
+            System.out.println(statement);
+            statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
+    public void updateRenter(Renter r) {
         
     	
 		try (Statement stmt1 = dbConnect.createStatement()) {
@@ -596,6 +618,25 @@ public void updateRenter(Renter r) {
 	            throw new IllegalArgumentException("Unable to access to database");
 	        }
     	}
+    }
+
+    public void addPropertyType(PropertyType propertyType) {
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "INSERT INTO PROPERTY_TYPES(propertyTypeID, propertyType, fees, validDays) VALUES(?,?,?,?)");
+            statement.setInt(1, propertyType.getPropertyTypeID());
+            statement.setString(2, propertyType.getPropertyType());
+            statement.setDouble(3, propertyType.getFee());
+            statement.setInt(4, propertyType.getValidDays());
+
+            System.out.println(statement);
+            statement.execute();
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
     }
 }
 
