@@ -6,10 +6,14 @@ public class PeriodicalReport {
     private ArrayList<Property> listedInPeriod;
     private ArrayList<Property> rentedInPeriod;
     private int numberOfHousesRented;
-    private ArrayList<Property> totalActiveListings;
+    int totalActiveListings;
 
-    PeriodicalReport(ArrayList<Property> listedInPeriod,ArrayList<Property> rentedInPeriod, 
-    int numberOfHousesRented,ArrayList<Property> totalActiveListings){
+    public PeriodicalReport(){
+
+    }
+
+    public PeriodicalReport(ArrayList<Property> listedInPeriod,ArrayList<Property> rentedInPeriod, 
+    int numberOfHousesRented,int totalActiveListings){
         this.listedInPeriod=listedInPeriod;
         this.rentedInPeriod=rentedInPeriod;
         this.numberOfHousesRented=numberOfHousesRented;
@@ -39,11 +43,11 @@ public class PeriodicalReport {
     public int getNumberOfHousesRented(){
         return this.numberOfHousesRented;
     }
-    public void setTotalActiveListings( ArrayList<Property> totalActiveListings){
+    public void setTotalActiveListings( int totalActiveListings){
         this.totalActiveListings=totalActiveListings;
     }
 
-    public ArrayList<Property> getTotalActiveListings(){
+    public int getTotalActiveListings(){
         return this.totalActiveListings;
     }
 }

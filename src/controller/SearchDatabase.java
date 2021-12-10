@@ -47,8 +47,51 @@ public class SearchDatabase {
         }
     }
 
-    public void createReport(Date period){
-        //nuha will continue this implementation
+    public PeriodicalReport createReport(String startOfPer, String endOfPer){
+        Date startDate = java.sql.Date.valueOf(startOfPer);
+        Date endDate = java.sql.Date.valueOf(endOfPer);
+        ArrayList<Property> listedInPeriod = new ArrayList<>();
+        ArrayList<Property> rentedInPeriod = new ArrayList<>();
+        int numberOfHousesRented = 0;
+        int totalActiveListings = 0;
+        try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY WHERE startDate >=" + startOfPer + "startDate < "+endOfPer);
+            while (results.next()) {// takes into account number of rows that were returned by the query
+                ResultSetMetaData rsmd = results.getMetaData();
+                if (results.getString("state").equals("Listed")) {
+                    Property prop= new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
+                        Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"), results.getString("address"),
+                        results.getString("quadrant"), results.getString("state"), results.getInt("Price"));
+                    listedInPeriod.add(prop);
+                }else if(results.getString("state").equals("Rented")){
+                    Property prop = new Property(Integer.valueOf(results.getString("propertyID")),
+                            results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
+                            Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"),
+                            results.getString("address"),
+                            results.getString("quadrant"), results.getString("state"), results.getInt("Price"));
+                    rentedInPeriod.add(prop);
+                    numberOfHousesRented++;
+                }
+            }
+            stmt.close();
+            results.close();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+        try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt
+                    .executeQuery("SELECT * FROM PROPERTY WHERE state = 'Listed'");
+            while (results.next()) {// takes into account number of rows that were returned by the query
+                ResultSetMetaData rsmd = results.getMetaData();
+                    totalActiveListings++;
+            }
+            stmt.close();
+            results.close();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+        PeriodicalReport report= new PeriodicalReport(listedInPeriod, rentedInPeriod,numberOfHousesRented, totalActiveListings);
+        return report;
     }
 
     public void notifProperty(Property prop){
@@ -188,7 +231,6 @@ public class SearchDatabase {
     	System.out.println(msg.getMessageID());
         try (Statement stmt1 = dbConnect.createStatement()) {
             PreparedStatement statement = dbConnect.prepareStatement("INSERT INTO inbox(senderEmail,recieverEmail,message) VALUES(?,?,?)");
-        	//statement.setInt(1, msg.getMessageID());
         	statement.setString(1, msg.getSenderEmail());
         	statement.setString(2, msg.getRecieverEmail());
         	statement.setString(3, msg.getMessage());
@@ -273,7 +315,6 @@ public class SearchDatabase {
     }  
     
     public int propertyMaxID() {
-		//ArrayList<InboxMessages> messages = new ArrayList<>();
 	    int max=-10;
 	    try (Statement stmt = dbConnect.createStatement()) {
 	        ResultSet results = stmt.executeQuery("SELECT *FROM property"); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
@@ -322,7 +363,7 @@ public class SearchDatabase {
             PreparedStatement statement = dbConnect.prepareStatement(
                     "UPDATE property SET state=? WHERE propertyID = " + p.getPropertyID());
             statement.setString(1, state);
-            statement.executeUpdate(); // +"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            statement.executeUpdate(); 
             statement.close();
             if(state=="listed"){
                 setPropertyPeriod(p);
