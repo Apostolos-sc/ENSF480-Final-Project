@@ -1,5 +1,8 @@
 package model;
 
+import java.util.*;
+import java.util.Date;
+
 public class PropertyDetails {
     private String propertyType;
     private int noBathrooms;
@@ -7,7 +10,9 @@ public class PropertyDetails {
     private boolean isFurnished;
     private double price;
     private double payment=20;
-    private int validPeriod= 2; //days
+    private int validPeriod= 2; 
+    private String startDate; // Date date=Date.valueOf(str);//converting string into sql date
+    private String endDate; // Date date=Date.valueOf(str);//converting string into sql date
 
 
     public PropertyDetails(String propertyType, int noBathrooms, int noBedrooms, boolean isFurnished, double price) {
@@ -18,6 +23,22 @@ public class PropertyDetails {
         this.price = price;
     }
     
+    public String getStartDate(){
+        return this.startDate;
+    }
+
+    public String getEndDate(Date endDate){
+        return this.endDate;
+    }
+
+    public void setStartDate(String startDate){
+        this.startDate=startDate;
+    }
+
+    public void setEndDate(String endDate){
+        this.endDate=endDate;
+    }
+
     public int getValidPeriod() {
         return validPeriod;
     }
