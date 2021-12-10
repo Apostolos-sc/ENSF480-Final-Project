@@ -196,10 +196,10 @@ public class RegisteredRenterGUI extends JFrame implements ActionListener, Mouse
             });
             */
         	
-        	RegisteredRenterSearch loginFrame = new RegisteredRenterSearch(this,renter);
-            EventQueue.invokeLater(() -> {
-                loginFrame.setVisible(true);
-            });
+//        	RegisteredRenterSearch loginFrame = new RegisteredRenterSearch(this,renter);
+//            EventQueue.invokeLater(() -> {
+//                loginFrame.setVisible(true);
+//            });
         }
         if(e.getSource().equals(inboxButton)) {
         	Inbox loginFrame = new Inbox(renter);
