@@ -813,11 +813,16 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
 
                     if (isInteger(bathroomsTextField.getText())
                             && isInteger(bedroomsTextField.getText()) && addressTextField.getText() != "") {
-
+                        if(addressTextField.getText().length()>30){
+                            JOptionPane.showMessageDialog(null, "Address Too long, must be less than 30 characters. Try Again!");
+                        }
                         int bathrooms = Integer.valueOf(bathroomsTextField.getText());
                         int bedrooms = Integer.valueOf(bedroomsTextField.getText());
                         String address = addressTextField.getText();
                         String quadrant = quadrantComboField.getSelectedItem().toString();
+                        if (quadrant.length() > 2) {
+                            JOptionPane.showMessageDialog(null, "Quadrant may only be 2 letters. Try Again!");
+                        }
                         boolean furnished = false;
                         double price = Double.valueOf(priceTextField.getText());
                         if (furnishedComboField.getSelectedItem().toString() == "Furnished") {
@@ -826,7 +831,9 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
                             furnished = false;
                         }
                         String propertyTypeValue = propertyTypeComboField.getSelectedItem().toString();
-
+                        if (propertyTypeValue.length() > 30) {
+                            JOptionPane.showMessageDialog(null, "Property type may only be 30 character or less. Try Again!");
+                        }
                         Property p1=new Property(propertyID,propertyTypeValue,bathrooms,bedrooms,furnished,address,quadrant,statusComboField.getSelectedItem().toString(),price);
                         SearchDatabase search=new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
                         search.updateProperty(p1, landlord.getLandlordID());
@@ -978,6 +985,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         this.revalidate();
         this.repaint();
     }
+
     public void showPayProperty() {
         mainContainer.removeAll();
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
@@ -1062,8 +1070,6 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
             @Override
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource().equals(updateButton)) {
-
-                	
                 	SingletonDatabaseAccess access=SingletonDatabaseAccess.getOnlyInstance();
                 	SearchDatabase search = new SearchDatabase(access.getDBConnect());
                 		holder.setStatus("Listed");
