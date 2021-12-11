@@ -14,7 +14,42 @@ public class SearchDatabase {
     public SearchDatabase(Connection dbConnection){
         this.dbConnect= dbConnection;
     }
-
+public ArrayList<Property> managerReport(int days){
+         ArrayList<Property> listedInPeriod = new ArrayList<>();
+         ArrayList<Integer> property=new ArrayList<Integer>();
+         try (Statement stmt = dbConnect.createStatement()) {
+             ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY_TYPES");
+             while (results.next()) {// takes into account number of rows that were returned by the query
+                 ResultSetMetaData rsmd = results.getMetaData();
+                 if (results.getInt("validDays")<=days) {
+                     property.add(results.getInt("propertyTypeID"));
+                 }
+             }
+             stmt.close();
+             results.close();
+         } catch (SQLException e) {
+             throw new IllegalArgumentException("Unable to access to database");
+         }
+         for(int i=0;i<property.size();i++) {
+	         try (Statement stmt = dbConnect.createStatement()) {
+	             ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY");
+	             while (results.next()) {// takes into account number of rows that were returned by the query
+	                 ResultSetMetaData rsmd = results.getMetaData();
+	                 if (results.getInt("propertyID")==(int)property.get(i)) {
+	                	 Property prop= new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
+	                             Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"), results.getString("address"),
+	                             results.getString("quadrant"), results.getString("state"), results.getInt("Price"));
+	                	 listedInPeriod.add(prop);
+	                 }
+	             }
+	             stmt.close();
+	             results.close();
+	         } catch (SQLException e) {
+	             throw new IllegalArgumentException("Unable to access to database");
+	         }
+         }
+         return listedInPeriod;
+    }
     public void addProperty(Property p, int landlordID) {
         try (Statement stmt1 = dbConnect.createStatement()) {
 
@@ -47,16 +82,47 @@ public class SearchDatabase {
         }
     }
 
-    public PeriodicalReport createReport(String startOfPer, String endOfPer){
-        Date startDate = java.sql.Date.valueOf(startOfPer);
-        Date endDate = java.sql.Date.valueOf(endOfPer);
+    public void addContract(Contract c) {
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "INSERT INTO contract(contractID, landlordID,renterID,propertyID,startDate,endDate,monthlyRent,contractStatus) VALUES(?,?,?,?,?,?,?,?)");
+
+            statement.setInt(1, c.getContractID());
+            statement.setInt(2, c.getLandlord().getLandlordID());
+            statement.setInt(3, c.getRenter().getRenterID());
+            statement.setInt(4, c.getProperty().getPropertyID());
+            statement.setString(5, c.getStartDate());
+            statement.setString(6, c.getEndDate());
+            statement.setDouble(7, c.getMonthlyRent());
+            statement.setString(8, c.getContractStatus());
+
+            System.out.println(statement);
+            statement.execute();
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
+        public PeriodicalReport createReport(String startOfPer, String endOfPer){
+//        Date startDate = java.sql.Date.valueOf(startOfPer);
+//        Date endDate = java.sql.Date.valueOf(endOfPer);
+
         ArrayList<Property> listedInPeriod = new ArrayList<>();
         ArrayList<Property> rentedInPeriod = new ArrayList<>();
         int numberOfHousesRented = 0;
         int totalActiveListings = 0;
         try (Statement stmt = dbConnect.createStatement()) {
-            ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY WHERE startDate >=" + startOfPer + "startDate < "+endOfPer);
-            while (results.next()) {// takes into account number of rows that were returned by the query
+           // ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY WHERE startDate < ? and endDate >= ?");
+        	PreparedStatement statement=dbConnect.prepareStatement("SELECT * FROM PROPERTY WHERE startDated < ? and endDated >= ?");
+        	statement.setString(1, startOfPer);
+        	statement.setString(2, endOfPer);
+        	
+        	ResultSet results = statement.executeQuery();
+        	
+        	while (results.next()) {// takes into account number of rows that were returned by the query
                 ResultSetMetaData rsmd = results.getMetaData();
                 if (results.getString("state").equals("Listed")) {
                     Property prop= new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
@@ -80,10 +146,12 @@ public class SearchDatabase {
         }
         try (Statement stmt = dbConnect.createStatement()) {
             ResultSet results = stmt
-                    .executeQuery("SELECT * FROM PROPERTY WHERE state = 'Listed'");
+                    .executeQuery("SELECT * FROM PROPERTY");
             while (results.next()) {// takes into account number of rows that were returned by the query
                 ResultSetMetaData rsmd = results.getMetaData();
-                    totalActiveListings++;
+                if(results.getString("state").equals("Listed")) {    
+                	totalActiveListings++;
+                }
             }
             stmt.close();
             results.close();
@@ -339,7 +407,35 @@ public class SearchDatabase {
 	    return max;
     
     }
-    
+
+    public int contractMaxID() {
+        int max=-10;
+        try (Statement stmt = dbConnect.createStatement()) {
+            ResultSet results = stmt.executeQuery("SELECT *FROM contract");
+            int i = 0;
+            while (results.next()) {
+                ResultSetMetaData rsmd = results.getMetaData();
+
+                if(results.getInt("contractID")>max) {
+                    max=results.getInt("contractID");
+                }
+
+                i++;
+            }
+            stmt.close();
+            results.close();
+
+            if (i == 0) {
+                throw new IllegalArgumentException("There are currently no properties in the system");
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+
+        return max;
+
+    }
 
     //used by manager to set property fees and period the fees are valid for
     public void updatePropFees(Property p, int managerID, int validPeriod, double payment){
@@ -371,7 +467,6 @@ public class SearchDatabase {
         }
     }
 
-
     //check validity of all periods and if valid period of properties is expired then it changes the
     //state from listed to registered
     public void checkPropertyPeriod(){
@@ -387,7 +482,7 @@ public class SearchDatabase {
         }
     }
 
-     public static Date addDays(Date date, int days) {
+    public static Date addDays(Date date, int days) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DATE, days);
@@ -464,7 +559,31 @@ public class SearchDatabase {
         }	
     }
 
-public void updateRenter(Renter r) {
+    public void updatePropertyType(PropertyType propertyType) {
+
+
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE property_types SET propertyType=?,fees=?,validDays=? WHERE propertyTypeID =?");
+            statement.setString(1, propertyType.getPropertyType());
+            statement.setString(2, ""+propertyType.getFee());
+            statement.setString(3, ""+propertyType.getValidDays());
+            statement.setString(4, ""+propertyType.getPropertyTypeID());
+
+
+            System.out.println(statement);
+            statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
+            statement.close();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
+    }
+
+    public void updateRenter(Renter r) {
+        
+    	
 		try (Statement stmt1 = dbConnect.createStatement()) {
     		
 		    
@@ -503,12 +622,13 @@ public void updateRenter(Renter r) {
         try (Statement stmt1 = dbConnect.createStatement()) {
 
 
-            PreparedStatement statement = dbConnect.prepareStatement("UPDATE contract SET startDate=?,endDate=?,monthlyRent=? WHERE contractID =?");
+            PreparedStatement statement = dbConnect.prepareStatement("UPDATE contract SET startDate=?,endDate=?,monthlyRent=?, contractStatus=? WHERE contractID =?");
 
             statement.setString(1, c.getStartDate());
             statement.setString(2, c.getEndDate());
             statement.setDouble(3, c.getMonthlyRent());
-            statement.setInt(4, c.getContractID());
+            statement.setString(4, c.getContractStatus());
+            statement.setInt(5, c.getContractID());
 
             System.out.println(statement);
             statement.executeUpdate(); //+"WHERE recieverEmail="+"'"+reciever.getEmail()+"'");
@@ -576,6 +696,7 @@ public void updateRenter(Renter r) {
 	        }
     	}
     }
+
     public int maxUserID() {
     	int max=1;
     	try (Statement stmt = dbConnect.createStatement()) {
@@ -600,7 +721,8 @@ public void updateRenter(Renter r) {
         }
     	return max;
     }
-	 public void addSearchedProperty(ArrayList<Property> arr,Renter r) {
+
+    public void addSearchedProperty(ArrayList<Property> arr,Renter r) {
     	
     	for(int i=0;i<arr.size();i++) {
 	    	try (Statement stmt1 = dbConnect.createStatement()) {
@@ -629,38 +751,58 @@ public void updateRenter(Renter r) {
 	        }
     	}
     }
-	    public ArrayList<Property> getNotifiedProperty(Renter id){
-    	   ArrayList<Property> properties= new ArrayList<>();
-    	   ResultSet results;
-    	   ResultSet result2;
-           try {
-        	   Statement stmt = dbConnect.createStatement();
-        	   Statement stmt2 = dbConnect.createStatement();
-                   result2 = stmt2.executeQuery("SELECT *FROM notifcriteria");
-                  // ArrayList<Property> renterID=this.selectedProperty(id);
-                   while(result2.next()) {
-                       results = stmt.executeQuery("SELECT *FROM property");
-                       
-                	   if(result2.getInt("renterID")==id.getRenterID()) {
-		                   while(results.next()) {
-		                       ResultSetMetaData rsmd2 = results.getMetaData();
-		                       if((Integer.valueOf(result2.getString("noBedrooms"))==Integer.valueOf(results.getString("noBedrooms")) ||Integer.valueOf(result2.getString("noBathrooms"))==Integer.valueOf(results.getString("noBathrooms")) || result2.getString("quadrant").equals(results.getString("quadrant")))) {
-		                    	   Property prop = new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
-			                                  Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"), results.getString("address"),
-			                                  results.getString("quadrant"), results.getString("state"), results.getInt("Price"));
-		                    	   properties.add(prop);
-		                       }
-		                   }
-                	   }
-                   }
-                  
-                   stmt.close();
-                   //results.close();
 
-           } catch (SQLException e) {
-               throw new IllegalArgumentException("Unable to access to database");
-           }
-           return properties;
+    public ArrayList<Property> getNotifiedProperty(Renter id) {
+            ArrayList<Property> properties = new ArrayList<>();
+            ResultSet results;
+            ResultSet result2;
+            try {
+                Statement stmt = dbConnect.createStatement();
+                Statement stmt2 = dbConnect.createStatement();
+                result2 = stmt2.executeQuery("SELECT *FROM notifcriteria");
+                // ArrayList<Property> renterID=this.selectedProperty(id);
+                while (result2.next()) {
+                    results = stmt.executeQuery("SELECT *FROM property");
+
+                    if (result2.getInt("renterID") == id.getRenterID()) {
+                        while (results.next()) {
+                            ResultSetMetaData rsmd2 = results.getMetaData();
+                            if ((Integer.valueOf(result2.getString("noBedrooms")) == Integer.valueOf(results.getString("noBedrooms")) || Integer.valueOf(result2.getString("noBathrooms")) == Integer.valueOf(results.getString("noBathrooms")) || result2.getString("quadrant").equals(results.getString("quadrant")))) {
+                                Property prop = new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
+                                        Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"), results.getString("address"),
+                                        results.getString("quadrant"), results.getString("state"), results.getInt("Price"));
+                                properties.add(prop);
+                            }
+                        }
+                    }
+                }
+
+                stmt.close();
+                //results.close();
+
+            } catch (SQLException e) {
+                throw new IllegalArgumentException("Unable to access to database");
+            }
+            return properties;
+        }
+
+    public void addPropertyType(PropertyType propertyType) {
+        try (Statement stmt1 = dbConnect.createStatement()) {
+
+            PreparedStatement statement = dbConnect.prepareStatement(
+                    "INSERT INTO PROPERTY_TYPES(propertyTypeID, propertyType, fees, validDays) VALUES(?,?,?,?)");
+            statement.setInt(1, propertyType.getPropertyTypeID());
+            statement.setString(2, propertyType.getPropertyType());
+            statement.setDouble(3, propertyType.getFee());
+            statement.setInt(4, propertyType.getValidDays());
+
+            System.out.println(statement);
+            statement.execute();
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Unable to access to database");
+        }
     }
 }
 

@@ -122,10 +122,17 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
             username = usernameTextField.getText();
             password = passwordTextField.getText();
             userType = selectUserTypeComboBox.getSelectedItem().toString();
+
+//            username = "j.smith@gmail.com";
+//            password = "tester";
+//            userType = "Manager";
             //Attempt to login using the information given :
-//            username = "j.lance@gmail.com";
-//            password = "tested";
-//            userType = "Landlord";
+            username = "j.lance@gmail.com";
+            password = "tested";
+            userType = "Landlord";
+//            username = "t.roma@gmail.com";
+//            password = "testing";
+//            userType = "Renter";
             User checkedUser = checkUser(username, password, userType);
             if(checkedUser != null) {
                 JOptionPane.showMessageDialog(null, "You successfully connected to the database with username : "
@@ -133,7 +140,7 @@ public class LoginGUI extends JFrame implements ActionListener, MouseListener {
                 
                 if(userType.equals("Renter")) {
                     this.setVisible(false);
-                	RegisteredRenterGUI frame = new RegisteredRenterGUI((Renter)checkedUser, this);
+                	RegisteredRenterGUI frame = new RegisteredRenterGUI((Renter)checkedUser, this, data);
                     EventQueue.invokeLater(() -> {
                         frame.setVisible(true);
                     });

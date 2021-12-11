@@ -79,10 +79,10 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         if(e.getSource().equals(editContract)) {
             showEditContract();
         }
-//
-//        if(e.getSource().equals(createContract)) {
-//            showCreateContracts();
-//        }
+
+        if(e.getSource().equals(createContract)) {
+            showCreateContract();
+        }
 
         if(e.getSource().equals(registerProperty)) {
             showRegisterProperty();
@@ -446,9 +446,10 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
 
                         contract.setStartDate(startDate);
                         contract.setEndDate(endDate);
-                        contract.getMonthlyRent();
+                        contract.setMonthlyRent(monthlyRent);
                         SearchDatabase search=new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
                         search.updateContract(contract);
+                        data.setContracts(SingletonDatabaseAccess.getOnlyInstance().retrieveContracts(data.getProperties(), data.getRenters(), data.getLandlords()));
 
                         //implement DB Action here.
                         JOptionPane.showMessageDialog(null, "Contract was updated.");
@@ -556,6 +557,150 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         repaint();
 
 
+    }
+
+    public void showCreateContract() {
+        String rentersList[] = new String[data.getRenters().size()];
+        for(int i = 0; i < data.getRenters().size(); i++) {
+            rentersList[i] = data.getRenters().get(i).getFirstName() + " " + data.getRenters().get(i).getLastName();
+        }
+        String propertiesList[] = new String[landlord.getProperties().size()];
+        for(int i = 0; i < landlord.getProperties().size(); i++) {
+            propertiesList[i] = "" + landlord.getProperties().get(i).getPropertyID();
+        }
+        //Let's set up the JLabels and the JTextFields and the JButton for our GUI.
+        JLabel generalMessage = new JLabel("Create Contract");
+        JLabel rentersMessage = new JLabel("Renters: ");
+        JLabel propertyMessage = new JLabel("Properties: ");
+        JLabel startDateMessage = new JLabel("Start Date: ");
+        JLabel endDateMessage = new JLabel("End Date: ");
+        JLabel monthlyRentMessage = new JLabel("Price:  ");
+
+        rentersMessage.setPreferredSize(new Dimension(175, 25));
+        propertyMessage.setPreferredSize(new Dimension(175, 25));
+        startDateMessage.setPreferredSize(new Dimension(175, 25));
+        endDateMessage.setPreferredSize(new Dimension(175, 25));
+        monthlyRentMessage.setPreferredSize(new Dimension(175, 25));
+
+        JTextField startDateTextField = new JTextField("");
+        JTextField endDateTextField = new JTextField("");
+        JTextField monthlyRentTextField = new JTextField("");
+
+        JComboBox rentersComboField = new JComboBox<String>(rentersList);
+        JComboBox propertyComboField = new JComboBox<String>(propertiesList);
+
+        startDateTextField.setToolTipText("Set Start Date to ..");
+        endDateTextField.setToolTipText("Set End Date to ..");
+        monthlyRentTextField.setToolTipText("Set Price to...");
+        rentersComboField.setToolTipText("Select Renter..");
+        propertyComboField.setToolTipText("Select Property..");
+
+        startDateTextField.setPreferredSize(new Dimension(175, 25));
+        endDateTextField.setPreferredSize(new Dimension(175, 25));
+        monthlyRentTextField.setPreferredSize(new Dimension(175, 25));
+
+
+        rentersComboField.setPreferredSize(new Dimension(175, 25));
+        propertyComboField.setPreferredSize(new Dimension(175, 25));
+
+        JButton createButton = new JButton("Create");
+
+        createButton.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(createButton)) {
+
+                    if (isDouble(monthlyRentTextField.getText())
+                            && startDateTextField.getText() != "" && endDateTextField.getText() != "") {
+                        String startDate = startDateTextField.getText();
+                        String endDate = endDateTextField.getText();
+                        double monthlyRent = Double.valueOf(monthlyRentTextField.getText());
+                        String renterFullName = rentersComboField.getSelectedItem().toString();
+                        String[] renterNameSplit = renterFullName.split(" ");
+                        String renterFirstName = renterNameSplit[0];
+                        String renterLastName = renterNameSplit[1];
+                        Renter renter = data.getRenters().get(0);
+                        for(int i = 0; i < data.getRenters().size(); i++) {
+                            if (data.getRenters().get(i).getFirstName().equals(renterFirstName) &&
+                                    data.getRenters().get(i).getLastName().equals(renterLastName)) {
+                                renter = data.getRenters().get(i);
+                            }
+                        }
+                        int propertyID = Integer.valueOf(propertyComboField.getSelectedItem().toString());
+                        Property property = data.getProperties().get(0);
+                        for(int i = 0; i < landlord.getProperties().size(); i++) {
+                            if (landlord.getProperties().get(i).getPropertyID() == propertyID) {
+                                property = landlord.getProperties().get(i);
+                            }
+                        }
+
+                        String contractStatus = "Pending";
+
+                        SingletonDatabaseAccess access = SingletonDatabaseAccess.getOnlyInstance();
+                        SearchDatabase search = new SearchDatabase(access.getDBConnect());
+                        int id=search.contractMaxID();
+                        Contract addContract = new Contract(id+1,renter,property, landlord,startDate,endDate,monthlyRent,contractStatus);
+
+                        search.addContract(addContract);
+                        //implement DB Action here.
+                        JOptionPane.showMessageDialog(null, "Contract was created");
+                        data.setContracts(access.retrieveContracts(data.getProperties(), data.getRenters(), data.getLandlords()));
+                        mainContainer.removeAll();
+                        revalidate();
+                        repaint();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "There was an error with your input. Please re-enter info.");
+                    }
+                }
+            }
+        }));
+
+        //Create the JPanels.
+        mainContainer.removeAll();
+        JPanel headerPanel = new JPanel();
+        JPanel renterIDPanel = new JPanel();
+        JPanel propertyIDPanel = new JPanel();
+        JPanel startDatePanel = new JPanel();
+        JPanel endDatePanel = new JPanel();
+        JPanel monthlyRentPanel = new JPanel();
+        JPanel registerPanel = new JPanel();
+
+        //Set the Layouts for the JPanels
+        mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
+        headerPanel.setLayout(new FlowLayout());
+        renterIDPanel.setLayout(new FlowLayout());
+        propertyIDPanel.setLayout(new FlowLayout());
+        startDatePanel.setLayout(new FlowLayout());
+        endDatePanel.setLayout(new FlowLayout());
+        monthlyRentPanel.setLayout(new FlowLayout());
+
+        //Add Components to the JPanels.
+
+        headerPanel.add(generalMessage);
+        renterIDPanel.add(rentersMessage);
+        renterIDPanel.add(rentersComboField);
+        propertyIDPanel.add(propertyMessage);
+        propertyIDPanel.add(propertyComboField);
+        startDatePanel.add(startDateMessage);
+        startDatePanel.add(startDateTextField);
+        endDatePanel.add(endDateMessage);
+        endDatePanel.add(endDateTextField);
+        monthlyRentPanel.add(monthlyRentMessage);
+        monthlyRentPanel.add(monthlyRentTextField);
+        registerPanel.add(createButton);
+
+        //Add the JPanels to the main JPanel
+        mainContainer.add(headerPanel);
+        mainContainer.add(renterIDPanel);
+        mainContainer.add(propertyIDPanel);
+        mainContainer.add(startDatePanel);
+        mainContainer.add(endDatePanel);
+        mainContainer.add(monthlyRentPanel);
+        mainContainer.add(registerPanel);
+        //Add the main panel to the JFrame.
+        this.add(mainContainer);
+        revalidate();
+        repaint();
     }
 
     public void showMyProperties() {
@@ -740,11 +885,11 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         JLabel generalMessage = new JLabel("Edit Property :");
         JLabel selectPropertyLabel = new JLabel("Select Property :");
 
-        JComboBox selectPropertyComboBox = new JComboBox(propertyList);
+        JComboBox selectComboBox = new JComboBox(propertyList);
 
         generalMessage.setPreferredSize(new Dimension(175,25));
         selectPropertyLabel.setPreferredSize(new Dimension(175, 25));
-        selectPropertyComboBox.setPreferredSize(new Dimension(175, 25));
+        selectComboBox.setPreferredSize(new Dimension(175, 25));
 
         headerPanel.setLayout(new FlowLayout());
         selectPropertyPanel.setLayout(new FlowLayout());
@@ -915,11 +1060,11 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
         editPropertyPanel.add(registerPanel);
 
 
-        selectPropertyComboBox.addActionListener(new ActionListener() {
+        selectComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String selection = selectPropertyComboBox.getSelectedItem().toString();
+                String selection = selectComboBox.getSelectedItem().toString();
                 propertyID = Integer.valueOf(selection.substring(0, selection.indexOf("-")-1));
                 for(int i = 0; i < landlord.getProperties().size(); i++) {
                     if(propertyID == landlord.getProperties().get(i).getPropertyID()) {
@@ -946,7 +1091,7 @@ public class LandlordGUI extends JFrame implements ActionListener, MouseListener
 
         headerPanel.add(generalMessage);
         selectPropertyPanel.add(selectPropertyLabel);
-        selectPropertyPanel.add(selectPropertyComboBox);
+        selectPropertyPanel.add(selectComboBox);
 
         mainContainer.add(headerPanel);
         mainContainer.add(selectPropertyPanel);

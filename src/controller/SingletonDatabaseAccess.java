@@ -120,8 +120,9 @@ public class SingletonDatabaseAccess{
         ArrayList<Landlord> landlords = retrieveLandlords();
         ArrayList<Property> properties = retrieveProperties(landlords);
         ArrayList<Manager> managers = retrieveManagers();
+        ArrayList<PropertyType> propertyTypes = retrievePropertyTypes();
         ArrayList<Contract> contracts = retrieveContracts(properties, renters, landlords);
-        Data data = new Data(renters, properties, landlords, managers, contracts);
+        Data data = new Data(renters, properties, landlords, managers, contracts, propertyTypes);
         data.setRenters(retrieveRenters());
         return data;
     }
@@ -238,7 +239,23 @@ public class SingletonDatabaseAccess{
         }
         return properties;
     }
+    public ArrayList<PropertyType> retrievePropertyTypes() {
+        ArrayList<PropertyType> propertyTypes = new ArrayList<PropertyType>();
+        String Query = "SELECT * FROM PROPERTY_TYPES";
+        ResultSet results;
+        try {
+            Statement selectRenters = dbConnect.createStatement();
+            results = selectRenters.executeQuery(Query);
+            while(results.next()) {
+                propertyTypes.add(new PropertyType(Integer.valueOf(results.getString("propertyTypeID")), results.getString("propertyType"),
+                        Double.valueOf(results.getString("fees")), Integer.valueOf(results.getString("validDays"))));
 
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        return propertyTypes;
+    }
     public ArrayList<Contract> retrieveContracts(ArrayList<Property> properties, ArrayList<Renter> renters, ArrayList<Landlord> landlords) {
         ArrayList<Contract> contracts = new ArrayList<Contract>();
         String Query = "SELECT * FROM CONTRACT";
