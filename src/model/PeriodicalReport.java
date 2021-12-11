@@ -6,11 +6,7 @@ public class PeriodicalReport {
     private ArrayList<Property> listedInPeriod;
     private ArrayList<Property> rentedInPeriod;
     private int numberOfHousesRented;
-    int totalActiveListings;
-
-    public PeriodicalReport(){
-
-    }
+    private int totalActiveListings;
 
     public PeriodicalReport(ArrayList<Property> listedInPeriod,ArrayList<Property> rentedInPeriod, 
     int numberOfHousesRented,int totalActiveListings){
