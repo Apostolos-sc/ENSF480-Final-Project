@@ -848,8 +848,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     	System.out.println("Test");
     	mainContainer.removeAll();
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
-    	JLabel periodLabel = new JLabel("Begenning Period:");
-    	JLabel endLabel = new JLabel("    End Period: ");
+    	JLabel periodLabel = new JLabel("Begenning Period:yyyy-mm-dd");
+    	JLabel endLabel = new JLabel("    End Period:yyyy-mm-dd");
     	JButton periodButton = new JButton("Enter");
         periodTextField= new JTextField("Begenning Period: ",18); 
         endTextField = new JTextField("End Period: ",18);
@@ -928,8 +928,8 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
                 mainContainer.add(tablePanel);
             	
             
-            	JLabel totalLisited = new JLabel("Total Number of houses listed in past "+Integer.valueOf(periodTextField.getText())+" days: "+String.valueOf(report.getListedInPeriod().size()));
-            	JLabel totalRented= new JLabel("        Total Number of houses rented in past "+Integer.valueOf(periodTextField.getText())+" days: "+String.valueOf(report.getNumberOfHousesRented()));
+            	JLabel totalLisited = new JLabel("Total Number of houses listed in past "+(periodTextField.getText())+" days: "+String.valueOf(report.getListedInPeriod().size()));
+            	JLabel totalRented= new JLabel("        Total Number of houses rented in past "+(periodTextField.getText())+" days: "+String.valueOf(report.getNumberOfHousesRented()));
             	JLabel totalActive = new JLabel("       Total Number Active Listings: "+String.valueOf(report.getTotalActiveListings()));
             	JPanel listing = new JPanel();
             	listing.add(totalLisited);
