@@ -115,15 +115,21 @@ public ArrayList<Property> managerReport(int days){
         int numberOfHousesRented = 0;
         int totalActiveListings = 0;
         try (Statement stmt = dbConnect.createStatement()) {
-            ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY");
+           // ResultSet results = stmt.executeQuery("SELECT * FROM PROPERTY WHERE startDate < ? and endDate >= ?");
+        	PreparedStatement statement=dbConnect.prepareStatement("SELECT * FROM PROPERTY WHERE startDated < ? and endDated >= ?");
+        	statement.setString(1, startOfPer);
+        	statement.setString(2, endOfPer);
+        	
+        	ResultSet results = statement.executeQuery();
+        	
         	while (results.next()) {// takes into account number of rows that were returned by the query
                 ResultSetMetaData rsmd = results.getMetaData();
-                if (results.getString("state").equals("Listed") && (results.getInt("startDate")>=Integer.valueOf(startOfPer) && results.getInt("endDate")<=Integer.valueOf(endOfPer))) {
+                if (results.getString("state").equals("Listed")) {
                     Property prop= new Property(Integer.valueOf(results.getString("propertyID")), results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
                         Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"), results.getString("address"),
                         results.getString("quadrant"), results.getString("state"), results.getInt("Price"));
                     listedInPeriod.add(prop);
-                }else if(results.getString("state").equals("Rented")&& (results.getInt("startDate")>=Integer.valueOf(startOfPer) && results.getInt("endDate")<=Integer.valueOf(endOfPer))){
+                }else if(results.getString("state").equals("Rented")){
                     Property prop = new Property(Integer.valueOf(results.getString("propertyID")),
                             results.getString("propertyType"), Integer.valueOf(results.getString("noBathrooms")),
                             Integer.valueOf(results.getString("noBedrooms")), results.getBoolean("isFurnished"),
