@@ -45,6 +45,9 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     private JFrame parentFrame;
     private Manager mgr;
     private Data data;
+	
+    private JTextField periodTextField;
+    private JTextField endTextField;
 
     private double[] value;
     private String[] information;
@@ -197,7 +200,12 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     }
 
     public void mouseClicked(MouseEvent event) {
-
+        if(event.getSource().equals(periodTextField)) {
+            periodTextField.setText("");
+        }
+    	if(event.getSource().equals(endTextField)) {
+    		endTextField.setText("");
+    	}
     }
 
     public void mouseExited(MouseEvent event) {
@@ -840,7 +848,99 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     	System.out.println("Test");
     	mainContainer.removeAll();
         mainContainer.setLayout(new BoxLayout(mainContainer, BoxLayout.PAGE_AXIS));
-    	 
+    	JLabel periodLabel = new JLabel("Begenning Period:");
+    	JLabel endLabel = new JLabel("    End Period: ");
+    	JButton periodButton = new JButton("Enter");
+        periodTextField= new JTextField("Begenning Period: ",18); 
+        endTextField = new JTextField("End Period: ",18);
+        
+        periodTextField.addMouseListener(this);
+        endTextField.addMouseListener(this);
+        
+        JPanel periodPanel = new JPanel();
+        periodPanel.add(periodLabel);
+        periodPanel.add(periodTextField);
+        JPanel periodButtonPanel = new JPanel();
+        periodButtonPanel.add(periodButton);
+        periodPanel.add(endLabel);
+        periodPanel.add(endTextField);
+        
+        periodButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String columns[]= {"Price","Address","Bedroom","Bathroom","Quadrant","Furnishing","Property Type","House ID"};
+
+            	SearchDatabase search = new SearchDatabase(SingletonDatabaseAccess.getOnlyInstance().getDBConnect());
+//                ArrayList<Property> array2 = search.managerReportListing(Integer.valueOf(periodTextField.getText()));
+//                ArrayList<Property> array = search.managerReportRented(Integer.valueOf(periodTextField.getText()));
+//                ArrayList<Property> totalListing = search.managerReportTotalListing();
+
+            	PeriodicalReport report = search.createReport(periodTextField.getText(), endTextField.getText());
+                ArrayList<Property> array = report.getRentedInPeriod();
+            	
+                String properties [][]=new String[array.size()][9];
+            	
+            	for(int i=0;i<array.size();i++) {
+            		properties[i][0]= String.valueOf(array.get(i).getPropertyDetails().getPrice());  //???? Price ??????
+            		properties[i][1]=array.get(i).getPropertyLocation().getAddress();
+            		properties[i][2]=String.valueOf(array.get(i).getPropertyDetails().getNoBedrooms());
+            		properties[i][3]=String.valueOf(array.get(i).getPropertyDetails().getNoBathrooms());
+            		properties[i][4]=array.get(i).getPropertyLocation().getQuadrant();
+            		
+            		boolean furnishedCheck=array.get(i).getPropertyDetails().isFurnished();
+            		String furnishToString = new String();
+            		
+            		if(furnishedCheck==true) {
+            			furnishToString="Furnished";
+            		}
+            		else {
+            			furnishToString="Unfurnished";
+            		}
+            		properties[i][5]=furnishToString;
+            		properties[i][6]=array.get(i).getPropertyDetails().getPropertyType();
+            		properties[i][7]=String.valueOf(array.get(i).getPropertyID());
+            		properties[i][8]=String.valueOf(array.get(i).getPropertyID());
+            	}
+            	
+            	//showTable(properties, columns, "Manager Report of Rented Houses");
+            	TableModel model = new DefaultTableModel(properties,columns)
+                {
+                    public boolean isCellEditable(int row, int column)
+                    {
+                        return false;//This causes all cells to be not editable
+                    }
+                };
+                JTable table = new JTable(model);
+                table.setBackground(new Color(191, 191, 191));
+                JTableHeader header = table.getTableHeader();
+                header.setBackground(new Color(128, 128, 128));
+                JScrollPane pane = new JScrollPane(table);
+                table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+                mainContainer.removeAll();
+                JPanel headerPanel = new JPanel();
+                JPanel tablePanel = new JPanel();
+                headerPanel.setLayout(new FlowLayout());
+                tablePanel.setLayout(new GridLayout(1,1)); /* little trick ;) and believe me that this step is important to the automatic all columns resize! A import is also needed for using GridLayout*/
+                tablePanel.add(pane);
+                headerLabel.setText("Manager Report of Rented Houses");
+                headerPanel.add(headerLabel);
+                mainContainer.add(headerPanel);
+                mainContainer.add(tablePanel);
+            	
+            
+            	JLabel totalLisited = new JLabel("Total Number of houses listed in past "+Integer.valueOf(periodTextField.getText())+" days: "+String.valueOf(report.getListedInPeriod().size()));
+            	JLabel totalRented= new JLabel("        Total Number of houses rented in past "+Integer.valueOf(periodTextField.getText())+" days: "+String.valueOf(report.getNumberOfHousesRented()));
+            	JLabel totalActive = new JLabel("       Total Number Active Listings: "+String.valueOf(report.getTotalActiveListings()));
+            	JPanel listing = new JPanel();
+            	listing.add(totalLisited);
+            	listing.add(totalRented);
+            	listing.add(totalActive);
+            	mainContainer.add(listing);
+            	revalidate();
+                repaint();
+            }
+        });
+
         double[] value= new double[3];
     	  String[] information = new String[3];
     	  value[0] = data.getRenters().size();
@@ -853,28 +953,30 @@ public class ManagerGUI extends JFrame implements ActionListener, MouseListener 
     	  information[2] = "Properties";
 
     	  JLabel renters=new JLabel("Number of Renters: ");
-    	  JLabel renterCount =new JLabel(String.valueOf(data.getRenters().size())); 
+    	  JLabel renterCount =new JLabel(String.valueOf(data.getRenters().size()),10); 
     	  
-    	  JLabel landlord=new JLabel("Number of Landlord: ");
-    	  JLabel landlordCount =new JLabel(String.valueOf(data.getLandlords().size())); 
+    	  JLabel landlord=new JLabel("     Number of Landlord: ");
+    	  JLabel landlordCount =new JLabel(String.valueOf(data.getLandlords().size()),10); 
     	  
-    	  JLabel property=new JLabel("Number of Properties: ");
-    	  JLabel propertyCount =new JLabel(String.valueOf(data.getProperties().size())); 
+    	  JLabel property=new JLabel("     Number of Properties: ");
+    	  JLabel propertyCount =new JLabel(String.valueOf(data.getProperties().size()),10); 
     	  
-    	  JPanel renterPanel=new JPanel();
-    	  JPanel landlordPanel=new JPanel();
-    	  JPanel propertyPanel = new JPanel();
+    	  JPanel topPanel = new JPanel();
+    	  JPanel mainPanel=new JPanel();
     	  
-    	  renterPanel.add(renters);
-    	  renterPanel.add(renterCount);
-    	  landlordPanel.add(landlord);
-    	  landlordPanel.add(landlordCount);
-    	  propertyPanel.add(property);
-    	  propertyPanel.add(propertyCount);
+    	  mainPanel.add(renters);
+    	  mainPanel.add(renterCount);
+    	  mainPanel.add(landlord);
+    	  mainPanel.add(landlordCount);
+    	  mainPanel.add(property);
+    	  mainPanel.add(propertyCount);
     	  
-    	  mainContainer.add(renterPanel);
-    	  mainContainer.add(landlordPanel);
-    	  mainContainer.add(propertyPanel);
+    	  mainContainer.add(topPanel);
+    	  mainContainer.add(mainPanel);
+
+    	  mainContainer.add(periodPanel);
+    	  mainContainer.add(periodButtonPanel);
+    	  
     	  revalidate();
           repaint();
     }
